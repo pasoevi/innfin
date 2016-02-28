@@ -1,5 +1,6 @@
 #include "libtcod.h"
 #include "actor.h"
+#include "map.h"
 
 #define PROGRAM_NAME "Mysteries"
 
@@ -9,13 +10,19 @@ enum{
 };
 
 void init(void){
-        TCOD_console_init_root(WINDOW_W, WINDOW_H, PROGRAM_NAME, false, TCOD_RENDERER_OPENGL);
+        TCOD_console_init_root(WINDOW_W,
+                               WINDOW_H,
+                               PROGRAM_NAME,
+                               false,
+                               TCOD_RENDERER_OPENGL);
 }
 
 int main() {
         init();
         
         struct Actor player = {40, 25, '@', TCOD_white, renderActor};
+        struct Map *map;
+        init_map(&map, 80, 45);
 
         while (!TCOD_console_is_window_closed()) {
                 TCOD_key_t key = TCOD_console_check_for_keypress(TCOD_EVENT_KEY_PRESS);
@@ -30,6 +37,7 @@ int main() {
 
                 TCOD_console_clear(NULL);
                 player.render(&player);
+                map_render(map);
                 TCOD_console_flush(NULL);
         }
         
