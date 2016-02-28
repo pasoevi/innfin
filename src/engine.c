@@ -64,10 +64,10 @@ void engine_render(struct Engine *engine){
         /* draw the actors */
         struct Actor **iter;
 
-        for (iter = (struct Actor **)TCOD_list_begin(engine->actors); iter != (struct Actor **)TCOD_list_end(engine->actors); iter ++ ) {
+        for (iter = (struct Actor **)TCOD_list_begin(engine->actors);
+             iter != (struct Actor **)TCOD_list_end(engine->actors);
+             iter ++ ) {
                 (*iter)->render(*iter);
         }
-
-        
-        TCOD_console_flush(NULL);
+        TCOD_console_flush(NULL); 
 }
