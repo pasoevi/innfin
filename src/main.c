@@ -1,65 +1,37 @@
 #include "libtcod.h"
 #include <stdlib.h>
-#include "actor.h"
-#include "map.h"
+#include "engine.h"
 
-#define PROGRAM_NAME "mysteries"
+#define PROGRAM_NAME "Mysteries"
 
 enum{
-        window_w = 80,
-        window_h = 50
+        WINDOW_W = 80,
+        WINDOW_H = 50
 };
 
+struct Engine *engine;
+
 void init(void){
-        TCOD_console_init_root(window_w,
-                               window_h,
-                               PROGRAM_NAME,
-                               false,
-                               TCOD_RENDERER_OPENGL);
+        init_engine(&engine, WINDOW_W, WINDOW_H, PROGRAM_NAME);
 }
 
 int main() {
         init();
         
-        struct Actor player = {40, 25, '@', TCOD_white, renderActor};
-        struct Map *map;
-        init_map(&map, 80, 45);
+        struct Actor *player = engine->player;
 
         while (!TCOD_console_is_window_closed()) {
-                TCOD_key_t key = TCOD_console_check_for_keypress(TCOD_EVENT_KEY_PRESS);
-                
-                switch(key.vk) {
-                case TCODK_UP :
-                        if(!is_wall(map, player.x, player.y - 1)){
-                                player.y--;
-                        }
-                        break;
-                case TCODK_DOWN :
-                        if(!is_wall(map, player.x, player.y + 1)){
-                                player.y++;
-                        }
-                        break;
-                case TCODK_LEFT :
-                        if(!is_wall(map, player.x - 1, player.y)){
-                                player.x--;
-                        }
-                        break;
-                case TCODK_RIGHT :
-                        if(!is_wall(map, player.x + 1, player.y)){
-                                player.x++;
-                        }
-                        break;
-                default:break;
-                }
-
+                engine->update(engine);
                 TCOD_console_clear(NULL);
-                player.render(&player);
-                map_render(map);
+                player->render(player);
+                map_render(engine->map);
                 TCOD_console_flush(NULL);
         }
 
-        free(map->tiles);
-        free(map);
+        free(engine->map->tiles);
+        free(engine->map);
+        free(engine->player);
+        /* TODO: free actors list! */
         
         return 0;
 }
