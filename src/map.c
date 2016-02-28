@@ -6,6 +6,8 @@ void init_map(struct Map **map, int w, int h){
         (*map)->w = w;
         (*map)->h = h;
         (*map)->tiles = calloc(w*h, sizeof(struct Tile));
+        set_wall(*map, 30,22);
+        set_wall(*map, 50,22);
 }
 
 bool is_wall(struct Map *map, int x, int y){

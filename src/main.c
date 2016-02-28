@@ -1,17 +1,18 @@
 #include "libtcod.h"
+#include <stdlib.h>
 #include "actor.h"
 #include "map.h"
 
-#define PROGRAM_NAME "Mysteries"
+#define PROGRAM_NAME "mysteries"
 
 enum{
-        WINDOW_W = 80,
-        WINDOW_H = 50
+        window_w = 80,
+        window_h = 50
 };
 
 void init(void){
-        TCOD_console_init_root(WINDOW_W,
-                               WINDOW_H,
+        TCOD_console_init_root(window_w,
+                               window_h,
                                PROGRAM_NAME,
                                false,
                                TCOD_RENDERER_OPENGL);
@@ -28,10 +29,26 @@ int main() {
                 TCOD_key_t key = TCOD_console_check_for_keypress(TCOD_EVENT_KEY_PRESS);
                 
                 switch(key.vk) {
-                case TCODK_UP : player.y--; break;
-                case TCODK_DOWN : player.y++; break;
-                case TCODK_LEFT : player.x--; break;
-                case TCODK_RIGHT : player.x++; break;
+                case TCODK_UP :
+                        if(!is_wall(map, player.x, player.y - 1)){
+                                player.y--;
+                        }
+                        break;
+                case TCODK_DOWN :
+                        if(!is_wall(map, player.x, player.y + 1)){
+                                player.y++;
+                        }
+                        break;
+                case TCODK_LEFT :
+                        if(!is_wall(map, player.x - 1, player.y)){
+                                player.x--;
+                        }
+                        break;
+                case TCODK_RIGHT :
+                        if(!is_wall(map, player.x + 1, player.y)){
+                                player.x++;
+                        }
+                        break;
                 default:break;
                 }
 
@@ -40,6 +57,9 @@ int main() {
                 map_render(map);
                 TCOD_console_flush(NULL);
         }
+
+        free(map->tiles);
+        free(map);
         
         return 0;
 }
