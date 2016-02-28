@@ -1,11 +1,12 @@
 #include <stdlib.h>
 #include "engine.h"
 
-void init_engine(struct Engine **engine, int w, int h, const char *title){
+void engine_init(struct Engine **engine, int w, int h, const char *title){
         TCOD_console_init_root(w, h, title, false, TCOD_RENDERER_OPENGL);
 
         *engine = malloc(sizeof (struct Engine));
-        (*engine)->update = engine_update;                
+        (*engine)->update = engine_update;
+        (*engine)->render = engine_render;
 
         /* Add a map to the engine */
         struct Map *map;
@@ -52,4 +53,21 @@ void engine_update(struct Engine *engine){
                 break;
         default:break;
         }
+}
+
+void engine_render(struct Engine *engine){
+        TCOD_console_clear(NULL);
+        map_render(engine->map);
+        engine->player->render(engine->player);
+        /* map_render(engine->map); */
+
+        /* draw the actors */
+        struct Actor **iter;
+
+        for (iter = (struct Actor **)TCOD_list_begin(engine->actors); iter != (struct Actor **)TCOD_list_end(engine->actors); iter ++ ) {
+                (*iter)->render(*iter);
+        }
+
+        
+        TCOD_console_flush(NULL);
 }

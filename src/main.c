@@ -12,20 +12,15 @@ enum{
 struct Engine *engine;
 
 void init(void){
-        init_engine(&engine, WINDOW_W, WINDOW_H, PROGRAM_NAME);
+        engine_init(&engine, WINDOW_W, WINDOW_H, PROGRAM_NAME);
 }
 
 int main() {
         init();
-        
-        struct Actor *player = engine->player;
 
         while (!TCOD_console_is_window_closed()) {
                 engine->update(engine);
-                TCOD_console_clear(NULL);
-                player->render(player);
-                map_render(engine->map);
-                TCOD_console_flush(NULL);
+                engine->render(engine);
         }
 
         free(engine->map->tiles);

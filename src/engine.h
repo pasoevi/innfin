@@ -10,7 +10,8 @@ struct Engine{
         void (*render)(struct Engine *);
 };
 
-void init_engine(struct Engine **engine, int w, int h, const char *title);
+void engine_init(struct Engine **engine, int w, int h, const char *title);
 void engine_update(struct Engine *engine);
+void engine_render(struct Engine *engine);
         
         

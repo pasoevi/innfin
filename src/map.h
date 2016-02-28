@@ -8,7 +8,7 @@ struct Tile{
 struct Map{
         int w;
         int h;
-        void (*render)(struct Map);
+        void (*render)(struct Map *);
         struct Tile *tiles;
 };
 
