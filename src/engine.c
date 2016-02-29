@@ -56,8 +56,7 @@ void engine_render(struct Engine *engine){
         TCOD_console_clear(NULL);
         map_render(engine->map);
         engine->player->render(engine->player);
-        /* map_render(engine->map); */
-
+        
         /* draw the actors */
         struct Actor **iter;
 
