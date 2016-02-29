@@ -1,5 +1,5 @@
+#include "map.h"
 #include <stdlib.h>
-#include "engine.h"
 
 static const int ROOM_MAX_SIZE = 12;
 static const int ROOM_MIN_SIZE = 6;
@@ -20,53 +20,85 @@ void dig(struct Map *map, int x1, int y1, int x2, int y2){
         int tilex, tiley;
         for(tilex = x1; tilex <= x2; tilex++){
                 for(tiley = y1; tiley <= y2; tiley++){
-                        map->tiles[tilex+tiley*map->w].can_walk=true;
+                        map->tiles[tilex+tiley*map->w].can_walk = true;
                 }
         }
 }
 
 void create_room(struct Engine *engine, bool first, int x1, int y1, int x2, int y2){
         dig (engine->map, x1, y1, x2, y2);
-        if ( first ) {
+        if(first){
                 // put the player in the first room
-                engine->player->x=(x1+x2)/2;
-                engine->player->y=(y1+y2)/2;
-        } else {
+                engine->player->x=(x1 + x2) / 2;
+                engine->player->y=(y1 + y2) /2;
+        }else{
                 TCOD_random_t *rng = TCOD_random_get_instance();
                 if (TCOD_random_get_int(rng, 0, 3) == 0) {
-                        struct Actor *actor;// push(new Actor((x1+x2)/2,(y1+y2)/2,'@', TCODColor::yellow));
+                        struct Actor *actor;
                         init_actor(&actor, (x1+x2)/2,(y1+y2)/2,'@', TCOD_yellow, render_actor);
                         TCOD_list_push(engine->actors, actor);
                 }
         }
 }
 
-void init_map(struct Map **map, int w, int h){
-        *map = malloc(sizeof(*map));
-        (*map)->w = w;
-        (*map)->h = h;
-        (*map)->tiles = calloc(w*h, sizeof(struct Tile));
-        set_wall(*map, 30,22);
-        set_wall(*map, 50,22);
-        (*map)->render = map_render;
+typedef bool (*TCOD_bsp_callback_t)(TCOD_bsp_t *node, void *userData);
+
+bool visit_node(TCOD_bsp_t *node, void *user_data) {
+        struct Engine *engine = (struct Engine *)user_data;
+        int lastx = 0;
+        int lasty = 0;
+        int room_num = 0;
+
+        if(TCOD_bsp_is_leaf(node)) {
+                int x, y, w, h;
+                
+                // dig a room
+                TCOD_random_t *rng = TCOD_random_get_instance();
+                w = TCOD_random_get_int(rng, ROOM_MIN_SIZE, node->w - 2);
+                h = TCOD_random_get_int(rng, ROOM_MIN_SIZE, node->h - 2);
+                x = TCOD_random_get_int(rng, node->x + 1, node->x + node->w - w - 1);
+                y = TCOD_random_get_int(rng, node->y+1, node->y+node->h-h-1);
+                create_room(engine, room_num == 0, x, y, x + w - 1, y + h - 1);
+
+                if(room_num != 0){
+                        /* dig a corridor from last room */
+                        dig(engine->map, lastx,lasty,x+w/2,lasty);
+                        dig(engine->map, x + w / 2,lasty, x + w / 2, y + h / 2);
+
+                        lastx = x+w/2;
+                        lasty = y+h/2;
+                        room_num++;
+                }
+                return true;
+        }
+        
+        return false;
 }
 
+void init_map(struct Engine *engine, int w, int h){
+        engine->map = malloc(sizeof(struct Map));
+        engine->map->w = w;
+        engine->map->h = h;
+        engine->map->tiles = calloc(w * h, sizeof(struct Tile));
+        engine->map->render = map_render;
+        engine->map->bsp = TCOD_bsp_new_with_size(0, 0, w, h);
+        TCOD_bsp_split_recursive(engine->map->bsp, NULL, 8, ROOM_MAX_SIZE, ROOM_MAX_SIZE, 1.5f, 1.5f);
+        TCOD_bsp_traverse_inverted_level_order(engine->map->bsp, visit_node, engine);
 
+        
+        
+}
 
 bool is_wall(struct Map *map, int x, int y){
         return !map->tiles[(x+y)*(map->w)].can_walk;
 }
 
-void set_wall(struct Map *map, int x, int y){
-        map->tiles[(x+y)*(map->w)].can_walk = false;
-}
-
 void map_render(struct Map *map){
-        const TCOD_color_t dark_wall = {0, 0, 100};
-        const TCOD_color_t dark_ground = {70, 70, 80};
+        const TCOD_color_t dark_wall = {30, 30, 100};
+        const TCOD_color_t dark_ground = {170, 170, 80};
 
         int x, y;
-        for(x=0; x < map->w; x++) {
+        for(x = 0; x < map->w; x++) {
                 for(y = 0; y < map->h; y++) {
                         TCOD_console_set_char_background(NULL, x, y,
                                                          is_wall(map, x, y) ? dark_wall : dark_ground,
@@ -74,4 +106,3 @@ void map_render(struct Map *map){
                 }
         }
 }
-

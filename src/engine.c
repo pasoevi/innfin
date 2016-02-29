@@ -1,6 +1,8 @@
 #include <stdlib.h>
 #include "engine.h"
 
+extern void init_map(struct Engine *engine, int w, int h);
+
 void engine_init(struct Engine **engine, int w, int h, const char *title){
         TCOD_console_init_root(w, h, title, false, TCOD_RENDERER_OPENGL);
 
@@ -9,20 +11,13 @@ void engine_init(struct Engine **engine, int w, int h, const char *title){
         (*engine)->render = engine_render;
 
         /* Add a map to the engine */
-        struct Map *map;
-        init_map(&map, 80, 45);
-        (*engine)->map = map;
-        
+        init_map(*engine, 80, 45);
+                
         /* Create a player */
         init_actor(&((*engine)->player), 40, 25, '@', TCOD_white, render_actor);
         
-        /* Add a simple monster */
-        struct Actor *orc;
-        init_actor(&orc, 60, 25, 'O', TCOD_yellow, render_actor);
-
         (*engine)->actors = TCOD_list_new();
         TCOD_list_push((*engine)->actors, (const void *)(*engine)->player);
-        TCOD_list_push((*engine)->actors, (const void *)orc);
 }
 
 void engine_update(struct Engine *engine){
@@ -64,10 +59,11 @@ void engine_render(struct Engine *engine){
         /* draw the actors */
         struct Actor **iter;
 
-        for (iter = (struct Actor **)TCOD_list_begin(engine->actors);
+        for(iter = (struct Actor **)TCOD_list_begin(engine->actors);
              iter != (struct Actor **)TCOD_list_end(engine->actors);
-             iter ++ ) {
+             iter++){
                 (*iter)->render(*iter);
         }
+        
         TCOD_console_flush(NULL); 
 }

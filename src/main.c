@@ -24,6 +24,7 @@ int main() {
         }
 
         free(engine->map->tiles);
+        TCOD_bsp_delete(engine->map->bsp);
         free(engine->map);
         free(engine->player);
         /* TODO: free actors list! */
