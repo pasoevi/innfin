@@ -9,17 +9,17 @@ void engine_init(struct Engine **engine, int w, int h, const char *title){
         *engine = malloc(sizeof (struct Engine));
         (*engine)->update = engine_update;
         (*engine)->render = engine_render;
-
-        /* Add a map to the engine */
-        init_map(*engine, 80, 45);
-                
+        
         /* Create a player */
         struct Actor *player;
         init_actor(&player, 40, 25, '@', TCOD_white, render_actor);
-        (*engine)->player = player;        
+        (*engine)->player = player;
         
         (*engine)->actors = TCOD_list_new();
-        TCOD_list_push((*engine)->actors, (const void *)(*engine)->player);
+        TCOD_list_push((*engine)->actors, (const void *)player);
+
+        /* Add a map to the engine */
+        init_map(*engine, 80, 45);
 }
 
 void engine_update(struct Engine *engine){

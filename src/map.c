@@ -26,11 +26,11 @@ void dig(struct Map *map, int x1, int y1, int x2, int y2){
 }
 
 void create_room(struct Engine *engine, bool first, int x1, int y1, int x2, int y2){
-        dig (engine->map, x1, y1, x2, y2);
+        dig(engine->map, x1, y1, x2, y2);
         if(first){
-                // put the player in the first room
-                engine->player->x=(x1 + x2) / 2;
-                engine->player->y=(y1 + y2) /2;
+                /* put the player in the first room */
+                engine->player->x = (x1 + x2) / 2;
+                engine->player->y = (y1 + y2) / 2;
         }else{
                 TCOD_random_t *rng = TCOD_random_get_instance();
                 if (TCOD_random_get_int(rng, 0, 3) == 0) {
@@ -45,9 +45,9 @@ typedef bool (*TCOD_bsp_callback_t)(TCOD_bsp_t *node, void *userData);
 
 bool visit_node(TCOD_bsp_t *node, void *user_data) {
         struct Engine *engine = (struct Engine *)user_data;
-        int lastx = 0;
-        int lasty = 0;
-        int room_num = 0;
+        static int lastx = 0;
+        static int lasty = 0;
+        static int room_num = 0;
 
         if(TCOD_bsp_is_leaf(node)) {
                 int x, y, w, h;
