@@ -84,9 +84,6 @@ void init_map(struct Engine *engine, int w, int h){
         engine->map->bsp = TCOD_bsp_new_with_size(0, 0, w, h);
         TCOD_bsp_split_recursive(engine->map->bsp, NULL, 8, ROOM_MAX_SIZE, ROOM_MAX_SIZE, 1.5f, 1.5f);
         TCOD_bsp_traverse_inverted_level_order(engine->map->bsp, visit_node, engine);
-
-        
-        
 }
 
 bool is_wall(struct Map *map, int x, int y){
