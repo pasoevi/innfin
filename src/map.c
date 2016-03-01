@@ -45,9 +45,6 @@ void create_room(struct Engine *engine, bool first, int x1, int y1, int x2, int 
 
 bool visit_node(TCOD_bsp_t *node, void *user_data) {
         struct Engine *engine = (struct Engine *)user_data;
-        static int lastx = 0;
-        static int lasty = 0;
-        static int room_num = 0;
 
         if(TCOD_bsp_is_leaf(node)) {
                 int x, y, w, h;
@@ -58,16 +55,16 @@ bool visit_node(TCOD_bsp_t *node, void *user_data) {
                 h = TCOD_random_get_int(rng, ROOM_MIN_SIZE, node->h - 2);
                 x = TCOD_random_get_int(rng, node->x + 1, node->x + node->w - w - 1);
                 y = TCOD_random_get_int(rng, node->y+1, node->y+node->h-h-1);
-                create_room(engine, room_num == 0, x, y, x + w - 1, y + h - 1);
+                create_room(engine, engine->map->bsp_traverse.room_num == 0, x, y, x + w - 1, y + h - 1);
 
-                if(room_num != 0){
+                if(engine->map->bsp_traverse.room_num != 0){
                         /* dig a corridor from last room */
-                        dig(engine->map, lastx,lasty,x+w/2,lasty);
-                        dig(engine->map, x + w / 2,lasty, x + w / 2, y + h / 2);
+                        dig(engine->map, engine->map->bsp_traverse.lastx,engine->map->bsp_traverse.lasty,x+w/2,engine->map->bsp_traverse.lasty);
+                        dig(engine->map, x + w / 2,engine->map->bsp_traverse.lasty, x + w / 2, y + h / 2);
 
-                        lastx = x+w/2;
-                        lasty = y+h/2;
-                        room_num++;
+                        engine->map->bsp_traverse.lastx = x+w/2;
+                        engine->map->bsp_traverse.lasty = y+h/2;
+                        engine->map->bsp_traverse.room_num++;
                 }
                 return true;
         }
@@ -80,22 +77,14 @@ void init_map(struct Engine *engine, int w, int h){
         engine->map->w = w;
         engine->map->h = h;
        
-	int i;
-	for(i = 0; i < 80 * 45; i++){
-		engine->map->tiles[i].can_walk = true;
-	}
-
 	engine->map->render = map_render;
-        printf("w = %d, h = %d, number of tiles = %d\n", w, h, ar_length(engine->map->tiles));
-
         engine->map->bsp = TCOD_bsp_new_with_size(0, 0, w, h);
         TCOD_bsp_split_recursive(engine->map->bsp, NULL, 8, ROOM_MAX_SIZE, ROOM_MAX_SIZE, 1.5f, 1.5f);
         TCOD_bsp_traverse_inverted_level_order(engine->map->bsp, visit_node, engine);
-        
 }
 
 bool is_wall(struct Map *map, int x, int y){
-        return !(map->tiles[(x+y)*(map->w)].can_walk);
+        return !map->tiles[x+y*(map->w)].can_walk;
 }
 
 void map_render(struct Map *map){

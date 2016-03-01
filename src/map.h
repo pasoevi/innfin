@@ -12,12 +12,20 @@ struct Tile{
         bool can_walk;
 };
 
+struct BSPTraverse{
+	int room_num;
+	int lastx;
+	int lasty;
+};
+		
+
 struct Map{
         int w;
         int h;
         void (*render)(struct Map *);
         struct Tile tiles[80 * 45];
         TCOD_bsp_t *bsp;
+	struct BSPTraverse bsp_traverse;
 };
 
 /* void init_map(struct Engine *engine, int w, int h); */

@@ -23,7 +23,7 @@ int main() {
                 engine->render(engine);
         }
 
-        free(engine->map->tiles);
+        /* free(engine->map->tiles); */
         TCOD_bsp_delete(engine->map->bsp);
         free(engine->map);
         free(engine->player);
