@@ -79,6 +79,9 @@ void init_map(struct Engine *engine, int w, int h){
        
 	engine->map->render = map_render;
         engine->map->bsp = TCOD_bsp_new_with_size(0, 0, w, h);
+	engine->map->bsp_traverse.lastx = 0;
+	engine->map->bsp_traverse.lasty = 0;
+	engine->map->bsp_traverse.room_num = 0;
         TCOD_bsp_split_recursive(engine->map->bsp, NULL, 8, ROOM_MAX_SIZE, ROOM_MAX_SIZE, 1.5f, 1.5f);
         TCOD_bsp_traverse_inverted_level_order(engine->map->bsp, visit_node, engine);
 }
