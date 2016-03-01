@@ -78,8 +78,13 @@ void init_map(struct Engine *engine, int w, int h){
         engine->map = malloc(sizeof(struct Map));
         engine->map->w = w;
         engine->map->h = h;
-       
-	engine->map->render = map_render;
+
+        int i;
+	for(i = 0; i < w * h ; i++){
+                engine->map->tiles[i].can_walk = false;
+        }
+
+        engine->map->render = map_render;
         engine->map->bsp = TCOD_bsp_new_with_size(0, 0, w, h);
 	engine->map->bsp_traverse.lastx = 0;
 	engine->map->bsp_traverse.lasty = 0;
