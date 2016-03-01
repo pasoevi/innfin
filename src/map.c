@@ -2,9 +2,6 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-static const int ROOM_MAX_SIZE = 12;
-static const int ROOM_MIN_SIZE = 6;
-
 int ar_length(struct Tile ar[]){
         return (int)( sizeof(ar) / sizeof(ar[0]));
 }
@@ -82,12 +79,15 @@ void init_map(struct Engine *engine, int w, int h){
         engine->map = malloc(sizeof(struct Map));
         engine->map->w = w;
         engine->map->h = h;
-        struct Tile tiles[w*h];//  = calloc(w * h, sizeof(engine->map->tiles[0]));
+       
+	int i;
+	for(i = 0; i < 80 * 45; i++){
+		engine->map->tiles[i].can_walk = true;
+	}
+
+	engine->map->render = map_render;
         printf("w = %d, h = %d, number of tiles = %d\n", w, h, ar_length(engine->map->tiles));
-        engine->map->tiles = tiles;
-        printf("w = %d, h = %d, number of tiles = %d\n", w, h, ar_length(engine->map->tiles));
-        engine->map->render = map_render;
-        
+
         engine->map->bsp = TCOD_bsp_new_with_size(0, 0, w, h);
         TCOD_bsp_split_recursive(engine->map->bsp, NULL, 8, ROOM_MAX_SIZE, ROOM_MAX_SIZE, 1.5f, 1.5f);
         TCOD_bsp_traverse_inverted_level_order(engine->map->bsp, visit_node, engine);
