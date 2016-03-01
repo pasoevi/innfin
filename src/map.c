@@ -46,6 +46,11 @@ void create_room(struct Engine *engine, bool first, int x1, int y1, int x2, int 
 bool visit_node(TCOD_bsp_t *node, void *user_data) {
         struct Engine *engine = (struct Engine *)user_data;
 
+        /* struct BSPTraverse trv = engine->map->bsp_traverse; */
+        static int lastx;
+        static int lasty;
+        static int room_num;
+
         if(TCOD_bsp_is_leaf(node)) {
                 int x, y, w, h;
                 /* dig a room */
@@ -54,17 +59,17 @@ bool visit_node(TCOD_bsp_t *node, void *user_data) {
                 h = TCOD_random_get_int(rng, ROOM_MIN_SIZE, node->h - 2);
                 x = TCOD_random_get_int(rng, node->x + 1, node->x + node->w - w - 1);
                 y = TCOD_random_get_int(rng, node->y+1, node->y+node->h-h-1);
-                create_room(engine, engine->map->bsp_traverse.room_num == 0, x, y, x + w - 1, y + h - 1);
+                create_room(engine, room_num == 0, x, y, x + w - 1, y + h - 1);
 
-                if(engine->map->bsp_traverse.room_num != 0){
+                if(room_num != 0){
                         /* dig a corridor from last room */
-                        dig(engine->map, engine->map->bsp_traverse.lastx,engine->map->bsp_traverse.lasty,x+w/2,engine->map->bsp_traverse.lasty);
-                        dig(engine->map, x + w / 2,engine->map->bsp_traverse.lasty, x + w / 2, y + h / 2);
+                        dig(engine->map, lastx,lasty,x+w/2,lasty);
+                        dig(engine->map, x + w / 2,lasty, x + w / 2, y + h / 2);
                 }
 
-                engine->map->bsp_traverse.lastx = x+w/2;
-                engine->map->bsp_traverse.lasty = y+h/2;
-                engine->map->bsp_traverse.room_num++;
+                lastx = x+w/2;
+                lasty = y+h/2;
+                room_num++;
         }
         return true;
 }
