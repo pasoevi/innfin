@@ -48,8 +48,7 @@ bool visit_node(TCOD_bsp_t *node, void *user_data) {
 
         if(TCOD_bsp_is_leaf(node)) {
                 int x, y, w, h;
-                
-                // dig a room
+                /* dig a room */
                 TCOD_random_t *rng = TCOD_random_get_instance();
                 w = TCOD_random_get_int(rng, ROOM_MIN_SIZE, node->w - 2);
                 h = TCOD_random_get_int(rng, ROOM_MIN_SIZE, node->h - 2);
@@ -61,15 +60,13 @@ bool visit_node(TCOD_bsp_t *node, void *user_data) {
                         /* dig a corridor from last room */
                         dig(engine->map, engine->map->bsp_traverse.lastx,engine->map->bsp_traverse.lasty,x+w/2,engine->map->bsp_traverse.lasty);
                         dig(engine->map, x + w / 2,engine->map->bsp_traverse.lasty, x + w / 2, y + h / 2);
-
-                        engine->map->bsp_traverse.lastx = x+w/2;
-                        engine->map->bsp_traverse.lasty = y+h/2;
-                        engine->map->bsp_traverse.room_num++;
                 }
-                return true;
+
+                engine->map->bsp_traverse.lastx = x+w/2;
+                engine->map->bsp_traverse.lasty = y+h/2;
+                engine->map->bsp_traverse.room_num++;
         }
-        
-        return false;
+        return true;
 }
 
 void init_map(struct Engine *engine, int w, int h){
