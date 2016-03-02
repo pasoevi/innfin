@@ -18,7 +18,8 @@ void dig(struct Map *map, int x1, int y1, int x2, int y2){
         int tilex, tiley;
         for(tilex = x1; tilex <= x2; tilex++){
                 for(tiley = y1; tiley <= y2; tiley++){
-                        map->tiles[tilex+tiley*map->w].can_walk = true;
+                        TCOD_map_set_properties(map->map, tilex, tiley, true, true);
+                        /* map->tiles[tilex+tiley*map->w].can_walk = true; */
                 }
         }
 }
@@ -77,9 +78,11 @@ void init_map(struct Engine *engine, int w, int h){
 
         int i;
 	for(i = 0; i < w * h ; i++){
-                engine->map->tiles[i].can_walk = false;
+                engine->map->tiles[i].explored = false;
         }
-
+        
+        engine->map->map = TCOD_map_new(w, h);
+                
         engine->map->render = map_render;
         engine->map->bsp = TCOD_bsp_new_with_size(0, 0, w, h);
 	engine->map->bsp_traverse.lastx = 0;
@@ -90,19 +93,46 @@ void init_map(struct Engine *engine, int w, int h){
 }
 
 bool is_wall(struct Map *map, int x, int y){
-        return !map->tiles[x+y*(map->w)].can_walk;
+        return !TCOD_map_is_walkable(map->map, x, y);
+        
+}
+
+bool is_in_fov(struct Map *map, int x, int y){
+        if(TCOD_map_is_in_fov(map->map, x, y)){
+                map->tiles[x+y*(map->w)].explored = true;
+                return true;
+        }
+        return false;
+}
+
+bool is_explored(struct Map *map, int x, int y){
+        return map->tiles[x+y*(map->w)].explored;
+}
+
+void compute_fov(struct Engine *engine){
+        TCOD_map_compute_fov(engine->map->map, engine->player->x, engine->player->y, engine->fov_radius, true, FOV_SHADOW);
+        
 }
 
 void map_render(struct Map *map){
         const TCOD_color_t dark_wall = {0, 0, 100};
         const TCOD_color_t dark_ground = {50, 50, 150};
 
+        const TCOD_color_t light_wall = {130, 110, 50};
+        const TCOD_color_t light_ground = {200, 180, 50};
+
         int x, y;
         for(x = 0; x < map->w; x++) {
                 for(y = 0; y < map->h; y++) {
-                        TCOD_console_set_char_background(NULL, x, y,
-                                                         is_wall(map, x, y) ? dark_wall : dark_ground,
-                                                         TCOD_BKGND_SET);
+                        if(is_in_fov(map, x, y)){
+                                TCOD_console_set_char_background(NULL, x, y,
+                                                                 is_wall(map, x, y) ? light_wall : light_ground,
+                                                                 TCOD_BKGND_SET);
+                        }else{
+                                TCOD_console_set_char_background(NULL, x, y,
+                                                                 is_wall(map, x, y) ? dark_wall : dark_ground,
+                                                                 TCOD_BKGND_SET);
+                        }
                 }
         }
 }

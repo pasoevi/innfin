@@ -9,7 +9,7 @@ static const int ROOM_MAX_SIZE = 12;
 static const int ROOM_MIN_SIZE = 6;
 
 struct Tile{
-        bool can_walk;
+        bool explored;
 };
 
 struct BSPTraverse{
@@ -25,6 +25,7 @@ struct Map{
         void (*render)(struct Map *);
         struct Tile tiles[80 * 45];
         TCOD_bsp_t *bsp;
+        TCOD_map_t map;
 	struct BSPTraverse bsp_traverse;
 };
 

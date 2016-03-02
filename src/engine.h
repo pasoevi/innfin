@@ -9,6 +9,8 @@ struct Engine{
         TCOD_list_t *actors;
         struct Actor *player;
         struct Map *map;
+        int fov_radius;
+        bool compute_fov;
         void (*update)(struct Engine *);
         void (*render)(struct Engine *);
 };

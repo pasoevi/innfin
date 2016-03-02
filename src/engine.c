@@ -1,7 +1,9 @@
 #include <stdlib.h>
 #include "engine.h"
 
+extern void compute_fov(struct Engine *engine);
 extern void init_map(struct Engine *engine, int w, int h);
+extern bool is_in_fov(struct Map *map, int x, int y);
 
 void engine_init(struct Engine **engine, int w, int h, const char *title){
         TCOD_console_init_root(w, h, title, false, TCOD_RENDERER_OPENGL);
@@ -9,6 +11,9 @@ void engine_init(struct Engine **engine, int w, int h, const char *title){
         *engine = malloc(sizeof (struct Engine));
         (*engine)->update = engine_update;
         (*engine)->render = engine_render;
+
+        (*engine)->fov_radius = 10;
+        (*engine)->compute_fov = true;
         
         /* Create a player */
         struct Actor *player;
@@ -31,24 +36,32 @@ void engine_update(struct Engine *engine){
         case TCODK_UP :
                 if(!is_wall(engine->map, player->x, player->y - 1)){
                         player->y--;
+                        engine->compute_fov = true;
                 }
                 break;
         case TCODK_DOWN :
                 if(!is_wall(engine->map, player->x, player->y + 1)){
                         player->y++;
+                        engine->compute_fov = true;
                 }
                 break;
         case TCODK_LEFT :
                 if(!is_wall(engine->map, player->x - 1, player->y)){
                         player->x--;
+                        engine->compute_fov = true;
                 }
                 break;
         case TCODK_RIGHT :
                 if(!is_wall(engine->map, player->x + 1, player->y)){
                         player->x++;
+                        engine->compute_fov = true;
                 }
                 break;
         default:break;
+        }
+        if(engine->compute_fov){
+                compute_fov(engine);
+                engine->compute_fov = false;
         }
 }
 
@@ -63,7 +76,9 @@ void engine_render(struct Engine *engine){
         for(iter = (struct Actor **)TCOD_list_begin(engine->actors);
              iter != (struct Actor **)TCOD_list_end(engine->actors);
              iter++){
-                (*iter)->render(*iter);
+                if(is_in_fov(engine->map, (*iter)->x, (*iter)->y)){
+                        (*iter)->render(*iter);
+                }
         }
         
         TCOD_console_flush(NULL); 
