@@ -94,7 +94,6 @@ void init_map(struct Engine *engine, int w, int h){
 
 bool is_wall(struct Map *map, int x, int y){
         return !TCOD_map_is_walkable(map->map, x, y);
-        
 }
 
 bool is_in_fov(struct Map *map, int x, int y){
@@ -111,7 +110,6 @@ bool is_explored(struct Map *map, int x, int y){
 
 void compute_fov(struct Engine *engine){
         TCOD_map_compute_fov(engine->map->map, engine->player->x, engine->player->y, engine->fov_radius, true, FOV_SHADOW);
-        
 }
 
 void map_render(struct Map *map){

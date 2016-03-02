@@ -74,8 +74,8 @@ void engine_render(struct Engine *engine){
         struct Actor **iter;
 
         for(iter = (struct Actor **)TCOD_list_begin(engine->actors);
-             iter != (struct Actor **)TCOD_list_end(engine->actors);
-             iter++){
+            iter != (struct Actor **)TCOD_list_end(engine->actors);
+            iter++){
                 if(is_in_fov(engine->map, (*iter)->x, (*iter)->y)){
                         (*iter)->render(*iter);
                 }

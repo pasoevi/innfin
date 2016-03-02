@@ -12,6 +12,10 @@ struct Tile{
         bool explored;
 };
 
+/* 
+   TODO: Isn't used at the moment. The same functionality is
+   accomplished by the static variables in the function
+*/
 struct BSPTraverse{
 	int room_num;
 	int lastx;
