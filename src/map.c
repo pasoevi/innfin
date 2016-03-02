@@ -2,10 +2,6 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-int ar_length(struct Tile ar[]){
-        return (int)( sizeof(ar) / sizeof(ar[0]));
-}
-
 void dig(struct Map *map, int x1, int y1, int x2, int y2){
         if(x2 < x1){
                 int tmp = x2;
