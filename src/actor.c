@@ -35,6 +35,7 @@ bool move_or_attack(struct Engine *engine, struct Actor *actor, int x, int y){
                         return false;
                 }
         }
+        
         actor->x = x;
         actor->y = y;
         
