@@ -20,7 +20,7 @@ void engine_init(struct Engine **engine, int w, int h, const char *title){
         /* Create a player */
         struct Actor *player;
         init_actor(&player, 40, 25, '@', "player", TCOD_white, render_actor);
-        player->update = actor_update;
+        /* player->update = player_update; */
         (*engine)->player = player;
         
         (*engine)->actors = TCOD_list_new();
@@ -63,7 +63,7 @@ void engine_update(struct Engine *engine){
                      iterator != (struct Actor **)TCOD_list_end(engine->actors);
                      iterator++) {
                         struct Actor *actor = *iterator;
-                        if (actor != player ){
+                        if(actor != player ){
                                 actor->update(engine, actor);
                         }
                 }

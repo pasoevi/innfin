@@ -44,3 +44,8 @@ bool move_or_attack(struct Engine *engine, struct Actor *actor, int x, int y){
 void actor_update(struct Engine *engine, struct Actor *actor){
         printf("The %s growls\n", actor->name);
 }
+
+/* Not used yet */
+void player_update(struct Engine *engine, struct Actor *actor){
+        printf("The %s plays\n", actor->name);
+}
