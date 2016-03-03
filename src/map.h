@@ -8,6 +8,8 @@
 static const int ROOM_MAX_SIZE = 12;
 static const int ROOM_MIN_SIZE = 6;
 
+struct Engine;
+
 struct Tile{
         bool explored;
 };
@@ -35,7 +37,9 @@ struct Map{
 
 /* void init_map(struct Engine *engine, int w, int h); */
 void map_render(struct Map *map);
+void add_monster(struct Engine* engine, int x, int y);
 bool is_wall(struct Map *map, int x, int y);
+bool can_walk(struct Engine *engine, int x, int y);
 void set_wall(struct Map *map, int x, int y);
 
 #endif

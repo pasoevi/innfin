@@ -1,4 +1,5 @@
 #include <stdlib.h>
+#include <stdio.h>
 #include "engine.h"
 
 extern void compute_fov(struct Engine *engine);
@@ -14,10 +15,12 @@ void engine_init(struct Engine **engine, int w, int h, const char *title){
 
         (*engine)->fov_radius = 10;
         (*engine)->compute_fov = true;
+        (*engine)->game_status = STARTUP;
         
         /* Create a player */
         struct Actor *player;
-        init_actor(&player, 40, 25, '@', TCOD_white, render_actor);
+        init_actor(&player, 40, 25, '@', "player", TCOD_white, render_actor);
+        player->update = actor_update;
         (*engine)->player = player;
         
         (*engine)->actors = TCOD_list_new();
@@ -30,38 +33,40 @@ void engine_init(struct Engine **engine, int w, int h, const char *title){
 void engine_update(struct Engine *engine){
         struct Actor *player = engine->player;
         
-        TCOD_key_t key = TCOD_console_check_for_keypress(TCOD_EVENT_KEY_PRESS);
-                
+        if(engine->game_status == STARTUP ){
+                compute_fov(engine);
+        }
+        engine->game_status=IDLE;
+        
+        TCOD_key_t key;
+        TCOD_sys_check_for_event(TCOD_EVENT_KEY_PRESS, &key, NULL);
+
+        int dx=0,dy=0;
         switch(key.vk) {
-        case TCODK_UP :
-                if(!is_wall(engine->map, player->x, player->y - 1)){
-                        player->y--;
-                        engine->compute_fov = true;
-                }
-                break;
-        case TCODK_DOWN :
-                if(!is_wall(engine->map, player->x, player->y + 1)){
-                        player->y++;
-                        engine->compute_fov = true;
-                }
-                break;
-        case TCODK_LEFT :
-                if(!is_wall(engine->map, player->x - 1, player->y)){
-                        player->x--;
-                        engine->compute_fov = true;
-                }
-                break;
-        case TCODK_RIGHT :
-                if(!is_wall(engine->map, player->x + 1, player->y)){
-                        player->x++;
-                        engine->compute_fov = true;
-                }
-                break;
+        case TCODK_UP : dy= -1; break;
+        case TCODK_DOWN : dy = 1; break;
+        case TCODK_LEFT : dx = -1; break;
+        case TCODK_RIGHT : dx= 1; break;
         default:break;
         }
-        if(engine->compute_fov){
-                compute_fov(engine);
-                engine->compute_fov = false;
+        
+        if ( dx != 0 || dy != 0 ) {
+                engine->game_status= NEW_TURN;
+                if(move_or_attack(engine, player, engine->player->x + dx, player->y + dy)){
+                        compute_fov(engine);
+                }
+        }
+
+        if (engine->game_status == NEW_TURN) {
+                struct Actor **iterator;
+                for (iterator = (struct Actor **)TCOD_list_begin(engine->actors);
+                     iterator != (struct Actor **)TCOD_list_end(engine->actors);
+                     iterator++) {
+                        struct Actor *actor = *iterator;
+                        if (actor != player ){
+                                actor->update(engine, actor);
+                        }
+                }
         }
 }
 

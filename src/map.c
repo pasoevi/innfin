@@ -2,6 +2,8 @@
 #include <stdlib.h>
 #include <stdio.h>
 
+static const int MAX_ROOM_MONSTERS = 3;
+
 void dig(struct Map *map, int x1, int y1, int x2, int y2){
         if(x2 < x1){
                 int tmp = x2;
@@ -32,12 +34,17 @@ void create_room(struct Engine *engine, bool first, int x1, int y1, int x2, int 
                 engine->player->y = (y1 + y2) / 2;
         }else{
                 TCOD_random_t *rng = TCOD_random_get_instance();
-                if (TCOD_random_get_int(rng, 0, 3) == 0) {
-                        struct Actor *actor;
-                        init_actor(&actor, (x1+x2)/2,(y1+y2)/2,'@', TCOD_yellow, render_actor);
-                        TCOD_list_push(engine->actors, actor);
+                int num_monsters = TCOD_random_get_int(rng, 0, MAX_ROOM_MONSTERS);
+                while(num_monsters > 0) {
+                        int x = TCOD_random_get_int(rng, x1, x2);
+                        int y = TCOD_random_get_int(rng, y1, y2);
+                        if(can_walk(engine, x, y)){
+                                add_monster(engine, x, y);
+                        }
+                        num_monsters--;
                 }
         }
+
 }
 
 bool visit_node(TCOD_bsp_t *node, void *user_data) {
@@ -96,6 +103,23 @@ bool is_wall(struct Map *map, int x, int y){
         return !TCOD_map_is_walkable(map->map, x, y);
 }
 
+bool can_walk(struct Engine *engine, int x, int y){
+        if(is_wall(engine->map, x, y)){
+                return false;
+        }
+
+        struct Actor **actor;
+        for(actor = (struct Actor **)TCOD_list_begin(engine->actors);
+            actor != (struct Actor **)TCOD_list_end(engine->actors);
+            actor++){
+                if((*actor)->x == x && (*actor)->y == y){
+                        /* There is an actor there, cat't walk */
+                        return false;
+                }
+        }
+        return true;
+}
+
 bool is_in_fov(struct Map *map, int x, int y){
         if(TCOD_map_is_in_fov(map->map, x, y)){
                 map->tiles[x+y*(map->w)].explored = true;
@@ -110,6 +134,19 @@ bool is_explored(struct Map *map, int x, int y){
 
 void compute_fov(struct Engine *engine){
         TCOD_map_compute_fov(engine->map->map, engine->player->x, engine->player->y, engine->fov_radius, true, FOV_SHADOW);
+}
+
+void add_monster(struct Engine* engine, int x, int y){
+        TCOD_random_t *rng = TCOD_random_get_instance();
+        struct Actor *actor;
+        if (TCOD_random_get_int(rng, 0, 100) < 80) {
+                /* Create an orc */
+                init_actor(&actor, x, y,'o', "orc", TCOD_desaturated_green, render_actor);
+        }else{
+                /* Create an orc */
+                init_actor(&actor, x, y, 'T', "troll", TCOD_darker_green, render_actor);
+        }
+        TCOD_list_push(engine->actors, actor);
 }
 
 void map_render(struct Map *map){
