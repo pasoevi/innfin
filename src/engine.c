@@ -5,6 +5,7 @@
 extern void compute_fov(struct Engine *engine);
 extern void init_map(struct Engine *engine, int w, int h);
 extern bool is_in_fov(struct Map *map, int x, int y);
+extern void clean(void);
 
 void engine_init(struct Engine **engine, int w, int h, const char *title){
         TCOD_console_init_root(w, h, title, false, TCOD_RENDERER_OPENGL);
@@ -47,6 +48,7 @@ void engine_update(struct Engine *engine){
         case TCODK_DOWN : dy = 1; break;
         case TCODK_LEFT : dx = -1; break;
         case TCODK_RIGHT : dx= 1; break;
+	case TCODK_ESCAPE: clean(); break;
         default:break;
         }
         

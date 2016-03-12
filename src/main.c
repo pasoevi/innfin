@@ -15,6 +15,15 @@ void init(void){
         engine_init(&engine, WINDOW_W, WINDOW_H, PROGRAM_NAME);
 }
 
+void clean(){
+	/* free(engine->map->tiles); */
+        TCOD_bsp_delete(engine->map->bsp);
+        free(engine->map);
+        free(engine->player);
+	exit(EXIT_SUCCESS);
+        /* TODO: free actors list! */	
+}
+
 int main() {
         init();
 
@@ -23,11 +32,7 @@ int main() {
                 engine->render(engine);
         }
 
-        /* free(engine->map->tiles); */
-        TCOD_bsp_delete(engine->map->bsp);
-        free(engine->map);
-        free(engine->player);
-        /* TODO: free actors list! */
-        
+	clean();
+
         return 0;
 }
