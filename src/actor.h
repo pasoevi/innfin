@@ -6,6 +6,7 @@
 #include "map.h"
 
 struct Engine;
+struct Actor;
 
 struct Attacker{
         float power;
