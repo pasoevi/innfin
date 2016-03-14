@@ -50,3 +50,10 @@ void actor_update(struct Engine *engine, struct Actor *actor){
 void player_update(struct Engine *engine, struct Actor *actor){
         printf("The %s plays\n", actor->name);
 }
+
+bool is_dead(struct Actor *actor){
+	if(actor->destructible != NULL){
+		return actor->destructible->hp <= 0;
+	}
+	return false;
+}

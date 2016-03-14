@@ -112,8 +112,9 @@ bool can_walk(struct Engine *engine, int x, int y){
         for(actor = (struct Actor **)TCOD_list_begin(engine->actors);
             actor != (struct Actor **)TCOD_list_end(engine->actors);
             actor++){
-                if((*actor)->x == x && (*actor)->y == y){
-                        /* There is an actor there, cat't walk */
+                if((*actor)->blocks && (*actor)->x == x && (*actor)->y == y){
+                        /* There is a blocking actor there, cat't
+			   walk */
                         return false;
                 }
         }

@@ -27,6 +27,7 @@ struct Actor{
         char ch;
         bool blocks; /* can we walk on this actor? */
         struct Attacker *attacker;
+	struct Destructible *destructible;
         const char *name;
         TCOD_color_t col;
         void (*update)(struct Engine *engine, struct Actor *actor);
@@ -39,4 +40,5 @@ void player_update(struct Engine *engine, struct Actor *actor);
 void actor_update(struct Engine *engine, struct Actor *actor);
 bool move_or_attack(struct Engine *engine, struct Actor *actor, int x, int y);
 void attack(struct Actor *dealer, struct Actor *target);
+bool is_dead(struct Actor *actor);
 #endif
