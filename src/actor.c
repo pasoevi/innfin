@@ -57,3 +57,26 @@ bool is_dead(struct Actor *actor){
 	}
 	return false;
 }
+
+float take_damage(struct Actor *target, float damage){
+	damage -= target->destructible->defence;
+	if(damage > 0){
+		target->destructible->hp -= damage;
+		if(target->destructible->hp <= 0){
+			die(target);
+		}
+	}else{
+		damage = 0;
+	}
+	return damage;
+}
+
+/* Transform the actor into a rotting corpse */
+void die(struct Actor *actor){
+	actor->ch = '%';
+	actor->col = TCOD_dark_red;
+	actor->name = actor->destructible->corpse_name;
+	actor->blocks = false;
+	/* make sure corpses are drawn before living actors */
+	/* engine.sendToBack(actor); */
+}

@@ -41,4 +41,6 @@ void actor_update(struct Engine *engine, struct Actor *actor);
 bool move_or_attack(struct Engine *engine, struct Actor *actor, int x, int y);
 void attack(struct Actor *dealer, struct Actor *target);
 bool is_dead(struct Actor *actor);
+float take_damage(struct Actor *target, float damage);
+void die(struct Actor *actor);
 #endif
