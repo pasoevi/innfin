@@ -10,7 +10,7 @@ struct Actor;
 
 struct Attacker{
         float power;
-        void (*attack)(struct Actor *dealer, struct Actor *target);
+        void (*attack)(struct Engine *engine, struct Actor *dealer, struct Actor *target);
 };
 
 struct Destructible{
@@ -18,8 +18,8 @@ struct Destructible{
         float hp; /* current health points */
         float defence; /* hit points deflected */
         const char *corpse_name; /* the actor's name once dead/destroyed */
-        void (*take_damage)(struct Actor *target, float damage);
-        void (*die)(struct Actor *actor);
+        float (*take_damage)(struct Engine *engine, struct Actor *target, float damage);
+        void (*die)(struct Engine *engine, struct Actor *actor);
 };
 
 struct Actor{
@@ -40,8 +40,8 @@ void render_actor(struct Actor *actor);
 void player_update(struct Engine *engine, struct Actor *actor);
 void actor_update(struct Engine *engine, struct Actor *actor);
 bool move_or_attack(struct Engine *engine, struct Actor *actor, int x, int y);
-void attack(struct Actor *dealer, struct Actor *target);
+void attack(struct Engine *engine, struct Actor *dealer, struct Actor *target);
 bool is_dead(struct Actor *actor);
-float take_damage(struct Actor *target, float damage);
-void die(struct Actor *actor);
+float take_damage(struct Engine *engine, struct Actor *target, float damage);
+void die(struct Engine *engine, struct Actor *actor);
 #endif

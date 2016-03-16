@@ -7,6 +7,11 @@ extern void init_map(struct Engine *engine, int w, int h);
 extern bool is_in_fov(struct Map *map, int x, int y);
 extern void clean(void);
 
+void send_to_back(struct Engine *engine, struct Actor *actor){
+        TCOD_list_remove(engine->actors, actor);
+        TCOD_list_insert_before(engine->actors, actor, 0);
+}
+
 void engine_init(struct Engine **engine, int w, int h, const char *title){
         TCOD_console_init_root(w, h, title, false, TCOD_RENDERER_OPENGL);
 
@@ -21,7 +26,7 @@ void engine_init(struct Engine **engine, int w, int h, const char *title){
         /* Create a player */
         struct Actor *player;
         init_actor(&player, 40, 25, '@', "player", TCOD_white, render_actor);
-        /* player->update = player_update; */
+        player->update = player_update;
         (*engine)->player = player;
         
         (*engine)->actors = TCOD_list_new();
@@ -37,35 +42,17 @@ void engine_update(struct Engine *engine){
         if(engine->game_status == STARTUP ){
                 compute_fov(engine);
         }
-        engine->game_status=IDLE;
+        engine->game_status= IDLE ;
         
-        TCOD_key_t key;
-        TCOD_sys_check_for_event(TCOD_EVENT_KEY_PRESS, &key, NULL);
-
-        int dx=0,dy=0;
-        switch(key.vk) {
-        case TCODK_UP : dy= -1; break;
-        case TCODK_DOWN : dy = 1; break;
-        case TCODK_LEFT : dx = -1; break;
-        case TCODK_RIGHT : dx= 1; break;
-	case TCODK_ESCAPE: clean(); break;
-        default:break;
-        }
-        
-        if ( dx != 0 || dy != 0 ) {
-                engine->game_status= NEW_TURN;
-                if(move_or_attack(engine, player, engine->player->x + dx, player->y + dy)){
-                        compute_fov(engine);
-                }
-        }
-
+        TCOD_sys_check_for_event(TCOD_EVENT_KEY_PRESS, &(engine->key), NULL);
+        player->update(engine, player);
         if (engine->game_status == NEW_TURN) {
                 struct Actor **iterator;
                 for (iterator = (struct Actor **)TCOD_list_begin(engine->actors);
                      iterator != (struct Actor **)TCOD_list_end(engine->actors);
                      iterator++) {
                         struct Actor *actor = *iterator;
-                        if(actor != player ){
+                        if(actor != player ){ 
                                 actor->update(engine, actor);
                         }
                 }

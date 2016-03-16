@@ -1,0 +1,102 @@
+
+src/actor.c,248
+void init_actor(7,108
+void render_actor(20,533
+bool move_or_attack(25,724
+void actor_update(51,1654
+void player_update(75,2370
+bool is_dead(79,2484
+float take_damage(86,2613
+void die(100,2914
+void player_die(110,3205
+void attack(115,3296
+
+src/actor.h,749
+#define ACTOR_H2,16
+struct Attacker{Attacker11,122
+        float power;12,139
+        void (*attack)attack13,160
+struct Destructible{Destructible16,232
+        float max_hp;17,253
+        float hp;18,303
+        float defence;19,349
+        const char *corpse_name;corpse_name20,399
+        void (*take_damage)take_damage21,475
+        void (*die)die22,540
+struct Actor{Actor25,586
+        int x;26,600
+        int y;27,615
+        char ch;28,630
+        bool blocks;29,647
+        struct Attacker *attacker;attacker30,701
+	struct Destructible *destructible;destructible31,736
+        const char *name;name32,772
+        TCOD_color_t col;33,798
+        void (*update)update34,824
+        void (*render)render35,892
+
+src/engine.c,81
+void engine_init(10,247
+void engine_update(34,1076
+void engine_render(74,2445
+
+src/engine.h,519
+#define ENGINE_H2,17
+enum GameStatus 8,93
+       STARTUP,9,111
+       IDLE,10,127
+       NEW_TURN,11,140
+       VICTORY,12,157
+       DEFEAT13,173
+struct Engine{Engine16,191
+        TCOD_list_t *actors;actors17,206
+        struct Actor *player;player18,235
+        struct Map *map;map19,265
+        int fov_radius;20,290
+        bool compute_fov;21,314
+        TCOD_key_t key;22,340
+        enum GameStatus game_status;23,364
+        void (*update)update24,401
+        void (*render)render25,442
+
+src/main.c,166
+#define PROGRAM_NAME 5,62
+        WINDOW_W 8,102
+        WINDOW_H 9,125
+struct Engine *engine;engine12,151
+void init(14,175
+void clean(18,259
+int main(27,469
+
+src/map.c,308
+static const int MAX_ROOM_MONSTERS 5,57
+void dig(7,98
+void create_room(29,705
+bool visit_node(50,1554
+void init_map(81,2762
+bool is_wall(102,3519
+bool can_walk(106,3621
+bool is_in_fov(124,4193
+bool is_explored(132,4410
+void compute_fov(136,4512
+void add_monster(140,4680
+void map_render(153,5201
+
+src/map.h,500
+#define MAP_H2,14
+static const int ROOM_MAX_SIZE 8,92
+static const int ROOM_MIN_SIZE 9,129
+struct Tile{Tile13,182
+        bool explored;14,195
+struct BSPTraverse{BSPTraverse21,346
+	int room_num;22,366
+	int lastx;23,381
+	int lasty;24,393
+struct Map{Map28,412
+        int w;29,424
+        int h;30,439
+        void (*render)render31,454
+        struct Tile tiles[tiles32,492
+        TCOD_bsp_t *bsp;bsp33,528
+        TCOD_map_t map;34,553
+	struct BSPTraverse bsp_traverse;35,577
