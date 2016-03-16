@@ -18,7 +18,8 @@ struct Destructible{
         float hp; /* current health points */
         float defence; /* hit points deflected */
         const char *corpse_name; /* the actor's name once dead/destroyed */
-        void (*attack)(struct Actor *dealer, struct Actor *target);
+        void (*take_damage)(struct Actor *target, float damage);
+        void (*die)(struct Actor *actor);
 };
 
 struct Actor{

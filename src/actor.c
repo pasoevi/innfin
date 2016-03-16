@@ -43,6 +43,11 @@ bool move_or_attack(struct Engine *engine, struct Actor *actor, int x, int y){
 }
 
 void actor_update(struct Engine *engine, struct Actor *actor){
+        if(actor->destructible && is_dead(actor)){
+                return;
+        }
+        int dx = 0, dy = 0;
+        
         printf("The %s growls\n", actor->name);
 }
 
@@ -79,4 +84,26 @@ void die(struct Actor *actor){
 	actor->blocks = false;
 	/* make sure corpses are drawn before living actors */
 	/* engine.sendToBack(actor); */
+}
+
+/* Transform the actor into a rotting corpse */
+void player_die(struct Actor *actor){
+        printf("You die.\n");
+        die(actor);
+}
+
+void attack(struct Actor *dealer, struct Actor *target){
+        float power = dealer->attacker->power;
+        float defence = target->destructible->defence;
+        if(target->destructible && !is_dead(target)){
+                if(power - defence > 0){
+                        printf("%s attacks %s for %f hit points.\n", dealer->name, target->name,
+                               power - defence);
+                }else{
+                        printf("%s attacks %s but it has no effect!\n", dealer->name, target->name);            
+                }
+                target->destructible->take_damage(target, power);
+        }else{
+                printf("%s attacks %s in vain.\n", dealer->name, target->name);
+        }
 }
