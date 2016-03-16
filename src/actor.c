@@ -64,9 +64,6 @@ bool move_or_attack(struct Engine *engine, struct Actor *actor, int targetx, int
                    (*iter)->x == targetx && (*iter)->y == targety){
                         /* There is an actor there, cat't walk */
                         actor->attacker->attack(engine, actor, *iter);
-                        printf("The %s laughs at your puny efforts to attack him!\n",
-                               (*iter)->name);
-                        
                         return false;
                 }
         }
