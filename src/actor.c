@@ -170,15 +170,15 @@ void make_orc(struct Actor **actor, int x, int y){
         (*actor)->update = monster_update;
         (*actor)->move_or_attack = monster_move_or_attack;
 
-        (*actor)->attacker->power = 10;
+        (*actor)->attacker->power = 5;
         (*actor)->attacker->attack = attack;
 
         (*actor)->destructible->die = monster_die;
-        (*actor)->destructible->defence = 4;
+        (*actor)->destructible->defence = 2;
         (*actor)->destructible->corpse_name = "dead orc";
         (*actor)->destructible->take_damage = take_damage;
-        (*actor)->destructible->max_hp = 40;
-        (*actor)->destructible->hp = 40;
+        (*actor)->destructible->max_hp = 15;
+        (*actor)->destructible->hp = (*actor)->destructible->max_hp;
         (*actor)->destructible->defence = 2;
 }
 
@@ -188,15 +188,15 @@ void make_troll(struct Actor **actor, int x, int y){
         (*actor)->update = monster_update;
         (*actor)->move_or_attack = monster_move_or_attack;
 
-        (*actor)->attacker->power = 10;
+        (*actor)->attacker->power = 7;
         (*actor)->attacker->attack = attack;
 
         (*actor)->destructible->die = monster_die;
-        (*actor)->destructible->defence = 4;
+        (*actor)->destructible->defence = 3;
         (*actor)->destructible->corpse_name = "troll carcass";
         (*actor)->destructible->take_damage = take_damage;
-        (*actor)->destructible->max_hp = 45;
-        (*actor)->destructible->hp = 45;
+        (*actor)->destructible->max_hp = 20;
+        (*actor)->destructible->hp = (*actor)->destructible->max_hp;
         (*actor)->destructible->defence = 3;
 }
 
