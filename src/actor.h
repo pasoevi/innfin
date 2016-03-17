@@ -31,6 +31,7 @@ struct Actor{
 	struct Destructible *destructible;
         const char *name;
         TCOD_color_t col;
+        bool (*move_or_attack)(struct Engine *engine, struct Actor *actor, int targetx, int targety);
         void (*update)(struct Engine *engine, struct Actor *actor);
         void (*render)(struct Actor *actor);
 };
@@ -39,7 +40,8 @@ void init_actor(struct Actor **actor, int w, int h, int ch, const char *name, TC
 void render_actor(struct Actor *actor);
 void player_update(struct Engine *engine, struct Actor *actor);
 void actor_update(struct Engine *engine, struct Actor *actor);
-bool move_or_attack(struct Engine *engine, struct Actor *actor, int x, int y);
+bool player_move_or_attack(struct Engine *engine, struct Actor *actor, int x, int y);
+bool monster_move_or_attack(struct Engine *engine, struct Actor *actor, int x, int y);
 void attack(struct Engine *engine, struct Actor *dealer, struct Actor *target);
 bool is_dead(struct Actor *actor);
 float take_damage(struct Engine *engine, struct Actor *target, float damage);

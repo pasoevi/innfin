@@ -39,6 +39,7 @@ struct Map{
 void map_render(struct Map *map);
 void add_monster(struct Engine* engine, int x, int y);
 bool is_wall(struct Map *map, int x, int y);
+bool is_in_fov(struct Map *map, int x, int y);
 bool can_walk(struct Engine *engine, int x, int y);
 void set_wall(struct Map *map, int x, int y);
 

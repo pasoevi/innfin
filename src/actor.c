@@ -28,6 +28,7 @@ void init_actor(struct Actor **actor, int x, int y, int ch, const char *name,
         (*actor)->col = col;
         (*actor)->render = render;
         (*actor)->update = actor_update;
+        (*actor)->move_or_attack = player_move_or_attack;
 
         /* Init attacker */
         (*actor)->attacker = malloc(sizeof(struct Attacker));
@@ -42,15 +43,18 @@ void init_actor(struct Actor **actor, int x, int y, int ch, const char *name,
         (*actor)->destructible->corpse_name = "your cadaver";
         (*actor)->destructible->take_damage = take_damage;
         (*actor)->destructible->die = die;
-        
-}
+ }
 
 void render_actor(struct Actor *actor){
         TCOD_console_set_char(NULL, actor->x, actor->y, actor->ch);
         TCOD_console_set_char_foreground(NULL, actor->x, actor->y, actor->col);
 }
 
-bool move_or_attack(struct Engine *engine, struct Actor *actor, int targetx, int targety){
+bool monster_move_or_attack(struct Engine *engine, struct Actor *actor, int targetx, int targety){
+        return true;
+}
+
+bool player_move_or_attack(struct Engine *engine, struct Actor *actor, int targetx, int targety){
         if(is_wall(engine->map, targetx, targety)){
                 return false;
         }
@@ -88,6 +92,9 @@ void actor_update(struct Engine *engine, struct Actor *actor){
         if(actor->destructible && is_dead(actor)){
                 return;
         }
+
+        if(is_in_fov(engine->map, actor->x, actor->y)){
+        }
 }
 
 /* Not used yet */
@@ -103,7 +110,7 @@ void player_update(struct Engine *engine, struct Actor *actor){
         }
         if (dx != 0 || dy != 0) {
                 engine->game_status= NEW_TURN;
-                if (move_or_attack(engine, actor, actor->x + dx, actor->y + dy)) {
+                if(actor->move_or_attack(engine, actor, actor->x + dx, actor->y + dy)) {
                         compute_fov(engine);
                 }
         }
@@ -129,8 +136,11 @@ void die(struct Engine *engine, struct Actor *actor){
 
 /* Transform the actor into a rotting corpse */
 void player_die(struct Engine *engine, struct Actor *actor){
+        /* Debug message */
         printf("You die.\n");
+        /* Call the common die function */
         die(engine, actor);
+        engine->game_status = DEFEAT;
 }
 
 void attack(struct Engine *engine, struct Actor *dealer, struct Actor *target){
