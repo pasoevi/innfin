@@ -44,7 +44,7 @@ struct Actor{
         void (*render)(struct Actor *actor);
 };
 
-void init_actor(struct Actor **actor, int w, int h, int ch, const char *name, TCOD_color_t col, void (*render)(struct Actor *));
+/* void init_actor(struct Actor **actor, int w, int h, int ch, const char *name, TCOD_color_t col, void (*render)(struct Actor *)); */
 void make_orc(struct Actor **actor, int x, int y);
 void make_troll(struct Actor **actor, int x, int y);
 void make_kobold(struct Actor **actor, int x, int y);
