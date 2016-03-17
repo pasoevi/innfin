@@ -12,6 +12,8 @@ struct Actor;
 
 struct AI{
 	int move_count; /* allow monsters to track the player */
+        void (*update)(struct Engine *engine, struct Actor *actor);
+        bool (*move_or_attack)(struct Engine *engine, struct Actor *actor, int targetx, int targety);
 };
 
 struct Attacker{
@@ -38,7 +40,6 @@ struct Actor{
 	struct AI *ai;
         const char *name;
         TCOD_color_t col;
-        bool (*move_or_attack)(struct Engine *engine, struct Actor *actor, int targetx, int targety);
         void (*update)(struct Engine *engine, struct Actor *actor);
         void (*render)(struct Actor *actor);
 };

@@ -84,7 +84,7 @@ void make_player(struct Actor **actor, int x, int y){
         init_actor(actor, x, y, '@', "you", TCOD_white, render_actor);
 
         (*actor)->update = player_update;
-        (*actor)->move_or_attack = player_move_or_attack;
+        (*actor)->ai->move_or_attack = player_move_or_attack;
 
         (*actor)->attacker->power = 10;
         (*actor)->attacker->attack = attack;
@@ -149,7 +149,7 @@ void player_update(struct Engine *engine, struct Actor *actor){
 
         if (dx != 0 || dy != 0) {
                 engine->game_status= NEW_TURN;
-                if(actor->move_or_attack(engine, actor, actor->x + dx, actor->y + dy)) {
+                if(actor->ai->move_or_attack(engine, actor, actor->x + dx, actor->y + dy)) {
                         compute_fov(engine);
                 }
         }
@@ -168,7 +168,7 @@ void make_orc(struct Actor **actor, int x, int y){
         init_actor(actor, x, y, 'o', "orc", TCOD_desaturated_green, render_actor);
 
         (*actor)->update = monster_update;
-        (*actor)->move_or_attack = monster_move_or_attack;
+        (*actor)->ai->move_or_attack = monster_move_or_attack;
 
         (*actor)->attacker->power = 5;
         (*actor)->attacker->attack = attack;
@@ -186,7 +186,7 @@ void make_troll(struct Actor **actor, int x, int y){
         init_actor(actor, x, y, 'T', "troll", TCOD_darker_green, render_actor);
 
         (*actor)->update = monster_update;
-        (*actor)->move_or_attack = monster_move_or_attack;
+        (*actor)->ai->move_or_attack = monster_move_or_attack;
 
         (*actor)->attacker->power = 7;
         (*actor)->attacker->attack = attack;
@@ -227,6 +227,16 @@ bool monster_move_or_attack(struct Engine *engine, struct Actor *actor, int targ
         return true;
 }
 
+/* 
+The common update function that calls the intelligent update function
+if present
+*/
+void common_update(struct Engine *engine, struct Actor *actor){
+        if(actor->ai){
+                actor->ai->update(engine, actor);
+        }
+}
+
 void monster_update(struct Engine *engine, struct Actor *actor){
 	/* Check if the agent is alive */
         if(actor->destructible && is_dead(actor)){
@@ -241,7 +251,7 @@ void monster_update(struct Engine *engine, struct Actor *actor){
 	}
 	
 	if(actor->ai->move_count > 0){
-		actor->move_or_attack(engine, actor, engine->player->x, engine->player->y);
+		actor->ai->move_or_attack(engine, actor, engine->player->x, engine->player->y);
 	}
 }
 
