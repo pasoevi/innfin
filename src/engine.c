@@ -53,7 +53,7 @@ void engine_update(struct Engine *engine){
                      iterator++) {
                         struct Actor *actor = *iterator;
                         if(actor != player ){ 
-                                /* actor->update(engine, actor); */
+                                actor->update(engine, actor);
                         }
                 }
         }

@@ -9,7 +9,7 @@ float take_damage(struct Engine *engine, struct Actor *target, float damage){
 	if(damage > 0){
 		target->destructible->hp -= damage;
 		if(target->destructible->hp <= 0){
-			die(engine, target);
+			target->destructible->die(engine, target);
 		}
 	}else{
 		damage = 0;
