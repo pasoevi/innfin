@@ -6,7 +6,6 @@
 extern void compute_fov(struct engine *engine);
 
 /*** Common functions ***/
-
 float take_damage(struct engine *engine, struct actor *target, float damage){
         /* Reduce the damage by the fraction that the target can deflect */
 	damage -= target->destructible->defence;
@@ -100,7 +99,7 @@ void die(struct engine *engine, struct actor *actor){
                 
 }
 
-/* Player functions */
+/*** Player functions ***/
 void make_player(struct actor **actor, int x, int y){
         init_actor(actor, x, y, '@', "you", TCOD_white, render_actor);
 
@@ -186,7 +185,7 @@ void player_die(struct engine *engine, struct actor *actor){
         engine->game_status = DEFEAT;
 }
 
-/* Monster functions */
+/*** Monster functions ***/
 void make_orc(struct actor **actor, int x, int y){
         init_actor(actor, x, y, 'o', "orc", TCOD_desaturated_green, render_actor);
 
