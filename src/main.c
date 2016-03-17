@@ -4,7 +4,7 @@
 
 #define PROGRAM_NAME "Mysteries"
 
-struct Engine *engine;
+struct engine *engine;
 
 void init(void){
         engine_init(&engine, WINDOW_W, WINDOW_H, PROGRAM_NAME);

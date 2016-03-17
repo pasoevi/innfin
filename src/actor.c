@@ -3,7 +3,7 @@
 #include <stdio.h>
 #include <math.h>
 
-extern void compute_fov(struct Engine *engine);
+extern void compute_fov(struct engine *engine);
 
 /* Common functions */
 
@@ -11,14 +11,14 @@ extern void compute_fov(struct Engine *engine);
 The common update function that calls the intelligent update function
 if present
 */
-void common_update(struct Engine *engine, struct Actor *actor){
+void common_update(struct engine *engine, struct actor *actor){
         if(actor->ai){
                 actor->ai->update(engine, actor);
         }
 }
 
 
-float take_damage(struct Engine *engine, struct Actor *target, float damage){
+float take_damage(struct engine *engine, struct actor *target, float damage){
 	damage -= target->destructible->defence;
 	if(damage > 0){
 		target->destructible->hp -= damage;
@@ -31,10 +31,10 @@ float take_damage(struct Engine *engine, struct Actor *target, float damage){
 	return damage;
 }
 
-void init_actor(struct Actor **actor, int x, int y, int ch, const char *name,
+void init_actor(struct actor **actor, int x, int y, int ch, const char *name,
                 TCOD_color_t col,
-                void (*render)(struct Actor *)){
-        struct Actor *tmp = malloc(sizeof (struct Actor));
+                void (*render)(struct actor *)){
+        struct actor *tmp = malloc(sizeof (struct actor));
         
         tmp->x = x;
         tmp->y = y;
@@ -45,23 +45,23 @@ void init_actor(struct Actor **actor, int x, int y, int ch, const char *name,
         tmp->update = common_update;
         
         /* Init attacker */
-        tmp->attacker = malloc(sizeof(struct Attacker));
+        tmp->attacker = malloc(sizeof(struct attacker));
         
         /* Init destructible */
-        tmp->destructible = malloc(sizeof(struct Destructible));
+        tmp->destructible = malloc(sizeof(struct destructible));
 
 	/* Artificial intelligence */
-	tmp->ai = malloc(sizeof(struct AI));
+	tmp->ai = malloc(sizeof(struct ai));
         
         *actor = tmp;
 }
 
-void render_actor(struct Actor *actor){
+void render_actor(struct actor *actor){
         TCOD_console_set_char(NULL, actor->x, actor->y, actor->ch);
         TCOD_console_set_char_foreground(NULL, actor->x, actor->y, actor->col);
 }
 
-void attack(struct Engine *engine, struct Actor *dealer, struct Actor *target){
+void attack(struct engine *engine, struct actor *dealer, struct actor *target){
         float power = dealer->attacker->power;
         float defence = target->destructible->defence;
         if(target->destructible && !is_dead(target)){
@@ -77,7 +77,7 @@ void attack(struct Engine *engine, struct Actor *dealer, struct Actor *target){
         }
 }
 
-bool is_dead(struct Actor *actor){
+bool is_dead(struct actor *actor){
 	if(actor->destructible != NULL){
 		return actor->destructible->hp <= 0;
 	}
@@ -85,7 +85,7 @@ bool is_dead(struct Actor *actor){
 }
 
 /* Transform the actor into a rotting corpse */
-void die(struct Engine *engine, struct Actor *actor){
+void die(struct engine *engine, struct actor *actor){
 	actor->ch = '%';
 	actor->col = TCOD_dark_red;
 	actor->name = actor->destructible->corpse_name;
@@ -96,10 +96,10 @@ void die(struct Engine *engine, struct Actor *actor){
 }
 
 /* Player functions */
-void make_player(struct Actor **actor, int x, int y){
+void make_player(struct actor **actor, int x, int y){
         init_actor(actor, x, y, '@', "you", TCOD_white, render_actor);
 
-        struct Actor *tmp = *actor;
+        struct actor *tmp = *actor;
         
         tmp->ai->update = player_update;
         tmp->ai->move_or_attack = player_move_or_attack;
@@ -116,15 +116,15 @@ void make_player(struct Actor **actor, int x, int y){
         tmp->destructible->defence = 4;
 }
 
-bool player_move_or_attack(struct Engine *engine, struct Actor *actor, int targetx, int targety){
+bool player_move_or_attack(struct engine *engine, struct actor *actor, int targetx, int targety){
         if(is_wall(engine->map, targetx, targety)){
                 return false;
         }
 
         /* Look for actors to attack */
-        struct Actor **iter;
-        for(iter = (struct Actor **)TCOD_list_begin(engine->actors);
-            iter != (struct Actor **)TCOD_list_end(engine->actors);
+        struct actor **iter;
+        for(iter = (struct actor **)TCOD_list_begin(engine->actors);
+            iter != (struct actor **)TCOD_list_end(engine->actors);
             iter++){
                 if((*iter)->destructible && !is_dead(*iter) &&
                    (*iter)->x == targetx && (*iter)->y == targety){
@@ -135,8 +135,8 @@ bool player_move_or_attack(struct Engine *engine, struct Actor *actor, int targe
         }
 
         /* Look for corpses */
-        for(iter = (struct Actor **)TCOD_list_begin(engine->actors);
-            iter != (struct Actor **)TCOD_list_end(engine->actors);
+        for(iter = (struct actor **)TCOD_list_begin(engine->actors);
+            iter != (struct actor **)TCOD_list_end(engine->actors);
             iter++){
                 if((*iter)->destructible && is_dead(*iter) &&
                    (*iter)->x == targetx && (*iter)->y == targety){
@@ -150,7 +150,7 @@ bool player_move_or_attack(struct Engine *engine, struct Actor *actor, int targe
         return true;
 }
 
-void player_update(struct Engine *engine, struct Actor *actor){
+void player_update(struct engine *engine, struct actor *actor){
 	if(actor->destructible && is_dead(actor)){
 		return;
 	}
@@ -174,7 +174,7 @@ void player_update(struct Engine *engine, struct Actor *actor){
 }
 
 /* Transform the actor into a rotting corpse */
-void player_die(struct Engine *engine, struct Actor *actor){
+void player_die(struct engine *engine, struct actor *actor){
         printf("You die.\n");
         /* Call the common die function */
         die(engine, actor);
@@ -182,10 +182,10 @@ void player_die(struct Engine *engine, struct Actor *actor){
 }
 
 /* Monster functions */
-void make_orc(struct Actor **actor, int x, int y){
+void make_orc(struct actor **actor, int x, int y){
         init_actor(actor, x, y, 'o', "orc", TCOD_desaturated_green, render_actor);
 
-        struct Actor *tmp = *actor;
+        struct actor *tmp = *actor;
 
         tmp->ai->update = monster_update;
         tmp->ai->move_or_attack = monster_move_or_attack;
@@ -202,10 +202,10 @@ void make_orc(struct Actor **actor, int x, int y){
         tmp->destructible->defence = 2;
 }
 
-void make_troll(struct Actor **actor, int x, int y){
+void make_troll(struct actor **actor, int x, int y){
         init_actor(actor, x, y, 'T', "troll", TCOD_darker_green, render_actor);
 
-        struct Actor *tmp = *actor;
+        struct actor *tmp = *actor;
         
         tmp->ai->update = monster_update;
         tmp->ai->move_or_attack = monster_move_or_attack;
@@ -222,7 +222,7 @@ void make_troll(struct Actor **actor, int x, int y){
         tmp->destructible->defence = 3;
 }
 
-bool monster_move_or_attack(struct Engine *engine, struct Actor *actor, int targetx, int targety){
+bool monster_move_or_attack(struct engine *engine, struct actor *actor, int targetx, int targety){
         int dx = targetx - actor->x;
         int dy = targety - actor->y;
 	int stepdx = (dx > 0 ? 1 : -1);
@@ -249,7 +249,7 @@ bool monster_move_or_attack(struct Engine *engine, struct Actor *actor, int targ
         return true;
 }
 
-void monster_update(struct Engine *engine, struct Actor *actor){
+void monster_update(struct engine *engine, struct actor *actor){
 	/* Check if the agent is alive */
         if(actor->destructible && is_dead(actor)){
                 return;
@@ -268,7 +268,7 @@ void monster_update(struct Engine *engine, struct Actor *actor){
 }
 
 /* Transform a monster into a rotting corpse */
-void monster_die(struct Engine *engine, struct Actor *actor){
+void monster_die(struct engine *engine, struct actor *actor){
         printf("%s is dead.\n", actor->name);
         /* Call the common die function */
         die(engine, actor);

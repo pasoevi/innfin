@@ -7,57 +7,57 @@
 
 static const int TRACKING_TURNS = 3;
 
-struct Engine;
-struct Actor;
+struct engine;
+struct actor;
 
-struct AI{
+struct ai{
 	int move_count; /* allow monsters to track the player */
-        void (*update)(struct Engine *engine, struct Actor *actor);
-        bool (*move_or_attack)(struct Engine *engine, struct Actor *actor, int targetx, int targety);
+        void (*update)(struct engine *engine, struct actor *actor);
+        bool (*move_or_attack)(struct engine *engine, struct actor *actor, int targetx, int targety);
 };
 
-struct Attacker{
+struct attacker{
         float power;
-        void (*attack)(struct Engine *engine, struct Actor *dealer, struct Actor *target);
+        void (*attack)(struct engine *engine, struct actor *dealer, struct actor *target);
 };
 
-struct Destructible{
+struct destructible{
         float max_hp; /* maximum health points */
         float hp; /* current health points */
         float defence; /* hit points deflected */
         const char *corpse_name; /* the actor's name once dead/destroyed */
-        float (*take_damage)(struct Engine *engine, struct Actor *target, float damage);
-        void (*die)(struct Engine *engine, struct Actor *actor);
+        float (*take_damage)(struct engine *engine, struct actor *target, float damage);
+        void (*die)(struct engine *engine, struct actor *actor);
 };
 
-struct Actor{
+struct actor{
         int x;
         int y;
         char ch;
         bool blocks; /* can we walk on this actor? */
-        struct Attacker *attacker;
-	struct Destructible *destructible;
-	struct AI *ai;
+        struct attacker *attacker;
+	struct destructible *destructible;
+	struct ai *ai;
         const char *name;
         TCOD_color_t col;
-        void (*update)(struct Engine *engine, struct Actor *actor);
-        void (*render)(struct Actor *actor);
+        void (*update)(struct engine *engine, struct actor *actor);
+        void (*render)(struct actor *actor);
 };
 
-/* void init_actor(struct Actor **actor, int w, int h, int ch, const char *name, TCOD_color_t col, void (*render)(struct Actor *)); */
-void make_orc(struct Actor **actor, int x, int y);
-void make_troll(struct Actor **actor, int x, int y);
-void make_kobold(struct Actor **actor, int x, int y);
-void make_player(struct Actor **player, int x, int y);
-void render_actor(struct Actor *actor);
-void player_update(struct Engine *engine, struct Actor *actor);
-void monster_update(struct Engine *engine, struct Actor *actor);
-bool player_move_or_attack(struct Engine *engine, struct Actor *actor, int x, int y);
-bool monster_move_or_attack(struct Engine *engine, struct Actor *actor, int x, int y);
-void attack(struct Engine *engine, struct Actor *dealer, struct Actor *target);
-bool is_dead(struct Actor *actor);
-float take_damage(struct Engine *engine, struct Actor *target, float damage);
-void die(struct Engine *engine, struct Actor *actor);
-void player_die(struct Engine *engine, struct Actor *actor);
-void monster_die(struct Engine *engine, struct Actor *actor);
+/* void init_actor(struct actor **actor, int w, int h, int ch, const char *name, TCOD_color_t col, void (*render)(struct actor *)); */
+void make_orc(struct actor **actor, int x, int y);
+void make_troll(struct actor **actor, int x, int y);
+void make_kobold(struct actor **actor, int x, int y);
+void make_player(struct actor **player, int x, int y);
+void render_actor(struct actor *actor);
+void player_update(struct engine *engine, struct actor *actor);
+void monster_update(struct engine *engine, struct actor *actor);
+bool player_move_or_attack(struct engine *engine, struct actor *actor, int x, int y);
+bool monster_move_or_attack(struct engine *engine, struct actor *actor, int x, int y);
+void attack(struct engine *engine, struct actor *dealer, struct actor *target);
+bool is_dead(struct actor *actor);
+float take_damage(struct engine *engine, struct actor *target, float damage);
+void die(struct engine *engine, struct actor *actor);
+void player_die(struct engine *engine, struct actor *actor);
+void monster_die(struct engine *engine, struct actor *actor);
 #endif

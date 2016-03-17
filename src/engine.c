@@ -2,20 +2,20 @@
 #include <stdio.h>
 #include "engine.h"
 
-extern void compute_fov(struct Engine *engine);
-extern void init_map(struct Engine *engine, int w, int h);
-extern bool is_in_fov(struct Map *map, int x, int y);
+extern void compute_fov(struct engine *engine);
+extern void init_map(struct engine *engine, int w, int h);
+extern bool is_in_fov(struct map *map, int x, int y);
 extern void clean(void);
 
-void send_to_back(struct Engine *engine, struct Actor *actor){
+void send_to_back(struct engine *engine, struct actor *actor){
         TCOD_list_remove(engine->actors, actor);
         TCOD_list_insert_before(engine->actors, actor, 0);
 }
 
-void engine_init(struct Engine **engine, int w, int h, const char *title){
+void engine_init(struct engine **engine, int w, int h, const char *title){
         TCOD_console_init_root(w, h, title, false, TCOD_RENDERER_OPENGL);
 
-        *engine = malloc(sizeof (struct Engine));
+        *engine = malloc(sizeof (struct engine));
         (*engine)->update = engine_update;
         (*engine)->render = engine_render;
 
@@ -24,7 +24,7 @@ void engine_init(struct Engine **engine, int w, int h, const char *title){
         (*engine)->game_status = STARTUP;
         
         /* Create a player */
-        struct Actor *player;
+        struct actor *player;
         make_player(&player, 40, 25);
         player->update = player_update;
         (*engine)->player = player;
@@ -36,8 +36,8 @@ void engine_init(struct Engine **engine, int w, int h, const char *title){
         init_map(*engine, 80, 45);
 }
 
-void engine_update(struct Engine *engine){
-        struct Actor *player = engine->player;
+void engine_update(struct engine *engine){
+        struct actor *player = engine->player;
         
         if(engine->game_status == STARTUP ){
                 compute_fov(engine);
@@ -47,11 +47,11 @@ void engine_update(struct Engine *engine){
         TCOD_sys_check_for_event(TCOD_EVENT_KEY_PRESS, &(engine->key), NULL);
         player->update(engine, player);
         if (engine->game_status == NEW_TURN) {
-                struct Actor **iterator;
-                for (iterator = (struct Actor **)TCOD_list_begin(engine->actors);
-                     iterator != (struct Actor **)TCOD_list_end(engine->actors);
+                struct actor **iterator;
+                for (iterator = (struct actor **)TCOD_list_begin(engine->actors);
+                     iterator != (struct actor **)TCOD_list_end(engine->actors);
                      iterator++) {
-                        struct Actor *actor = *iterator;
+                        struct actor *actor = *iterator;
                         if(actor != player ){ 
                                 actor->update(engine, actor);
                         }
@@ -59,7 +59,7 @@ void engine_update(struct Engine *engine){
         }
 }
 
-void engine_render(struct Engine *engine){
+void engine_render(struct engine *engine){
         TCOD_console_clear(NULL);
         map_render(engine->map);
         engine->player->render(engine->player);
@@ -69,10 +69,10 @@ void engine_render(struct Engine *engine){
 			   (int)engine->player->destructible->max_hp);
         
         /* draw the actors */
-        struct Actor **iter;
+        struct actor **iter;
 
-        for(iter = (struct Actor **)TCOD_list_begin(engine->actors);
-            iter != (struct Actor **)TCOD_list_end(engine->actors);
+        for(iter = (struct actor **)TCOD_list_begin(engine->actors);
+            iter != (struct actor **)TCOD_list_end(engine->actors);
             iter++){
                 if(is_in_fov(engine->map, (*iter)->x, (*iter)->y)){
                         (*iter)->render(*iter);

@@ -8,7 +8,7 @@
 static const int ROOM_MAX_SIZE = 12;
 static const int ROOM_MIN_SIZE = 6;
 
-struct Engine;
+struct engine;
 
 struct Tile{
         bool explored;
@@ -25,22 +25,27 @@ struct BSPTraverse{
 };
 		
 
-struct Map{
+struct map{
         int w;
         int h;
-        void (*render)(struct Map *);
+        void (*render)(struct map *);
         struct Tile tiles[80 * 45];
         TCOD_bsp_t *bsp;
         TCOD_map_t map;
 	struct BSPTraverse bsp_traverse;
 };
 
-/* void init_map(struct Engine *engine, int w, int h); */
-void map_render(struct Map *map);
-void add_monster(struct Engine* engine, int x, int y);
-bool is_wall(struct Map *map, int x, int y);
-bool is_in_fov(struct Map *map, int x, int y);
-bool can_walk(struct Engine *engine, int x, int y);
-void set_wall(struct Map *map, int x, int y);
+/* void init_map(struct engine *engine, int w, int h); */
+
+/* Draw the map on the screen */
+void map_render(struct map *map);
+
+void add_monster(struct engine* engine, int x, int y);
+bool is_wall(struct map *map, int x, int y);
+
+/* Check whether the point (x, y) is in the field of view on map. */
+bool is_in_fov(struct map *map, int x, int y);
+bool can_walk(struct engine *engine, int x, int y);
+void set_wall(struct map *map, int x, int y);
 
 #endif
