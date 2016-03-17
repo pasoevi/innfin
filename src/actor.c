@@ -41,6 +41,7 @@ void init_actor(struct Actor **actor, int x, int y, int ch, const char *name,
         (*actor)->name = name;
         (*actor)->col = col;
         (*actor)->render = render;
+        (*actor)->update = common_update;
         
         /* Init attacker */
         (*actor)->attacker = malloc(sizeof(struct Attacker));
@@ -95,7 +96,6 @@ void die(struct Engine *engine, struct Actor *actor){
 void make_player(struct Actor **actor, int x, int y){
         init_actor(actor, x, y, '@', "you", TCOD_white, render_actor);
 
-        (*actor)->update = common_update;
         (*actor)->ai->update = player_update;
         (*actor)->ai->move_or_attack = player_move_or_attack;
 
@@ -180,7 +180,7 @@ void player_die(struct Engine *engine, struct Actor *actor){
 void make_orc(struct Actor **actor, int x, int y){
         init_actor(actor, x, y, 'o', "orc", TCOD_desaturated_green, render_actor);
 
-        (*actor)->update = common_update;
+        
         (*actor)->ai->update = monster_update;
         (*actor)->ai->move_or_attack = monster_move_or_attack;
 
@@ -199,7 +199,6 @@ void make_orc(struct Actor **actor, int x, int y){
 void make_troll(struct Actor **actor, int x, int y){
         init_actor(actor, x, y, 'T', "troll", TCOD_darker_green, render_actor);
 
-        (*actor)->update = common_update;
         (*actor)->ai->update = monster_update;
         (*actor)->ai->move_or_attack = monster_move_or_attack;
 
