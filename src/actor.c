@@ -203,6 +203,8 @@ void make_troll(struct Actor **actor, int x, int y){
 bool monster_move_or_attack(struct Engine *engine, struct Actor *actor, int targetx, int targety){
         int dx = targetx - actor->x;
         int dy = targety - actor->y;
+	int stepdx = (dx > 0 ? 1 : -1);
+	int stepdy = (dy > 0 ? 1 : -1);
         float distance = sqrtf(dx * dx + dy * dy);
 
         if(distance >= 2){
@@ -212,7 +214,11 @@ bool monster_move_or_attack(struct Engine *engine, struct Actor *actor, int targ
                 if(can_walk(engine, actor->x + dx, actor->y + dy)){
                         actor->x += dx;
                         actor->y += dy;
-                }
+                }else if(can_walk(engine, actor->x + stepdx, actor->y)){
+			actor->x += stepdx;
+		}else if(can_walk(engine, actor->x, actor->y + stepdy)){
+			actor->y += stepdy;
+		}
         }else if(actor->attacker){
                 actor->attacker->attack(engine, actor, engine->player);
                 return false;
