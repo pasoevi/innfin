@@ -44,7 +44,7 @@ void make_player(struct Actor **actor, int x, int y){
         (*actor)->attacker->power = 10;
         (*actor)->attacker->attack = attack;
 
-        (*actor)->destructible->die = die;
+        (*actor)->destructible->die = player_die;
         (*actor)->destructible->defence = 4;
         (*actor)->destructible->corpse_name = "your cadaver";
         (*actor)->destructible->take_damage = take_damage;
@@ -57,12 +57,12 @@ void make_orc(struct Actor **actor, int x, int y){
         init_actor(actor, x, y, 'o', "orc", TCOD_desaturated_green, render_actor);
 
         (*actor)->update = player_update;
-        (*actor)->move_or_attack = player_move_or_attack;
+        (*actor)->move_or_attack = monster_move_or_attack;
 
         (*actor)->attacker->power = 10;
         (*actor)->attacker->attack = attack;
 
-        (*actor)->destructible->die = die;
+        (*actor)->destructible->die = monster_die;
         (*actor)->destructible->defence = 4;
         (*actor)->destructible->corpse_name = "dead orc";
         (*actor)->destructible->take_damage = take_damage;
@@ -74,13 +74,13 @@ void make_orc(struct Actor **actor, int x, int y){
 void make_troll(struct Actor **actor, int x, int y){
         init_actor(actor, x, y, 'T', "troll", TCOD_darker_green, render_actor);
 
-        (*actor)->update = player_update;
+        (*actor)->update = monster_update;
         (*actor)->move_or_attack = player_move_or_attack;
 
         (*actor)->attacker->power = 10;
         (*actor)->attacker->attack = attack;
 
-        (*actor)->destructible->die = die;
+        (*actor)->destructible->die = monster_die;
         (*actor)->destructible->defence = 4;
         (*actor)->destructible->corpse_name = "troll carcass";
         (*actor)->destructible->take_damage = take_damage;
@@ -132,7 +132,7 @@ bool player_move_or_attack(struct Engine *engine, struct Actor *actor, int targe
         return true;
 }
 
-void actor_update(struct Engine *engine, struct Actor *actor){
+void monster_update(struct Engine *engine, struct Actor *actor){
         if(actor->destructible && is_dead(actor)){
                 return;
         }
@@ -152,6 +152,7 @@ void player_update(struct Engine *engine, struct Actor *actor){
         case TCODK_RIGHT : dx=1; break;
         default:break;
         }
+
         if (dx != 0 || dy != 0) {
                 engine->game_status= NEW_TURN;
                 if(actor->move_or_attack(engine, actor, actor->x + dx, actor->y + dy)) {
@@ -180,11 +181,17 @@ void die(struct Engine *engine, struct Actor *actor){
 
 /* Transform the actor into a rotting corpse */
 void player_die(struct Engine *engine, struct Actor *actor){
-        /* Debug message */
         printf("You die.\n");
         /* Call the common die function */
         die(engine, actor);
         engine->game_status = DEFEAT;
+}
+
+/* Transform a monster into a rotting corpse */
+void monster_die(struct Engine *engine, struct Actor *actor){
+        printf("%s is dead.\n", actor->name);
+        /* Call the common die function */
+        die(engine, actor);
 }
 
 void attack(struct Engine *engine, struct Actor *dealer, struct Actor *target){

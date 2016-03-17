@@ -43,11 +43,13 @@ void make_kobold(struct Actor **actor, int x, int y);
 void make_player(struct Actor **player, int x, int y);
 void render_actor(struct Actor *actor);
 void player_update(struct Engine *engine, struct Actor *actor);
-void actor_update(struct Engine *engine, struct Actor *actor);
+void monster_update(struct Engine *engine, struct Actor *actor);
 bool player_move_or_attack(struct Engine *engine, struct Actor *actor, int x, int y);
 bool monster_move_or_attack(struct Engine *engine, struct Actor *actor, int x, int y);
 void attack(struct Engine *engine, struct Actor *dealer, struct Actor *target);
 bool is_dead(struct Actor *actor);
 float take_damage(struct Engine *engine, struct Actor *target, float damage);
 void die(struct Engine *engine, struct Actor *actor);
+void player_die(struct Engine *engine, struct Actor *actor);
+void monster_die(struct Engine *engine, struct Actor *actor);
 #endif
