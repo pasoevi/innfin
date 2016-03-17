@@ -3,7 +3,6 @@
 
 #include "libtcod.h"
 #include "engine.h"
-#include "map.h"
 
 static const int TRACKING_TURNS = 3;
 
@@ -41,10 +40,18 @@ struct actor{
         const char *name;
         TCOD_color_t col;
         void (*update)(struct engine *engine, struct actor *actor);
-        void (*render)(struct actor *actor);
+        void (*render)(struct actor *actor); /* Draw an actor to the screen */
 };
 
-/* void init_actor(struct actor **actor, int w, int h, int ch, const char *name, TCOD_color_t col, void (*render)(struct actor *)); */
+/* 
+   Initialise the actor by the values given as parameters. 
+   Not all values are provided as arguments. 
+   
+   NOTE: this is a low level function, intended to be used ONLY by
+   wrapper functions e.g. make_orc, make_player, etc.
+*/
+void init_actor(struct actor **actor, int w, int h, int ch, const char *name, TCOD_color_t col, void (*render)(struct actor *));
+
 void make_orc(struct actor **actor, int x, int y);
 void make_troll(struct actor **actor, int x, int y);
 void make_kobold(struct actor **actor, int x, int y);
@@ -57,7 +64,20 @@ bool monster_move_or_attack(struct engine *engine, struct actor *actor, int x, i
 void attack(struct engine *engine, struct actor *dealer, struct actor *target);
 bool is_dead(struct actor *actor);
 float take_damage(struct engine *engine, struct actor *target, float damage);
+
+/* 
+   A common function that is called when ANY actor dies. NOTE: Do not
+   use this function directly. Use functions associated with specific
+   actor types instead, like monster_die, player_die. They call this
+   function.
+*/
 void die(struct engine *engine, struct actor *actor);
+
+/* 
+   Called when the player hit points equal to zero. It first calls the
+   common die function.
+*/
+
 void player_die(struct engine *engine, struct actor *actor);
 void monster_die(struct engine *engine, struct actor *actor);
 #endif

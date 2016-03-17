@@ -1,10 +1,8 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include "engine.h"
+#include "map.h"
 
-extern void compute_fov(struct engine *engine);
-extern void init_map(struct engine *engine, int w, int h);
-extern bool is_in_fov(struct map *map, int x, int y);
 extern void clean(void);
 
 void send_to_back(struct engine *engine, struct actor *actor){
@@ -14,26 +12,27 @@ void send_to_back(struct engine *engine, struct actor *actor){
 
 void engine_init(struct engine **engine, int w, int h, const char *title){
         TCOD_console_init_root(w, h, title, false, TCOD_RENDERER_OPENGL);
+        struct engine *tmp = malloc(sizeof (struct engine));
+        
+        tmp->update = engine_update;
+        tmp->render = engine_render;
 
-        *engine = malloc(sizeof (struct engine));
-        (*engine)->update = engine_update;
-        (*engine)->render = engine_render;
-
-        (*engine)->fov_radius = 10;
-        (*engine)->compute_fov = true;
-        (*engine)->game_status = STARTUP;
+        tmp->fov_radius = 10;
+        tmp->compute_fov = true;
+        tmp->game_status = STARTUP;
         
         /* Create a player */
         struct actor *player;
         make_player(&player, 40, 25);
         player->update = player_update;
-        (*engine)->player = player;
+        tmp->player = player;
         
-        (*engine)->actors = TCOD_list_new();
-        TCOD_list_push((*engine)->actors, (const void *)player);
+        tmp->actors = TCOD_list_new();
+        TCOD_list_push(tmp->actors, (const void *)player);
 
         /* Add a map to the engine */
-        init_map(*engine, 80, 45);
+        init_map(tmp, 80, 45);
+        *engine = tmp;
 }
 
 void engine_update(struct engine *engine){

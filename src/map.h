@@ -35,7 +35,8 @@ struct map{
 	struct BSPTraverse bsp_traverse;
 };
 
-/* void init_map(struct engine *engine, int w, int h); */
+/* Initialise the map with w(idth) and h(eight) */
+void init_map(struct engine *engine, int w, int h);
 
 /* Draw the map on the screen */
 void map_render(struct map *map);
@@ -47,5 +48,5 @@ bool is_wall(struct map *map, int x, int y);
 bool is_in_fov(struct map *map, int x, int y);
 bool can_walk(struct engine *engine, int x, int y);
 void set_wall(struct map *map, int x, int y);
-
+void compute_fov(struct engine *engine);
 #endif

@@ -5,20 +5,10 @@
 
 extern void compute_fov(struct engine *engine);
 
-/* Common functions */
-
-/* 
-The common update function that calls the intelligent update function
-if present
-*/
-void common_update(struct engine *engine, struct actor *actor){
-        if(actor->ai){
-                actor->ai->update(engine, actor);
-        }
-}
-
+/*** Common functions ***/
 
 float take_damage(struct engine *engine, struct actor *target, float damage){
+        /* Reduce the damage by the fraction that the target can deflect */
 	damage -= target->destructible->defence;
 	if(damage > 0){
 		target->destructible->hp -= damage;
@@ -29,6 +19,21 @@ float take_damage(struct engine *engine, struct actor *target, float damage){
 		damage = 0;
 	}
 	return damage;
+}
+
+/* 
+   The common update function that calls the intelligent update function
+   if present
+*/
+void common_update(struct engine *engine, struct actor *actor){
+        /* 
+           Do things that are common to all actors.  nothing at the
+           moment.
+        */
+        
+        if(actor->ai){
+                actor->ai->update(engine, actor);
+        }
 }
 
 void init_actor(struct actor **actor, int x, int y, int ch, const char *name,
@@ -66,7 +71,7 @@ void attack(struct engine *engine, struct actor *dealer, struct actor *target){
         float defence = target->destructible->defence;
         if(target->destructible && !is_dead(target)){
                 if(power - defence > 0){
-                        printf("%s attacks %s for %f hit points.\n", dealer->name, target->name,
+                        printf("%s attacks %s for %g hit points.\n", dealer->name, target->name,
                                power - defence);
                 }else{
                         printf("%s attacks %s but it has no effect!\n", dealer->name, target->name);            
@@ -120,7 +125,7 @@ bool player_move_or_attack(struct engine *engine, struct actor *actor, int targe
         if(is_wall(engine->map, targetx, targety)){
                 return false;
         }
-
+       
         /* Look for actors to attack */
         struct actor **iter;
         for(iter = (struct actor **)TCOD_list_begin(engine->actors);
@@ -143,10 +148,10 @@ bool player_move_or_attack(struct engine *engine, struct actor *actor, int targe
                         printf ("There's a %s here\n", (*iter)->name);
                 }
         }
-        
+
         actor->x = targetx;
         actor->y = targety;
-        
+
         return true;
 }
 
