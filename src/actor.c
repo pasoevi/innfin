@@ -162,7 +162,6 @@ void monster_update(struct Engine *engine, struct Actor *actor){
         }
 }
 
-/* Not used yet */
 void player_update(struct Engine *engine, struct Actor *actor){
         int dx = 0, dy = 0;
 
