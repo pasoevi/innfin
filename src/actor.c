@@ -1,6 +1,7 @@
 #include "actor.h"
 #include <stdlib.h>
 #include <stdio.h>
+#include <math.h>
 
 extern void compute_fov(struct Engine *engine);
 
@@ -56,7 +57,7 @@ void make_player(struct Actor **actor, int x, int y){
 void make_orc(struct Actor **actor, int x, int y){
         init_actor(actor, x, y, 'o', "orc", TCOD_desaturated_green, render_actor);
 
-        (*actor)->update = player_update;
+        (*actor)->update = monster_update;
         (*actor)->move_or_attack = monster_move_or_attack;
 
         (*actor)->attacker->power = 10;
@@ -75,7 +76,7 @@ void make_troll(struct Actor **actor, int x, int y){
         init_actor(actor, x, y, 'T', "troll", TCOD_darker_green, render_actor);
 
         (*actor)->update = monster_update;
-        (*actor)->move_or_attack = player_move_or_attack;
+        (*actor)->move_or_attack = monster_move_or_attack;
 
         (*actor)->attacker->power = 10;
         (*actor)->attacker->attack = attack;
@@ -95,7 +96,25 @@ void render_actor(struct Actor *actor){
 }
 
 bool monster_move_or_attack(struct Engine *engine, struct Actor *actor, int targetx, int targety){
-        return true;
+        int dx = targetx - actor->x;
+        int dy = targety - actor->y;
+        float distance = sqrtf(dx * dx + dy * dy);
+
+        printf("Distance %f\n", distance);
+        if(distance >= 2){
+                dx = (int)(round(dx / distance));
+                dy = (int)(round(dy / distance));
+
+                if(can_walk(engine, actor->x + dx, actor->y + dy)){
+                        actor->x += dx;
+                        actor->y += dy;
+                }
+        }else if(actor->attacker){
+                actor->attacker->attack(engine, actor, engine->player);
+                return true;
+        }
+
+        return false;
 }
 
 bool player_move_or_attack(struct Engine *engine, struct Actor *actor, int targetx, int targety){
@@ -138,6 +157,8 @@ void monster_update(struct Engine *engine, struct Actor *actor){
         }
 
         if(is_in_fov(engine->map, actor->x, actor->y)){
+                /* We can see the player close to him */
+                actor->move_or_attack(engine, actor, engine->player->x, engine->player->y);
         }
 }
 
