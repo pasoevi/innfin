@@ -5,8 +5,14 @@
 #include "engine.h"
 #include "map.h"
 
+static const int TRACKING_TURNS = 3;
+
 struct Engine;
 struct Actor;
+
+struct AI{
+	int move_count; /* allow monsters to track the player */
+};
 
 struct Attacker{
         float power;
@@ -29,6 +35,7 @@ struct Actor{
         bool blocks; /* can we walk on this actor? */
         struct Attacker *attacker;
 	struct Destructible *destructible;
+	struct AI *ai;
         const char *name;
         TCOD_color_t col;
         bool (*move_or_attack)(struct Engine *engine, struct Actor *actor, int targetx, int targety);

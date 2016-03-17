@@ -35,6 +35,9 @@ void init_actor(struct Actor **actor, int x, int y, int ch, const char *name,
         
         /* Init destructible */
         (*actor)->destructible = malloc(sizeof(struct Destructible));
+
+	/* Artificial intelligence */
+	(*actor)->ai = malloc(sizeof(struct AI));
 }
 
 void render_actor(struct Actor *actor){
@@ -219,14 +222,21 @@ bool monster_move_or_attack(struct Engine *engine, struct Actor *actor, int targ
 }
 
 void monster_update(struct Engine *engine, struct Actor *actor){
+	/* Check if the agent is alive */
         if(actor->destructible && is_dead(actor)){
                 return;
         }
-
+	
         if(is_in_fov(engine->map, actor->x, actor->y)){
-                /* We can see the player close to him */
-                actor->move_or_attack(engine, actor, engine->player->x, engine->player->y);
-        }
+                /* We can see the player, start tracking him */
+		actor->ai->move_count = TRACKING_TURNS;
+        }else{
+		(actor->ai->move_count)--;
+	}
+	
+	if(actor->ai->move_count > 0){
+		actor->move_or_attack(engine, actor, engine->player->x, engine->player->y);
+	}
 }
 
 /* Transform a monster into a rotting corpse */
