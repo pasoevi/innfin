@@ -4,11 +4,6 @@
 
 #define PROGRAM_NAME "Mysteries"
 
-enum{
-        WINDOW_W = 80,
-        WINDOW_H = 50
-};
-
 struct Engine *engine;
 
 void init(void){

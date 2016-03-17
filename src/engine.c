@@ -63,6 +63,10 @@ void engine_render(struct Engine *engine){
         TCOD_console_clear(NULL);
         map_render(engine->map);
         engine->player->render(engine->player);
+	/* Rudimentary gui: print hp */
+	TCOD_console_print(NULL, 1, WINDOW_H - 2, "HP: %d/%d",
+			   (int)engine->player->destructible->hp,
+			   (int)engine->player->destructible->max_hp);
         
         /* draw the actors */
         struct Actor **iter;

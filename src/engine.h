@@ -5,6 +5,11 @@
 #include "actor.h"
 #include "map.h"
 
+enum{
+        WINDOW_W = 80,
+        WINDOW_H = 50
+};
+
 enum GameStatus {
        STARTUP,
        IDLE,
