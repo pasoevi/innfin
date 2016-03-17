@@ -214,10 +214,10 @@ bool monster_move_or_attack(struct Engine *engine, struct Actor *actor, int targ
                 }
         }else if(actor->attacker){
                 actor->attacker->attack(engine, actor, engine->player);
-                return true;
+                return false;
         }
 
-        return false;
+        return true;
 }
 
 void monster_update(struct Engine *engine, struct Actor *actor){
