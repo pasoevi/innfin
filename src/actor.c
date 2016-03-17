@@ -34,23 +34,26 @@ float take_damage(struct Engine *engine, struct Actor *target, float damage){
 void init_actor(struct Actor **actor, int x, int y, int ch, const char *name,
                 TCOD_color_t col,
                 void (*render)(struct Actor *)){
-        *actor = malloc(sizeof (struct Actor));
-        (*actor)->x = x;
-        (*actor)->y = y;
-        (*actor)->ch = ch;
-        (*actor)->name = name;
-        (*actor)->col = col;
-        (*actor)->render = render;
-        (*actor)->update = common_update;
+        struct Actor *tmp = malloc(sizeof (struct Actor));
+        
+        tmp->x = x;
+        tmp->y = y;
+        tmp->ch = ch;
+        tmp->name = name;
+        tmp->col = col;
+        tmp->render = render;
+        tmp->update = common_update;
         
         /* Init attacker */
-        (*actor)->attacker = malloc(sizeof(struct Attacker));
+        tmp->attacker = malloc(sizeof(struct Attacker));
         
         /* Init destructible */
-        (*actor)->destructible = malloc(sizeof(struct Destructible));
+        tmp->destructible = malloc(sizeof(struct Destructible));
 
 	/* Artificial intelligence */
-	(*actor)->ai = malloc(sizeof(struct AI));
+	tmp->ai = malloc(sizeof(struct AI));
+        
+        *actor = tmp;
 }
 
 void render_actor(struct Actor *actor){
@@ -96,19 +99,21 @@ void die(struct Engine *engine, struct Actor *actor){
 void make_player(struct Actor **actor, int x, int y){
         init_actor(actor, x, y, '@', "you", TCOD_white, render_actor);
 
-        (*actor)->ai->update = player_update;
-        (*actor)->ai->move_or_attack = player_move_or_attack;
+        struct Actor *tmp = *actor;
+        
+        tmp->ai->update = player_update;
+        tmp->ai->move_or_attack = player_move_or_attack;
 
-        (*actor)->attacker->power = 10;
-        (*actor)->attacker->attack = attack;
+        tmp->attacker->power = 10;
+        tmp->attacker->attack = attack;
 
-        (*actor)->destructible->die = player_die;
-        (*actor)->destructible->defence = 4;
-        (*actor)->destructible->corpse_name = "your cadaver";
-        (*actor)->destructible->take_damage = take_damage;
-        (*actor)->destructible->max_hp = 100;
-        (*actor)->destructible->hp = (*actor)->destructible->max_hp;
-        (*actor)->destructible->defence = 4;
+        tmp->destructible->die = player_die;
+        tmp->destructible->defence = 4;
+        tmp->destructible->corpse_name = "your cadaver";
+        tmp->destructible->take_damage = take_damage;
+        tmp->destructible->max_hp = 100;
+        tmp->destructible->hp = tmp->destructible->max_hp;
+        tmp->destructible->defence = 4;
 }
 
 bool player_move_or_attack(struct Engine *engine, struct Actor *actor, int targetx, int targety){
@@ -180,38 +185,41 @@ void player_die(struct Engine *engine, struct Actor *actor){
 void make_orc(struct Actor **actor, int x, int y){
         init_actor(actor, x, y, 'o', "orc", TCOD_desaturated_green, render_actor);
 
+        struct Actor *tmp = *actor;
+
+        tmp->ai->update = monster_update;
+        tmp->ai->move_or_attack = monster_move_or_attack;
         
-        (*actor)->ai->update = monster_update;
-        (*actor)->ai->move_or_attack = monster_move_or_attack;
+        tmp->attacker->power = 5;
+        tmp->attacker->attack = attack;
 
-        (*actor)->attacker->power = 5;
-        (*actor)->attacker->attack = attack;
-
-        (*actor)->destructible->die = monster_die;
-        (*actor)->destructible->defence = 2;
-        (*actor)->destructible->corpse_name = "dead orc";
-        (*actor)->destructible->take_damage = take_damage;
-        (*actor)->destructible->max_hp = 15;
-        (*actor)->destructible->hp = (*actor)->destructible->max_hp;
-        (*actor)->destructible->defence = 2;
+        tmp->destructible->die = monster_die;
+        tmp->destructible->defence = 2;
+        tmp->destructible->corpse_name = "dead orc";
+        tmp->destructible->take_damage = take_damage;
+        tmp->destructible->max_hp = 15;
+        tmp->destructible->hp = tmp->destructible->max_hp;
+        tmp->destructible->defence = 2;
 }
 
 void make_troll(struct Actor **actor, int x, int y){
         init_actor(actor, x, y, 'T', "troll", TCOD_darker_green, render_actor);
 
-        (*actor)->ai->update = monster_update;
-        (*actor)->ai->move_or_attack = monster_move_or_attack;
+        struct Actor *tmp = *actor;
+        
+        tmp->ai->update = monster_update;
+        tmp->ai->move_or_attack = monster_move_or_attack;
 
-        (*actor)->attacker->power = 7;
-        (*actor)->attacker->attack = attack;
+        tmp->attacker->power = 7;
+        tmp->attacker->attack = attack;
 
-        (*actor)->destructible->die = monster_die;
-        (*actor)->destructible->defence = 3;
-        (*actor)->destructible->corpse_name = "troll carcass";
-        (*actor)->destructible->take_damage = take_damage;
-        (*actor)->destructible->max_hp = 20;
-        (*actor)->destructible->hp = (*actor)->destructible->max_hp;
-        (*actor)->destructible->defence = 3;
+        tmp->destructible->die = monster_die;
+        tmp->destructible->defence = 3;
+        tmp->destructible->corpse_name = "troll carcass";
+        tmp->destructible->take_damage = take_damage;
+        tmp->destructible->max_hp = 20;
+        tmp->destructible->hp = tmp->destructible->max_hp;
+        tmp->destructible->defence = 3;
 }
 
 bool monster_move_or_attack(struct Engine *engine, struct Actor *actor, int targetx, int targety){
