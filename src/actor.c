@@ -88,7 +88,7 @@ bool is_dead(struct actor *actor){
 	return false;
 }
 
-/* Transform the actor into a rotting corpse */
+/* Transform the actor into a corpse */
 void die(struct engine *engine, struct actor *actor){
 	actor->ch = '%';
 	actor->col = TCOD_dark_red;

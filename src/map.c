@@ -139,7 +139,7 @@ void compute_fov(struct engine *engine){
                              engine->player->y,
                              engine->fov_radius,
                              true,
-                             FOV_SHADOW);
+                             FOV_BASIC);
 }
 
 void add_monster(struct engine* engine, int x, int y){

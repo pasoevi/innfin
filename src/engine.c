@@ -5,6 +5,10 @@
 
 extern void clean(void);
 
+/*
+ * Move the dead actor at the back of the list, so that it doesn't
+ * cover the living actors.
+ */
 void send_to_back(struct engine *engine, struct actor *actor){
         TCOD_list_remove(engine->actors, actor);
         TCOD_list_insert_before(engine->actors, actor, 0);

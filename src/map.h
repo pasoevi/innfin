@@ -15,9 +15,9 @@ struct Tile{
 };
 
 /* 
-   TODO: Isn't used at the moment. The same functionality is
-   accomplished by the static variables in the function
-*/
+ * TODO: Isn't used at the moment. The same functionality is
+ * accomplished by the static variables in the function
+ */
 struct BSPTraverse{
 	int room_num;
 	int lastx;
@@ -48,5 +48,10 @@ bool is_wall(struct map *map, int x, int y);
 bool is_in_fov(struct map *map, int x, int y);
 bool can_walk(struct engine *engine, int x, int y);
 void set_wall(struct map *map, int x, int y);
+
+/*
+ * Compute the field of view for the map. You pass the engine
+ * object. The field of view is computer for engine->map->map.
+ */
 void compute_fov(struct engine *engine);
 #endif
