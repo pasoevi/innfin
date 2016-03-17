@@ -5,26 +5,7 @@
 
 extern void compute_fov(struct Engine *engine);
 
-void make_player(struct Actor **actor, int x, int y){
-        init_actor(actor, x, y, '@', "you", TCOD_white, render_actor);
-
-        (*actor)->update = player_update;
-        (*actor)->move_or_attack = player_move_or_attack;
-
-        (*actor)->attacker->power = 10;
-        (*actor)->attacker->attack = attack;
-
-        (*actor)->destructible->die = player_die;
-        (*actor)->destructible->defence = 4;
-        (*actor)->destructible->corpse_name = "your cadaver";
-        (*actor)->destructible->take_damage = take_damage;
-        (*actor)->destructible->max_hp = 50;
-        (*actor)->destructible->hp = 50;
-        (*actor)->destructible->defence = 4;
-}
-
 /* Common functions */
-
 float take_damage(struct Engine *engine, struct Actor *target, float damage){
 	damage -= target->destructible->defence;
 	if(damage > 0){
@@ -96,6 +77,23 @@ void die(struct Engine *engine, struct Actor *actor){
 }
 
 /* Player functions */
+void make_player(struct Actor **actor, int x, int y){
+        init_actor(actor, x, y, '@', "you", TCOD_white, render_actor);
+
+        (*actor)->update = player_update;
+        (*actor)->move_or_attack = player_move_or_attack;
+
+        (*actor)->attacker->power = 10;
+        (*actor)->attacker->attack = attack;
+
+        (*actor)->destructible->die = player_die;
+        (*actor)->destructible->defence = 4;
+        (*actor)->destructible->corpse_name = "your cadaver";
+        (*actor)->destructible->take_damage = take_damage;
+        (*actor)->destructible->max_hp = 100;
+        (*actor)->destructible->hp = (*actor)->destructible->max_hp;
+        (*actor)->destructible->defence = 4;
+}
 
 bool player_move_or_attack(struct Engine *engine, struct Actor *actor, int targetx, int targety){
         if(is_wall(engine->map, targetx, targety)){
