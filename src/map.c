@@ -134,7 +134,12 @@ bool is_explored(struct Map *map, int x, int y){
 }
 
 void compute_fov(struct Engine *engine){
-        TCOD_map_compute_fov(engine->map->map, engine->player->x, engine->player->y, engine->fov_radius, true, FOV_SHADOW);
+        TCOD_map_compute_fov(engine->map->map,
+                             engine->player->x,
+                             engine->player->y,
+                             engine->fov_radius,
+                             true,
+                             FOV_SHADOW);
 }
 
 void add_monster(struct Engine* engine, int x, int y){
@@ -142,10 +147,10 @@ void add_monster(struct Engine* engine, int x, int y){
         struct Actor *actor;
         if (TCOD_random_get_int(rng, 0, 100) < 80) {
                 /* Create an orc */
-                init_actor(&actor, x, y,'o', "orc", TCOD_desaturated_green, render_actor);
+                make_orc(&actor, x, y);
         }else{
                 /* Create an orc */
-                init_actor(&actor, x, y, 'T', "troll", TCOD_darker_green, render_actor);
+                make_troll(&actor, x, y);
         }
         TCOD_list_push(engine->actors, actor);
 }

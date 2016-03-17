@@ -27,23 +27,67 @@ void init_actor(struct Actor **actor, int x, int y, int ch, const char *name,
         (*actor)->name = name;
         (*actor)->col = col;
         (*actor)->render = render;
-        (*actor)->update = actor_update;
-        (*actor)->move_or_attack = player_move_or_attack;
-
+        
         /* Init attacker */
         (*actor)->attacker = malloc(sizeof(struct Attacker));
-        (*actor)->attacker->power = 10;
-        (*actor)->attacker->attack = attack;        
-
+        
         /* Init destructible */
         (*actor)->destructible = malloc(sizeof(struct Destructible));
-        (*actor)->destructible->max_hp = 50;
-        (*actor)->destructible->hp = 50;
+}
+
+void make_player(struct Actor **actor, int x, int y){
+        init_actor(actor, x, y, '@', "you", TCOD_white, render_actor);
+
+        (*actor)->update = player_update;
+        (*actor)->move_or_attack = player_move_or_attack;
+
+        (*actor)->attacker->power = 10;
+        (*actor)->attacker->attack = attack;
+
+        (*actor)->destructible->die = die;
         (*actor)->destructible->defence = 4;
         (*actor)->destructible->corpse_name = "your cadaver";
         (*actor)->destructible->take_damage = take_damage;
+        (*actor)->destructible->max_hp = 50;
+        (*actor)->destructible->hp = 50;
+        (*actor)->destructible->defence = 4;
+}
+
+void make_orc(struct Actor **actor, int x, int y){
+        init_actor(actor, x, y, 'o', "orc", TCOD_desaturated_green, render_actor);
+
+        (*actor)->update = player_update;
+        (*actor)->move_or_attack = player_move_or_attack;
+
+        (*actor)->attacker->power = 10;
+        (*actor)->attacker->attack = attack;
+
         (*actor)->destructible->die = die;
- }
+        (*actor)->destructible->defence = 4;
+        (*actor)->destructible->corpse_name = "dead orc";
+        (*actor)->destructible->take_damage = take_damage;
+        (*actor)->destructible->max_hp = 40;
+        (*actor)->destructible->hp = 40;
+        (*actor)->destructible->defence = 2;
+}
+
+void make_troll(struct Actor **actor, int x, int y){
+        init_actor(actor, x, y, 'T', "troll", TCOD_darker_green, render_actor);
+
+        (*actor)->update = player_update;
+        (*actor)->move_or_attack = player_move_or_attack;
+
+        (*actor)->attacker->power = 10;
+        (*actor)->attacker->attack = attack;
+
+        (*actor)->destructible->die = die;
+        (*actor)->destructible->defence = 4;
+        (*actor)->destructible->corpse_name = "troll carcass";
+        (*actor)->destructible->take_damage = take_damage;
+        (*actor)->destructible->max_hp = 45;
+        (*actor)->destructible->hp = 45;
+        (*actor)->destructible->defence = 3;
+}
 
 void render_actor(struct Actor *actor){
         TCOD_console_set_char(NULL, actor->x, actor->y, actor->ch);
