@@ -17,7 +17,12 @@ void send_to_back(struct engine *engine, struct actor *actor){
 void engine_init(struct engine **engine, int w, int h, const char *title){
         TCOD_console_init_root(w, h, title, false, TCOD_RENDERER_OPENGL);
         struct engine *tmp = malloc(sizeof (struct engine));
-        
+
+        struct gui *gui = malloc(sizeof (struct gui));
+        init_gui(&gui, WINDOW_W, PANEL_H);
+        tmp->gui = gui;
+        tmp->window_w = WINDOW_W;
+        tmp->window_h = WINDOW_H;
         tmp->update = engine_update;
         tmp->render = engine_render;
 
@@ -35,7 +40,7 @@ void engine_init(struct engine **engine, int w, int h, const char *title){
         TCOD_list_push(tmp->actors, (const void *)player);
 
         /* Add a map to the engine */
-        init_map(tmp, 80, 45);
+        init_map(tmp, 80, 43);
         *engine = tmp;
 }
 
@@ -67,9 +72,13 @@ void engine_render(struct engine *engine){
         map_render(engine->map);
         engine->player->render(engine->player);
 	/* Rudimentary gui: print hp */
+        /*
 	TCOD_console_print(NULL, 1, WINDOW_H - 2, "HP: %d/%d",
 			   (int)engine->player->destructible->hp,
 			   (int)engine->player->destructible->max_hp);
+        */
+
+        engine->gui->render(engine);
         
         /* draw the actors */
         struct actor **iter;
@@ -83,4 +92,10 @@ void engine_render(struct engine *engine){
         }
         
         TCOD_console_flush(NULL); 
+}
+
+void free_engine(struct engine engine){
+        /* free all memory directly or indirectly allocated by the
+         * engine 
+         */
 }

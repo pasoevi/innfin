@@ -4,6 +4,7 @@
 #include "libtcod.h"
 #include "actor.h"
 #include "map.h"
+#include "gui.h"
 
 enum{
         WINDOW_W = 80,
@@ -26,6 +27,9 @@ struct engine{
         bool compute_fov;
         TCOD_key_t key;
         enum GameStatus game_status;
+        struct gui *gui;
+        int window_w;
+        int window_h;
         void (*update)(struct engine *);
         void (*render)(struct engine *);
 };
