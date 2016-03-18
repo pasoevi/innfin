@@ -73,9 +73,9 @@ void engine_render(struct engine *engine){
         engine->player->render(engine->player);
 	/* Rudimentary gui: print hp */
         /*
-	TCOD_console_print(NULL, 1, WINDOW_H - 2, "HP: %d/%d",
-			   (int)engine->player->destructible->hp,
-			   (int)engine->player->destructible->max_hp);
+          TCOD_console_print(NULL, 1, WINDOW_H - 2, "HP: %d/%d",
+          (int)engine->player->destructible->hp,
+          (int)engine->player->destructible->max_hp);
         */
 
         engine->gui->render(engine);
