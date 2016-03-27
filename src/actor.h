@@ -79,7 +79,6 @@ void die(struct engine *engine, struct actor *actor);
    Called when the player hit points equal to zero. It first calls the
    common die function.
 */
-
 void player_die(struct engine *engine, struct actor *actor);
 void monster_die(struct engine *engine, struct actor *actor);
 #endif
