@@ -10,26 +10,21 @@ static const int ROOM_MIN_SIZE = 6;
 
 struct engine;
 
-struct Tile{
+struct tile{
         bool explored;
 };
 
-/* 
- * TODO: Isn't used at the moment. The same functionality is
- * accomplished by the static variables in the function
- */
 struct BSPTraverse{
 	int room_num;
 	int lastx;
 	int lasty;
 };
-		
 
 struct map{
         int w;
         int h;
         void (*render)(struct map *);
-        struct Tile tiles[80 * 45];
+        struct tile tiles[80 * 45];
         TCOD_bsp_t *bsp;
         TCOD_map_t map;
 	struct BSPTraverse bsp_traverse;
@@ -37,6 +32,7 @@ struct map{
 
 /* Initialise the map with w(idth) and h(eight) */
 void init_map(struct engine *engine, int w, int h);
+void free_map(struct map *map);
 
 /* Draw the map on the screen */
 void map_render(struct map *map);

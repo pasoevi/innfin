@@ -35,6 +35,10 @@ void common_update(struct engine *engine, struct actor *actor){
         }
 }
 
+void free_actors(TCOD_list_t actors){
+        TCOD_list_clear_and_delete(actors);
+}
+
 void init_actor(struct actor **actor, int x, int y, int ch, const char *name,
                 TCOD_color_t col,
                 void (*render)(struct actor *)){

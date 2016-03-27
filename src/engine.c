@@ -87,8 +87,14 @@ void engine_render(struct engine *engine){
         TCOD_console_flush(NULL); 
 }
 
-void free_engine(struct engine engine){
+void free_engine(struct engine *engine){
         /* free all memory directly or indirectly allocated by the
          * engine 
          */
+        
+        free_gui(engine->gui);
+        free_map(engine->map);
+        free_actors(engine->actors);
+        /* free(engine->player); */
+        free(engine);
 }

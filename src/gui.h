@@ -26,5 +26,6 @@ struct gui{
         TCOD_list_t *log;
 };
 
+void free_gui(struct gui *gui);
 void init_gui(struct gui **gui, int w, int h);
 #endif

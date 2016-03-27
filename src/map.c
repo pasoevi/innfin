@@ -99,6 +99,11 @@ void init_map(struct engine *engine, int w, int h){
         TCOD_bsp_traverse_inverted_level_order(engine->map->bsp, visit_node, engine);
 }
 
+void free_map(struct map *map){
+        TCOD_bsp_delete(map->bsp);
+        free(map);
+}
+
 bool is_wall(struct map *map, int x, int y){
         return !TCOD_map_is_walkable(map->map, x, y);
 }

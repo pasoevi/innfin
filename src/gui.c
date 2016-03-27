@@ -43,6 +43,12 @@ static void gui_render(struct engine *engine){
                           NULL, 0, engine->window_h - PANEL_H, 1.f, 1.f);
 }
 
+void free_gui(struct gui *gui){
+        /* TCOD_list_delete(gui->log); */
+        TCOD_list_clear_and_delete(gui->log);
+        free(gui);
+}
+
 void init_gui(struct gui **gui, int w, int h){
         struct gui *tmp = malloc(sizeof *tmp);
         tmp->con = TCOD_console_new(w, h);

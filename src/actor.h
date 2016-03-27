@@ -51,6 +51,8 @@ struct actor{
    wrapper functions e.g. make_orc, make_player, etc.
 */
 void init_actor(struct actor **actor, int w, int h, int ch, const char *name, TCOD_color_t col, void (*render)(struct actor *));
+void free_actor(struct actor *actor);
+void free_actors(TCOD_list_t actors);
 
 void make_orc(struct actor **actor, int x, int y);
 void make_troll(struct actor **actor, int x, int y);

@@ -12,9 +12,8 @@ void init(void){
 
 void clean(){
 	/* free(engine->map->tiles); */
-        TCOD_bsp_delete(engine->map->bsp);
-        free(engine->map);
-        free(engine->player);
+        free_engine(engine);
+               
 	exit(EXIT_SUCCESS);
         /* TODO: free actors list! */	
 }
