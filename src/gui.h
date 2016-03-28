@@ -24,6 +24,7 @@ struct gui{
                            const TCOD_color_t back_col);
         void (*render_log)(struct engine *engine, int startx, int starty);
         void (*message)(struct engine *engine, const TCOD_color_t col, const char *text, ...);
+        void (*render_mouse_look)(struct engine *engine);
         TCOD_list_t *log;
 };
 

@@ -77,6 +77,36 @@ static void render_log(struct engine *engine, int startx , int starty){
         }
 }
 
+static void render_mouse_look(struct engine *engine){
+        if (!is_in_fov(engine->map, engine->mouse.cx, engine->mouse.cy)) {
+                /* if mouse is out of fov, nothing to render */
+                return;
+        }
+
+        char buf[128]={'\0'};
+        bool first = true;
+
+        struct actor **iterator;
+        for (iterator = (struct actor **)TCOD_list_begin(engine->actors);
+             iterator != (struct actor **)TCOD_list_end(engine->actors);
+             iterator++) {
+                struct actor *actor=*iterator;
+                // find actors under the mouse cursor
+                if (actor->x == engine->mouse.cx && actor->y == engine->mouse.cy ) {
+                        if (!first) {
+                                strcat(buf,", ");
+                        }else{
+                                first = false;
+                        }
+                        
+                        strcat(buf, actor->name);
+                }
+        }
+        // display the list of actors under the mouse cursor
+        TCOD_console_set_default_foreground(engine->gui->con, TCOD_light_grey);
+        TCOD_console_print(engine->gui->con, 1, 0, buf);
+}
+
 static void gui_render(struct engine *engine){
         /* Clear the gui console */
         TCOD_console_set_default_background(engine->gui->con, TCOD_black);
@@ -86,6 +116,7 @@ static void gui_render(struct engine *engine){
                                 engine->player->destructible->max_hp,
                                 TCOD_light_red, TCOD_darker_red);
         engine->gui->render_log(engine, MSG_X, 1);
+        engine->gui->render_mouse_look(engine);
         TCOD_console_blit(engine->gui->con, 0, 0, engine->window_w, PANEL_H,
                           NULL, 0, engine->window_h - PANEL_H, 1.f, 1.f);
 }
@@ -101,6 +132,7 @@ void init_gui(struct gui **gui, int w, int h){
         tmp->con = TCOD_console_new(w, h);
         tmp->render_bar = render_bar;
         tmp->render_log = render_log;
+        tmp->render_mouse_look = render_mouse_look;
         tmp->render = gui_render;
         tmp->message = message;
         tmp->log = TCOD_list_new();

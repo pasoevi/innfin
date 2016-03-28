@@ -127,6 +127,11 @@ bool can_walk(struct engine *engine, int x, int y){
 }
 
 bool is_in_fov(struct map *map, int x, int y){
+        if ( x < 0 || x >= map->w || y < 0 || y >= map->h) {
+                
+                return false;
+        }
+        
         if(TCOD_map_is_in_fov(map->map, x, y)){
                 map->tiles[x+y*(map->w)].explored = true;
                 return true;

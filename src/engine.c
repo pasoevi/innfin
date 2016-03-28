@@ -57,7 +57,7 @@ void engine_update(struct engine *engine){
         }
         engine->game_status= IDLE ;
         
-        TCOD_sys_check_for_event(TCOD_EVENT_KEY_PRESS, &(engine->key), NULL);
+        TCOD_sys_check_for_event(TCOD_EVENT_ANY, &(engine->key), &(engine->mouse));
         player->update(engine, player);
         if (engine->game_status == NEW_TURN) {
                 struct actor **iterator;

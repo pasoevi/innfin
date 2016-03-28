@@ -26,6 +26,7 @@ struct engine{
         int fov_radius;
         bool compute_fov;
         TCOD_key_t key;
+        TCOD_mouse_t mouse;
         enum GameStatus game_status;
         struct gui *gui;
         int window_w;
