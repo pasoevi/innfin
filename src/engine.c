@@ -5,6 +5,9 @@
 
 extern void clean(void);
 
+static const char *WELCOME_MESSAGE =
+        "Welcome stranger!\nPrepare to perish in the Tombs of the Ancient Kings.";
+
 /*
  * Move the dead actor at the back of the list, so that it doesn't
  * cover the living actors.
@@ -42,6 +45,8 @@ void engine_init(struct engine **engine, int w, int h, const char *title){
         /* Add a map to the engine */
         init_map(tmp, 80, 43);
         *engine = tmp;
+
+        gui->message(tmp, TCOD_red, WELCOME_MESSAGE);
 }
 
 void engine_update(struct engine *engine){
