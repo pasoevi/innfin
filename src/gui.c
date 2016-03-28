@@ -122,7 +122,6 @@ static void gui_render(struct engine *engine){
 }
 
 void free_gui(struct gui *gui){
-        /* TCOD_list_delete(gui->log); */
         TCOD_list_clear_and_delete(gui->log);
         free(gui);
 }

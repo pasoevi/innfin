@@ -66,8 +66,6 @@ void engine_update(struct engine *engine){
                      iterator != (struct actor **)TCOD_list_end(engine->actors);
                      iterator++) {
                         struct actor *actor = *iterator;
-                        printf("iter: %s\n", actor->name);
-                
                         if(actor != player ){ 
                                 actor->update(engine, actor);                
                         }

@@ -116,7 +116,7 @@ void make_player(struct actor **actor, int x, int y){
 
         tmp->destructible->die = player_die;
         tmp->destructible->defence = 4;
-        tmp->destructible->corpse_name = "your cadaver";
+        tmp->destructible->corpse_name = "your dead body";
         tmp->destructible->take_damage = take_damage;
         tmp->destructible->max_hp = 100;
         tmp->destructible->hp = tmp->destructible->max_hp;
@@ -166,7 +166,7 @@ void player_update(struct engine *engine, struct actor *actor){
 
         switch(engine->key.vk) {
         case TCODK_UP : dy = -1; break;
-        case TCODK_DOWN : dy= 1; break;
+        case TCODK_DOWN : dy = 1; break;
         case TCODK_LEFT : dx = -1; break;
         case TCODK_RIGHT : dx = 1; break;
         default:break;
@@ -180,10 +180,10 @@ void player_update(struct engine *engine, struct actor *actor){
         }
 }
 
-/* Transform the actor into a rotting corpse */
+/* Transform the actor into a decaying corpse */
 void player_die(struct engine *engine, struct actor *actor){
         engine->gui->message(engine, TCOD_red, "You die.\n");
-        /* Call the common die function */
+        /* Call the common death function */
         die(engine, actor);
         engine->game_status = DEFEAT;
 }
