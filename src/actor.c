@@ -74,14 +74,14 @@ void attack(struct engine *engine, struct actor *dealer, struct actor *target){
         float defence = target->destructible->defence;
         if(target->destructible && !is_dead(target)){
                 if(power - defence > 0){
-                        printf("%s attacks %s for %g hit points.\n", dealer->name, target->name,
+                        engine->gui->message(engine, TCOD_red, "%s attacks %s for %g hit points.\n", dealer->name, target->name,
                                power - defence);
                 }else{
-                        printf("%s attacks %s but it has no effect!\n", dealer->name, target->name);            
+                        engine->gui->message(engine, TCOD_light_grey, "%s attacks %s but it has no effect!\n", dealer->name, target->name);            
                 }
                 target->destructible->take_damage(engine, target, power);
         }else{
-                printf("%s attacks %s in vain.\n", dealer->name, target->name);
+                engine->gui->message(engine, TCOD_light_grey, "%s attacks %s in vain.\n", dealer->name, target->name);
         }
 }
 
@@ -148,7 +148,7 @@ bool player_move_or_attack(struct engine *engine, struct actor *actor, int targe
             iter++){
                 if((*iter)->destructible && is_dead(*iter) &&
                    (*iter)->x == targetx && (*iter)->y == targety){
-                        printf ("There's a %s here\n", (*iter)->name);
+                        engine->gui->message(engine, TCOD_light_gray, "There's a %s here\n", (*iter)->name);
                 }
         }
 
@@ -183,7 +183,7 @@ void player_update(struct engine *engine, struct actor *actor){
 
 /* Transform the actor into a rotting corpse */
 void player_die(struct engine *engine, struct actor *actor){
-        printf("You die.\n");
+        engine->gui->message(engine, TCOD_red, "You die.\n");
         /* Call the common die function */
         die(engine, actor);
         engine->game_status = DEFEAT;
@@ -277,7 +277,7 @@ void monster_update(struct engine *engine, struct actor *actor){
 
 /* Transform a monster into a rotting corpse */
 void monster_die(struct engine *engine, struct actor *actor){
-        printf("%s is dead.\n", actor->name);
+        engine->gui->message(engine, TCOD_light_grey, "%s is dead.\n", actor->name);
         /* Call the common die function */
         die(engine, actor);
 }

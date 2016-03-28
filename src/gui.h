@@ -23,6 +23,7 @@ struct gui{
                            const float max_value, const TCOD_color_t bar_col,
                            const TCOD_color_t back_col);
         void (*render_log)(struct engine *engine, int startx, int starty);
+        void (*message)(struct engine *engine, const TCOD_color_t col, const char *text, ...);
         TCOD_list_t *log;
 };
 

@@ -2,6 +2,53 @@
 #include <stdlib.h>
 #include <stdarg.h>
 #include <stdio.h>
+#include <string.h>
+
+static void init_message(struct message **message, const char *text, TCOD_color_t col){
+        struct message *tmp = malloc(sizeof *tmp);
+        tmp->text = strdup(text);
+        tmp->col = col;
+        *message = tmp;
+}
+
+static void free_message(struct message *message){
+        if(message != NULL){
+                free(message->text);                     
+                free(message);
+        }
+}
+
+static void message(struct engine *engine, const TCOD_color_t col, const char *text, ...){
+        /* Build the text */
+        va_list ap;
+        char buf[128];
+        va_start(ap,text);
+        vsprintf(buf,text,ap);
+        va_end(ap);
+
+        char *line_begin=buf;
+        char *line_end;
+        
+        do {
+                /* make room for the new message */
+                if (TCOD_list_size(engine->gui->log) == MSG_HEIGHT ) {
+                        struct message *to_remove = TCOD_list_get(engine->gui->log, 0);
+                        TCOD_list_remove(engine->gui->log, to_remove);
+                        free(to_remove);
+                }
+                // detect end of the line
+                line_end = strchr(line_begin, '\n');
+                if (line_end){
+                        *line_end = '\0';
+                }
+                // add a new message to the log
+                struct message *msg;
+                init_message( &msg, line_begin, col);
+                TCOD_list_push(engine->gui->log, msg);
+                /* go to next line */
+                line_begin=line_end + 1;
+        }while(line_end);
+}
 
 static void render_bar(struct engine *engine, int x, int y, int w,
                        const char *name, const float value,
@@ -55,10 +102,7 @@ void init_gui(struct gui **gui, int w, int h){
         tmp->render_bar = render_bar;
         tmp->render_log = render_log;
         tmp->render = gui_render;
+        tmp->message = message;
         tmp->log = TCOD_list_new();
         *gui = tmp;
-}
-                      
-void message(const TCOD_color_t col, const char *text, ...){
-        
 }
