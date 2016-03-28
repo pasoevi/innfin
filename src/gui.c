@@ -11,7 +11,7 @@ static void init_message(struct message **message, const char *text, TCOD_color_
         *message = tmp;
 }
 
-static void free_message(struct message *message){
+void free_message(struct message *message){
         if(message != NULL){
                 free(message->text);                     
                 free(message);
@@ -91,7 +91,7 @@ static void render_mouse_look(struct engine *engine){
              iterator != (struct actor **)TCOD_list_end(engine->actors);
              iterator++) {
                 struct actor *actor=*iterator;
-                // find actors under the mouse cursor
+                /* Find actors under the mouse cursor */
                 if (actor->x == engine->mouse.cx && actor->y == engine->mouse.cy ) {
                         if (!first) {
                                 strcat(buf,", ");
@@ -102,7 +102,7 @@ static void render_mouse_look(struct engine *engine){
                         strcat(buf, actor->name);
                 }
         }
-        // display the list of actors under the mouse cursor
+        /*  display the list of actors under the mouse cursor */
         TCOD_console_set_default_foreground(engine->gui->con, TCOD_light_grey);
         TCOD_console_print(engine->gui->con, 1, 0, buf);
 }

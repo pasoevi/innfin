@@ -163,15 +163,15 @@ void player_update(struct engine *engine, struct actor *actor){
 	}
 
         int dx = 0, dy = 0;
-
-        switch(engine->key.vk) {
-        case TCODK_UP : dy = -1; break;
-        case TCODK_DOWN : dy = 1; break;
-        case TCODK_LEFT : dx = -1; break;
-        case TCODK_RIGHT : dx = 1; break;
-        default:break;
+        if(engine->key.pressed){
+                switch(engine->key.vk) {
+                case TCODK_UP : dy = -1; break;
+                case TCODK_DOWN : dy = 1; break;
+                case TCODK_LEFT : dx = -1; break;
+                case TCODK_RIGHT : dx = 1; break;
+                default:break;
+                }
         }
-
         if (dx != 0 || dy != 0) {
                 engine->game_status = NEW_TURN;
                 if(actor->ai->move_or_attack(engine, actor, actor->x + dx, actor->y + dy)) {
