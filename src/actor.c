@@ -1,7 +1,8 @@
-#include "actor.h"
 #include <stdlib.h>
 #include <stdio.h>
 #include <math.h>
+#include "actor.h"
+#include "util.h"
 
 extern void compute_fov(struct engine *engine);
 
