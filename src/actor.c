@@ -29,7 +29,6 @@ void common_update(struct engine *engine, struct actor *actor){
            Do things that are common to all actors.  nothing at the
            moment.
         */
-        
         if(actor->ai){
                 actor->ai->update(engine, actor);
         }
@@ -75,7 +74,7 @@ void attack(struct engine *engine, struct actor *dealer, struct actor *target){
         if(target->destructible && !is_dead(target)){
                 if(power - defence > 0){
                         engine->gui->message(engine, dealer == engine->player ? TCOD_red : TCOD_light_grey, "%s attacks %s for %g hit points.\n", dealer->name, target->name,
-                               power - defence);
+                                             power - defence);
                 }else{
                         engine->gui->message(engine, TCOD_light_grey, "%s attacks %s but it has no effect!\n", dealer->name, target->name);            
                 }
@@ -166,15 +165,15 @@ void player_update(struct engine *engine, struct actor *actor){
         int dx = 0, dy = 0;
 
         switch(engine->key.vk) {
-        case TCODK_UP : dy=-1; break;
-        case TCODK_DOWN : dy=1; break;
-        case TCODK_LEFT : dx=-1; break;
-        case TCODK_RIGHT : dx=1; break;
+        case TCODK_UP : dy = -1; break;
+        case TCODK_DOWN : dy= 1; break;
+        case TCODK_LEFT : dx = -1; break;
+        case TCODK_RIGHT : dx = 1; break;
         default:break;
         }
 
         if (dx != 0 || dy != 0) {
-                engine->game_status= NEW_TURN;
+                engine->game_status = NEW_TURN;
                 if(actor->ai->move_or_attack(engine, actor, actor->x + dx, actor->y + dy)) {
                         compute_fov(engine);
                 }

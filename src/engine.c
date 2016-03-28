@@ -55,18 +55,21 @@ void engine_update(struct engine *engine){
         if(engine->game_status == STARTUP ){
                 compute_fov(engine);
         }
-        engine->game_status= IDLE ;
+        
+        engine->game_status = IDLE ;
         
         TCOD_sys_check_for_event(TCOD_EVENT_ANY, &(engine->key), &(engine->mouse));
         player->update(engine, player);
-        if (engine->game_status == NEW_TURN) {
+        if(engine->game_status == NEW_TURN){
                 struct actor **iterator;
                 for (iterator = (struct actor **)TCOD_list_begin(engine->actors);
                      iterator != (struct actor **)TCOD_list_end(engine->actors);
                      iterator++) {
                         struct actor *actor = *iterator;
+                        printf("iter: %s\n", actor->name);
+                
                         if(actor != player ){ 
-                                actor->update(engine, actor);
+                                actor->update(engine, actor);                
                         }
                 }
         }
