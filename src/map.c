@@ -166,8 +166,8 @@ void add_monster(struct engine* engine, int x, int y){
 }
 
 void map_render(struct map *map){
-        const TCOD_color_t dark_wall = {0, 0, 100};
-        const TCOD_color_t dark_ground = {50, 50, 150};
+        const TCOD_color_t dark_wall = {20, 20, 10};
+        const TCOD_color_t dark_ground = {0, 0, 0};
 
         const TCOD_color_t light_wall = {130, 110, 50};
         const TCOD_color_t light_ground = {200, 180, 50};

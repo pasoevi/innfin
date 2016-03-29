@@ -78,12 +78,11 @@ void init_destructible(struct destructible **destructible, float max_hp,
         struct destructible *tmp = malloc(sizeof *tmp);
         
         tmp->die = monster_die;
-        tmp->defence = 2;
-        tmp->corpse_name = "dead orc";
+        tmp->defence = defence;
+        tmp->corpse_name = corpse_name;
         tmp->take_damage = take_damage;
-        tmp->max_hp = 15;
-        tmp->hp = tmp->max_hp;
-        tmp->defence = 2;
+        tmp->max_hp = max_hp;
+        tmp->hp = hp;
         *destructible = tmp;
 }
 
