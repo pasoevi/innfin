@@ -11,22 +11,18 @@ void init(void){
 }
 
 void clean(){
-	/* free(engine->map->tiles); */
         free_engine(engine);
-               
 	exit(EXIT_SUCCESS);
-        /* TODO: free actors list! */	
 }
 
 int main() {
         init();
-
+        
         while (!TCOD_console_is_window_closed()) {
                 engine->update(engine);
                 engine->render(engine);
         }
-
+        
 	clean();
-
         return 0;
 }

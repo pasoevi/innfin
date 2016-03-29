@@ -14,7 +14,7 @@ struct tile{
         bool explored;
 };
 
-struct BSPTraverse{
+struct bsp_traverse{
 	int room_num;
 	int lastx;
 	int lasty;
@@ -27,7 +27,7 @@ struct map{
         struct tile tiles[80 * 45];
         TCOD_bsp_t *bsp;
         TCOD_map_t map;
-	struct BSPTraverse bsp_traverse;
+	struct bsp_traverse bsp_traverse;
 };
 
 /* Initialise the map with w(idth) and h(eight) */

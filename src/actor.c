@@ -97,10 +97,15 @@ void attack(struct engine *engine, struct actor *dealer, struct actor *target){
         float defence = target->destructible->defence;
         if(target->destructible && !is_dead(target)){
                 if(power - defence > 0){
-                        engine->gui->message(engine, dealer == engine->player ? TCOD_red : TCOD_light_grey, "%s attacks %s for %g hit points.\n", dealer->name, target->name,
-                                             power - defence);
+                        engine->gui->message(engine,
+                                             dealer == engine->player ? TCOD_red : TCOD_light_grey,
+                                             "%s attacks %s for %g hit points.\n",
+                                             dealer->name, target->name, power - defence);
                 }else{
-                        engine->gui->message(engine, TCOD_light_grey, "%s attacks %s but it has no effect!\n", dealer->name, target->name);            
+                        engine->gui->message(engine,
+                                             TCOD_light_grey,
+                                             "%s attacks %s but it has no effect!\n",
+                                             dealer->name, target->name);            
                 }
                 target->destructible->take_damage(engine, target, power);
         }else{
