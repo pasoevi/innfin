@@ -35,13 +35,17 @@ void common_update(struct engine *engine, struct actor *actor){
         }
 }
 
+void free_actor(struct actor *actor){
+        free(actor);
+}
+
 void free_actors(TCOD_list_t actors){
         TCOD_list_clear_and_delete(actors);
 }
 
 struct actor *init_actor(int x, int y, int ch, const char *name,
-                TCOD_color_t col,
-                void (*render)(struct actor *)){
+                         TCOD_color_t col,
+                         void (*render)(struct actor *)){
         struct actor *tmp = malloc(sizeof *tmp);
         
         tmp->x = x;
@@ -62,7 +66,7 @@ struct actor *init_actor(int x, int y, int ch, const char *name,
 }
 
 struct ai *init_ai(void (*update)(struct engine *engine, struct actor *actor),
-             bool (*move_or_attack)(struct engine *engine, struct actor *actor, int targetx, int targety)){
+                   bool (*move_or_attack)(struct engine *engine, struct actor *actor, int targetx, int targety)){
         struct ai *tmp = malloc(sizeof *tmp);
         tmp->update = update;
         tmp->move_or_attack = move_or_attack;
@@ -70,7 +74,7 @@ struct ai *init_ai(void (*update)(struct engine *engine, struct actor *actor),
 }
 
 struct attacker *init_attacker(float power, 
-                   void (*attack)(struct engine *engine, struct actor *dealer, struct actor *target)){
+                               void (*attack)(struct engine *engine, struct actor *dealer, struct actor *target)){
         struct attacker *tmp = malloc(sizeof *tmp);
         tmp->attack = attack;
         tmp->power = power;
@@ -78,9 +82,9 @@ struct attacker *init_attacker(float power,
 }
 
 struct destructible *init_destructible(float max_hp,
-                       float hp, float defence, const char *corpse_name,
-                       float (*take_damage)(struct engine *engine, struct actor *target, float damage),
-                       void (*die)(struct engine *engine, struct actor *actor)){
+                                       float hp, float defence, const char *corpse_name,
+                                       float (*take_damage)(struct engine *engine, struct actor *target, float damage),
+                                       void (*die)(struct engine *engine, struct actor *actor)){
         struct destructible *tmp = malloc(sizeof *tmp);
         
         tmp->die = monster_die;
@@ -231,7 +235,7 @@ void player_die(struct engine *engine, struct actor *actor){
 
 /*** Monster functions ***/
 struct actor *make_monster(int x, int y, const char ch, const char *name, TCOD_color_t col,
-                  float power, float max_hp, float hp, float defence, const char *corpse_name){
+                           float power, float max_hp, float hp, float defence, const char *corpse_name){
         struct actor *tmp = init_actor(x, y, ch, name, col, render_actor);
 
         /* Artificial intelligence */
@@ -317,7 +321,20 @@ struct container *init_container(int capacity){
 
 struct pickable *init_pickable(void){
         struct pickable *tmp = malloc(sizeof(*tmp));
+        tmp->use = healer_use;
         return tmp;
+}
+
+struct actor *make_item(int x, int y, const char ch, const char *name, TCOD_color_t col){
+        struct actor *tmp = init_actor(x, y, ch, name, col, render_actor);
+        tmp->pickable = init_pickable();
+        tmp->blocks = false;
+        
+        return tmp;
+}
+
+struct actor *make_healer_potion(int x, int y){
+        return make_item(x, y, '!', "health potion", TCOD_violet);
 }
 
 void free_container(struct container *container){
@@ -333,7 +350,24 @@ bool pick(struct actor *actor, struct actor *item){
         return false;
 }
 
+bool healer_use(struct actor *actor, struct actor *item){
+        /* heal the actor */
+        if(actor->destructible){
+                float amount_healed = heal(actor, 20);
+                if(amount_healed > 0){
+                        /* Call the common use function */
+                        return use(actor, item);
+                }
+        }
+        return false;
+}
+
 bool use(struct actor *actor, struct actor *item){
+        if(actor->inventory){
+                inventory_remove(actor->inventory, item);
+                free_actor(item);
+                return true;
+        }
         return false;
 }
 

@@ -3,6 +3,7 @@
 #include <stdio.h>
 
 static const int MAX_ROOM_MONSTERS = 3;
+static const int MAX_ROOM_ITEMS = 2;
 
 void dig(struct map *map, int x1, int y1, int x2, int y2){
         if(x2 < x1){
@@ -42,6 +43,17 @@ void create_room(struct engine *engine, bool first, int x1, int y1, int x2, int 
                                 add_monster(engine, x, y);
                         }
                         num_monsters--;
+                }
+
+                /* Add items */
+                int num_items = TCOD_random_get_int(rng, 0, MAX_ROOM_ITEMS);
+                while(num_items > 0){
+                        int x = TCOD_random_get_int(rng, x1, x2);
+                        int y = TCOD_random_get_int(rng, y1, y2);
+                        if(can_walk(engine, x, y)){
+                                add_item(engine, x, y);
+                        }
+                        num_items--;
                 }
         }
 
@@ -163,6 +175,19 @@ void add_monster(struct engine* engine, int x, int y){
                 actor = make_troll(x, y);
         }
         TCOD_list_push(engine->actors, actor);
+}
+
+void add_item(struct engine* engine, int x, int y){
+        TCOD_random_t *rng = TCOD_random_get_instance();
+        struct actor *item;
+        if (TCOD_random_get_int(rng, 0, 100) < 80) {
+                /* Create a health potion */
+                item = make_healer_potion(x, y);
+        }else{
+                /* Create a poison potion */
+                item = make_troll(x, y);
+        }
+        TCOD_list_push(engine->actors, item);
 }
 
 void map_render(struct map *map){
