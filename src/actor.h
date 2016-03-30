@@ -29,6 +29,16 @@ struct destructible{
         void (*die)(struct engine *engine, struct actor *actor);
 };
 
+struct pickable{
+        
+};
+
+/* Capacity is currently counted by the number of items */
+struct container{
+        int capacity; /* The maximum number of items (actors) in it. */
+        TCOD_list_t inventory; /* */
+};
+
 struct actor{
         int x;
         int y;
@@ -37,6 +47,8 @@ struct actor{
         struct attacker *attacker;
 	struct destructible *destructible;
 	struct ai *ai;
+        struct pickable *pickable;
+        struct container *inventory;
         const char *name;
         TCOD_color_t col;
         void (*update)(struct engine *engine, struct actor *actor);
@@ -50,14 +62,19 @@ struct actor{
    NOTE: this is a low level function, intended to be used ONLY by
    wrapper functions e.g. make_orc, make_player, etc.
 */
-void init_actor(struct actor **actor, int w, int h, int ch, const char *name, TCOD_color_t col, void (*render)(struct actor *));
+struct actor * init_actor(int w, int h, int ch, const char *name, TCOD_color_t col, void (*render)(struct actor *));
 void free_actor(struct actor *actor);
 void free_actors(TCOD_list_t actors);
 
-void make_orc(struct actor **actor, int x, int y);
-void make_troll(struct actor **actor, int x, int y);
+struct container *init_container(int capacity);
+struct pickable *init_pickable(void);
+bool inventory_add(struct container *container, struct actor *actor);
+void inventory_remove(struct container *container, struct actor *actor);
+
+struct actor *make_orc(int x, int y);
+struct actor *make_troll(int x, int y);
 void make_kobold(struct actor **actor, int x, int y);
-void make_player(struct actor **player, int x, int y);
+struct actor *make_player(int x, int y);
 void render_actor(struct actor *actor);
 void player_update(struct engine *engine, struct actor *actor);
 void monster_update(struct engine *engine, struct actor *actor);

@@ -157,10 +157,10 @@ void add_monster(struct engine* engine, int x, int y){
         struct actor *actor;
         if (TCOD_random_get_int(rng, 0, 100) < 80) {
                 /* Create an orc */
-                make_orc(&actor, x, y);
+                actor = make_orc(x, y);
         }else{
                 /* Create an orc */
-                make_troll(&actor, x, y);
+                actor = make_troll(x, y);
         }
         TCOD_list_push(engine->actors, actor);
 }

@@ -29,5 +29,5 @@ struct gui{
 };
 
 void free_gui(struct gui *gui);
-void init_gui(struct gui **gui, int w, int h);
+struct gui *init_gui(int w, int h);
 #endif

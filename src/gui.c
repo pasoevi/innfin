@@ -126,7 +126,7 @@ void free_gui(struct gui *gui){
         free(gui);
 }
 
-void init_gui(struct gui **gui, int w, int h){
+struct gui *init_gui(int w, int h){
         struct gui *tmp = malloc(sizeof *tmp);
         tmp->con = TCOD_console_new(w, h);
         tmp->render_bar = render_bar;
@@ -135,5 +135,5 @@ void init_gui(struct gui **gui, int w, int h){
         tmp->render = gui_render;
         tmp->message = message;
         tmp->log = TCOD_list_new();
-        *gui = tmp;
+        return tmp;
 }

@@ -7,7 +7,7 @@
 struct engine *engine;
 
 void init(void){
-        engine_init(&engine, WINDOW_W, WINDOW_H, PROGRAM_NAME);
+        engine = engine_init(WINDOW_W, WINDOW_H, PROGRAM_NAME);
 }
 
 void clean(){
