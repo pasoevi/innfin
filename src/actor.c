@@ -92,41 +92,6 @@ struct destructible *init_destructible(float max_hp,
         return tmp;
 }
 
-struct container *init_container(int capacity){
-        struct container *tmp = malloc(sizeof *tmp);
-        tmp->capacity = capacity;
-        tmp->inventory = TCOD_list_new();
-
-        return tmp;
-}
-
-struct pickable *init_pickable(void){
-        struct pickable *tmp = malloc(sizeof(*tmp));
-        return tmp;
-}
-
-void free_container(struct container *container){
-        TCOD_list_clear_and_delete(container->inventory);
-        free(container);
-}
-
-void free_pickable(struct pickable *pickable){
-        
-}
-
-bool inventory_add(struct container *container, struct actor *actor){
-        if(container->capacity > 0 && TCOD_list_size(container->inventory) > container->capacity){
-                return false;
-        }
-
-        TCOD_list_push(container->inventory, actor);
-        return true;
-}
-
-void inventory_remove(struct container *container, struct actor *actor){
-        TCOD_list_remove(container->inventory, actor);
-}
-
 void render_actor(struct actor *actor){
         TCOD_console_set_char(NULL, actor->x, actor->y, actor->ch);
         TCOD_console_set_char_foreground(NULL, actor->x, actor->y, actor->col);
@@ -339,4 +304,52 @@ void monster_die(struct engine *engine, struct actor *actor){
         engine->gui->message(engine, TCOD_light_grey, "%s is dead.\n", actor->name);
         /* Call the common die function */
         die(engine, actor);
+}
+
+/** Inventory functions **/
+struct container *init_container(int capacity){
+        struct container *tmp = malloc(sizeof *tmp);
+        tmp->capacity = capacity;
+        tmp->inventory = TCOD_list_new();
+
+        return tmp;
+}
+
+struct pickable *init_pickable(void){
+        struct pickable *tmp = malloc(sizeof(*tmp));
+        return tmp;
+}
+
+void free_container(struct container *container){
+        TCOD_list_clear_and_delete(container->inventory);
+        free(container);
+}
+
+bool pick(struct actor *actor, struct actor *item){
+        if(actor->inventory && inventory_add(actor->inventory, item)){
+                TCOD_list_remove(actor->inventory, item);
+                return true;
+        }
+        return false;
+}
+
+bool use(struct actor *actor, struct actor *item){
+        return false;
+}
+
+void free_pickable(struct pickable *pickable){
+        
+}
+
+bool inventory_add(struct container *container, struct actor *actor){
+        if(container->capacity > 0 && TCOD_list_size(container->inventory) > container->capacity){
+                return false;
+        }
+
+        TCOD_list_push(container->inventory, actor);
+        return true;
+}
+
+void inventory_remove(struct container *container, struct actor *actor){
+        TCOD_list_remove(container->inventory, actor);
 }

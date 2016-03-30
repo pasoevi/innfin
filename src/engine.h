@@ -40,5 +40,4 @@ void free_engine(struct engine *engine);
 void send_to_back(struct engine *engine, struct actor *actor);
 void engine_update(struct engine *engine);
 void engine_render(struct engine *engine);
-
 #endif

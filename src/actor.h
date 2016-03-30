@@ -70,6 +70,8 @@ struct container *init_container(int capacity);
 struct pickable *init_pickable(void);
 bool inventory_add(struct container *container, struct actor *actor);
 void inventory_remove(struct container *container, struct actor *actor);
+bool pick(struct actor *actor, struct actor *item);
+bool use(struct actor *actor, struct actor *item);
 
 struct actor *make_orc(int x, int y);
 struct actor *make_troll(int x, int y);
