@@ -201,6 +201,11 @@ bool player_move_or_attack(struct engine *engine, struct actor *actor, int targe
         return true;
 }
 
+void handle_action_key(struct engine *engine, struct actor *actor){
+        /* */
+        printf("%c\n", engine->key.c);
+}
+
 void player_update(struct engine *engine, struct actor *actor){
 	if(actor->destructible && is_dead(actor)){
 		return;
@@ -213,6 +218,7 @@ void player_update(struct engine *engine, struct actor *actor){
                 case TCODK_DOWN : dy = 1; break;
                 case TCODK_LEFT : dx = -1; break;
                 case TCODK_RIGHT : dx = 1; break;
+                case TCODK_CHAR : handle_action_key(engine, actor); break;
                 default:break;
                 }
         }
