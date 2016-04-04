@@ -31,16 +31,17 @@ struct engine *engine_init(int w, int h, const char *title){
         tmp->compute_fov = true;
         tmp->game_status = STARTUP;
         
-        /* Create a player */
-
-        tmp->player = make_player(40, 25);
-        tmp->player->update = player_update;
-        
         tmp->actors = TCOD_list_new();
-        TCOD_list_push(tmp->actors, (const void *)tmp->player);
+        
 
         /* Add a map to the engine */
         init_map(tmp, 80, 43);
+        
+        /* Create a player */
+        tmp->player = make_player(40, 25);
+        tmp->player->update = player_update;
+        TCOD_list_push(tmp->actors, (const void *)tmp->player);
+        
         tmp->gui->message(tmp, TCOD_red, WELCOME_MESSAGE);
         return tmp;
 }

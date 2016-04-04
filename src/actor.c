@@ -216,7 +216,13 @@ void handle_action_key(struct engine *engine, struct actor *actor){
                         if(actor->pickable && actor->x == engine->player->x && actor->y == engine->player->y){
                                 /* Try picking up the item */
                                 found = true;
-                                engine->gui->message(engine, TCOD_green, "You try to pick up %s.\n", actor->name);
+                                if(pick(engine, engine->player, actor)){
+                                        engine->gui->message(engine, TCOD_green, "You pick up %s.\n", actor->name);
+                                }else{
+                                        engine->gui->message(engine, TCOD_green, "You tried to pick up %s. Inventory is full.\n", actor->name);
+                                        
+                                }
+                                
                         }
                 }
                 
@@ -384,9 +390,9 @@ void free_container(struct container *container){
         free(container);
 }
 
-bool pick(struct actor *actor, struct actor *item){
+bool pick(struct engine *engine, struct actor *actor, struct actor *item){
         if(actor->inventory && inventory_add(actor->inventory, item)){
-                TCOD_list_remove(actor->inventory, item);
+                TCOD_list_remove(engine->actors, item);
                 return true;
         }
         return false;

@@ -4,7 +4,7 @@
 * Player's Guide
 * Developer's Guide
 ** Source code structure
-*** actor.h
+*** /actor.h/
 This header file contains all the functions related to the actors,
 including NPC and items (potions, scrolls, books, etc). All of this is
 implemented as a single actor structure (struct actor) which contains
