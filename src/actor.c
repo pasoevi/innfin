@@ -1,4 +1,5 @@
 #include <stdlib.h>
+#include <stdbool.h>
 #include <stdio.h>
 #include <math.h>
 #include "actor.h"
@@ -203,6 +204,30 @@ bool player_move_or_attack(struct engine *engine, struct actor *actor, int targe
 
 void handle_action_key(struct engine *engine, struct actor *actor){
         /* */
+        switch(engine->key.c){
+        case 'g':{
+                bool found = false;
+                /* Check for existing items on this loction */
+                struct actor **iter;
+                for(iter = (struct actor **)TCOD_list_begin(engine->actors);
+                    iter != (struct actor **)TCOD_list_end(engine->actors);
+                    iter++){
+                        struct actor *actor = *iter;
+                        if(actor->pickable && actor->x == engine->player->x && actor->y == engine->player->y){
+                                /* Try picking up the item */
+                                found = true;
+                        }
+                }
+                
+                if(found){
+                        engine->gui->message(engine, TCOD_green, "You try to pick up a %s.\n", actor->name);
+                }else{
+                        engine->gui->message(engine, TCOD_grey, "There is nothing to pick up here here.\n");
+                }
+                break;
+        }
+
+        }
         printf("%c\n", engine->key.c);
 }
 
