@@ -129,6 +129,7 @@ void free_gui(struct gui *gui){
 struct gui *init_gui(int w, int h){
         struct gui *tmp = malloc(sizeof *tmp);
         tmp->con = TCOD_console_new(w, h);
+        tmp->inventory_con = TCOD_console_new(INVENTORY_WIDTH, INVENTORY_HEIGHT);
         tmp->render_bar = render_bar;
         tmp->render_log = render_log;
         tmp->render_mouse_look = render_mouse_look;

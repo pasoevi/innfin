@@ -204,6 +204,47 @@ bool player_move_or_attack(struct engine *engine, struct actor *actor, int targe
         return true;
 }
 
+struct actor *choose_from_inventory(struct engine *engine, struct actor *actor){
+        /* Display the inventory frame */
+        TCOD_console_t *con = engine->gui->inventory_con;
+        TCOD_color_t color = (TCOD_color_t){200, 180, 50};
+        TCOD_console_set_default_foreground(con, color);
+        TCOD_console_print_frame(con, 0, 0, INVENTORY_WIDTH, INVENTORY_HEIGHT, true,
+                        TCOD_BKGND_DEFAULT, "inventory");
+
+        /* Display the items with their respective shortcuts */
+        TCOD_console_set_default_foreground(con, TCOD_white);
+        int shortcut = 'a';
+        int y = 1;
+        struct actor **iter;
+        for(iter = (struct actor **)TCOD_list_begin(actor->inventory->inventory);
+            iter != (struct actor **)TCOD_list_end(actor->inventory->inventory);
+            iter++){
+                struct actor *item = *iter;
+                TCOD_console_print(con, 2, y, "(%c) %s", shortcut, item->name);
+                y++;
+                shortcut++;
+        }
+
+        /* Blit the inventory console to the root console. */
+        TCOD_console_blit(con, 0, 0, INVENTORY_WIDTH, INVENTORY_HEIGHT,
+                          NULL, engine->window_w / 2 - INVENTORY_WIDTH / 2, engine->window_h / 2 - INVENTORY_HEIGHT / 2, 1.f, 1.f);
+        TCOD_console_flush(NULL);
+
+        /* wait for a key press */
+        TCOD_key_t key;
+        TCOD_sys_wait_for_event(TCOD_EVENT_KEY_PRESS, &key, NULL, true);
+        if (key.vk == TCODK_CHAR ) {
+                int actor_index = key.c - 'a';
+                if ( actor_index >= 0 && actor_index < TCOD_list_size(actor->inventory->inventory)) {
+                        return TCOD_list_get(actor->inventory->inventory, actor_index);
+                }
+        }
+        return NULL;
+
+
+}
+
 void handle_action_key(struct engine *engine, struct actor *actor){
         /* */
         switch(engine->key.c){
@@ -239,6 +280,15 @@ void handle_action_key(struct engine *engine, struct actor *actor){
         }
         case 'e':
                 /* Eat */
+                break;
+        case 'i' : // display inventory
+                {
+                        struct actor *item = choose_from_inventory(engine, actor);
+                        if (item) {
+                                item->pickable->use(actor, item);
+                                engine->game_status = NEW_TURN;
+                        }
+                }
                 break;
         default:
                 engine->gui->message(engine, TCOD_grey, "Unknown command: %c.\n", engine->key.c);

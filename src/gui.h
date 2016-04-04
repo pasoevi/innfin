@@ -7,7 +7,9 @@ enum{
         PANEL_H = 7,
         BAR_W = 20,
         MSG_X = BAR_W + 2,
-        MSG_HEIGHT = PANEL_H - 1
+        MSG_HEIGHT = PANEL_H - 1,
+        INVENTORY_WIDTH = 50,
+        INVENTORY_HEIGHT = 28
 };
 
 struct message{
@@ -17,6 +19,7 @@ struct message{
 
 struct gui{
         TCOD_console_t *con;
+        TCOD_console_t *inventory_con;
         void (*render)(struct engine *engine);
         void (*render_bar)(struct engine *engine, int x, int y, int w,
                            const char *name, const float value,
