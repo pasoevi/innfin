@@ -12,11 +12,11 @@ enum{
 };
 
 enum GameStatus {
-       STARTUP,
-       IDLE,
-       NEW_TURN,
-       VICTORY,
-       DEFEAT
+        STARTUP,
+        IDLE,
+        NEW_TURN,
+        VICTORY,
+        DEFEAT
 };
 
 struct engine{

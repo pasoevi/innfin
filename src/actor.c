@@ -210,7 +210,7 @@ struct actor *choose_from_inventory(struct engine *engine, struct actor *actor){
         TCOD_color_t color = (TCOD_color_t){200, 180, 50};
         TCOD_console_set_default_foreground(con, color);
         TCOD_console_print_frame(con, 0, 0, INVENTORY_WIDTH, INVENTORY_HEIGHT, true,
-                        TCOD_BKGND_DEFAULT, "inventory");
+                                 TCOD_BKGND_DEFAULT, "inventory");
 
         /* Display the items with their respective shortcuts */
         TCOD_console_set_default_foreground(con, TCOD_white);
