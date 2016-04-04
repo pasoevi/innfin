@@ -227,15 +227,20 @@ void handle_action_key(struct engine *engine, struct actor *actor){
                 }
                 break;
         }
+        case 'e':
+                /* Eat */
+                break;
+        default:
+                engine->gui->message(engine, TCOD_grey, "Unknown command: %c.\n", engine->key.c);
+                break;
 
         }
-        printf("%c\n", engine->key.c);
 }
 
 void player_update(struct engine *engine, struct actor *actor){
-	if(actor->destructible && is_dead(actor)){
-		return;
-	}
+        if(actor->destructible && is_dead(actor)){
+                return;
+        }
 
         int dx = 0, dy = 0;
         if(engine->key.pressed){
@@ -293,8 +298,8 @@ struct actor *make_troll(int x, int y){
 bool monster_move_or_attack(struct engine *engine, struct actor *actor, int targetx, int targety){
         int dx = targetx - actor->x;
         int dy = targety - actor->y;
-	int stepdx = (dx > 0 ? 1 : -1);
-	int stepdy = (dy > 0 ? 1 : -1);
+        int stepdx = (dx > 0 ? 1 : -1);
+        int stepdy = (dy > 0 ? 1 : -1);
         float distance = sqrtf(dx * dx + dy * dy);
 
         if(distance >= 2){
@@ -305,10 +310,10 @@ bool monster_move_or_attack(struct engine *engine, struct actor *actor, int targ
                         actor->x += dx;
                         actor->y += dy;
                 }else if(can_walk(engine, actor->x + stepdx, actor->y)){
-			actor->x += stepdx;
-		}else if(can_walk(engine, actor->x, actor->y + stepdy)){
-			actor->y += stepdy;
-		}
+                        actor->x += stepdx;
+                }else if(can_walk(engine, actor->x, actor->y + stepdy)){
+                        actor->y += stepdy;
+                }
         }else if(actor->attacker){
                 actor->attacker->attack(engine, actor, engine->player);
                 return false;
@@ -318,21 +323,21 @@ bool monster_move_or_attack(struct engine *engine, struct actor *actor, int targ
 }
 
 void monster_update(struct engine *engine, struct actor *actor){
-	/* Check if the agent is alive */
+        /* Check if the agent is alive */
         if(actor->destructible && is_dead(actor)){
                 return;
         }
 	
         if(is_in_fov(engine->map, actor->x, actor->y)){
                 /* We can see the player, start tracking him */
-		actor->ai->move_count = TRACKING_TURNS;
+                actor->ai->move_count = TRACKING_TURNS;
         }else{
-		(actor->ai->move_count)--;
-	}
+                (actor->ai->move_count)--;
+        }
 	
-	if(actor->ai->move_count > 0){
-		actor->ai->move_or_attack(engine, actor, engine->player->x, engine->player->y);
-	}
+        if(actor->ai->move_count > 0){
+                actor->ai->move_or_attack(engine, actor, engine->player->x, engine->player->y);
+        }
 }
 
 /* Transform a monster into a rotting corpse */
