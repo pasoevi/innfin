@@ -186,12 +186,14 @@ bool player_move_or_attack(struct engine *engine, struct actor *actor, int targe
                 }
         }
 
-        /* Look for corpses */
+        /* Look for corpses or pickable items */
         for(iter = (struct actor **)TCOD_list_begin(engine->actors);
             iter != (struct actor **)TCOD_list_end(engine->actors);
             iter++){
-                if((*iter)->destructible && is_dead(*iter) &&
-                   (*iter)->x == targetx && (*iter)->y == targety){
+                struct actor *actor = *iter;
+                bool corpse_or_item = (actor->destructible && is_dead(actor)) || actor->pickable;
+                if(corpse_or_item &&
+                   actor->x == targetx && actor->y == targety){
                         engine->gui->message(engine, TCOD_light_gray, "There's a %s here\n", (*iter)->name);
                 }
         }
@@ -215,10 +217,12 @@ void handle_action_key(struct engine *engine, struct actor *actor){
                         struct actor *actor = *iter;
                         if(actor->pickable && actor->x == engine->player->x && actor->y == engine->player->y){
                                 /* Try picking up the item */
-                                found = true;
                                 if(pick(engine, engine->player, actor)){
+                                        found = true;
                                         engine->gui->message(engine, TCOD_green, "You pick up %s.\n", actor->name);
-                                }else{
+                                        break;
+                                }else if(!found){
+                                        found = true;
                                         engine->gui->message(engine, TCOD_green, "You tried to pick up %s. Inventory is full.\n", actor->name);
                                         
                                 }
@@ -226,11 +230,11 @@ void handle_action_key(struct engine *engine, struct actor *actor){
                         }
                 }
                 
-                if(found){
-                        
-                }else{
+                if(!found){
                         engine->gui->message(engine, TCOD_grey, "There is nothing to pick up here here.\n");
+                        
                 }
+                engine->game_status = NEW_TURN;
                 break;
         }
         case 'e':

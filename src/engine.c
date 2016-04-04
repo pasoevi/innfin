@@ -32,16 +32,14 @@ struct engine *engine_init(int w, int h, const char *title){
         tmp->game_status = STARTUP;
         
         tmp->actors = TCOD_list_new();
-        
-
-        /* Add a map to the engine */
-        init_map(tmp, 80, 43);
-        
         /* Create a player */
         tmp->player = make_player(40, 25);
         tmp->player->update = player_update;
         TCOD_list_push(tmp->actors, (const void *)tmp->player);
         
+
+        /* Add a map to the engine */
+        init_map(tmp, 80, 43);
         tmp->gui->message(tmp, TCOD_red, WELCOME_MESSAGE);
         return tmp;
 }
@@ -73,7 +71,7 @@ void engine_update(struct engine *engine){
 void engine_render(struct engine *engine){
         TCOD_console_clear(NULL);
         map_render(engine->map);
-        engine->player->render(engine->player);
+        
         engine->gui->render(engine);
         
         /* draw the actors */
@@ -87,6 +85,8 @@ void engine_render(struct engine *engine){
                 }
         }
         
+        engine->player->render(engine->player);
+
         TCOD_console_flush(NULL); 
 }
 
