@@ -1,0 +1,18 @@
+#+TITLE: Documentation
+#+AUTHOR: Sergi Pasoev
+#+HTML_HEAD: <link rel="stylesheet" type="text/css" href="styles.css" />
+* Player's Guide
+* Developer's Guide
+** Source code structure
+*** actor.h
+This header file contains all the functions related to the actors,
+including NPC and items (potions, scrolls, books, etc). All of this is
+implemented as a single actor structure (struct actor) which contains
+pointers to various helper structures, such as `pickable` (an item
+that can be picked and used, `destructible` (an actor that can be
+harmed when attacked, `attacker`, (an actor that can
+attack. Intelligently or with random motives). There is also an
+important `ai` helper structure, which, if the actor possesses it,
+gives the wearer the ability to have intelligence, perhaps even
+increasing one, such as capacity for learning. 
+

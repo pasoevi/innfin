@@ -72,6 +72,7 @@ bool inventory_add(struct container *container, struct actor *actor);
 void inventory_remove(struct container *container, struct actor *actor);
 bool pick(struct actor *actor, struct actor *item);
 bool healer_use(struct actor *actor, struct actor *item);
+bool curing_use(struct actor *actor, struct actor *item);
 bool use(struct actor *actor, struct actor *item);
 struct actor *make_healer_potion(int x, int y);
 

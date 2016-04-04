@@ -216,7 +216,7 @@ void handle_action_key(struct engine *engine, struct actor *actor){
                         if(actor->pickable && actor->x == engine->player->x && actor->y == engine->player->y){
                                 /* Try picking up the item */
                                 found = true;
-                                engine->gui->message(engine, TCOD_green, "You try to pick up a %s.\n", actor->name);
+                                engine->gui->message(engine, TCOD_green, "You try to pick up %s.\n", actor->name);
                         }
                 }
                 
@@ -358,20 +358,25 @@ struct container *init_container(int capacity){
 
 struct pickable *init_pickable(void){
         struct pickable *tmp = malloc(sizeof(*tmp));
-        tmp->use = healer_use;
         return tmp;
 }
 
-struct actor *make_item(int x, int y, const char ch, const char *name, TCOD_color_t col){
+struct actor *make_item(int x, int y, const char ch, const char *name, TCOD_color_t col,
+                        bool (*use)(struct actor *actor, struct actor *item)){
         struct actor *tmp = init_actor(x, y, ch, name, col, render_actor);
         tmp->pickable = init_pickable();
+        tmp->pickable->use = use;
         tmp->blocks = false;
         
         return tmp;
 }
 
 struct actor *make_healer_potion(int x, int y){
-        return make_item(x, y, '!', "health potion", TCOD_violet);
+        return make_item(x, y, '!', "a health potion", TCOD_violet, healer_use);
+}
+
+struct actor *make_curing_potion(int x, int y){
+        return make_item(x, y, '~', "a curing potion", TCOD_light_green, curing_use);
 }
 
 void free_container(struct container *container){
@@ -388,6 +393,19 @@ bool pick(struct actor *actor, struct actor *item){
 }
 
 bool healer_use(struct actor *actor, struct actor *item){
+        /* heal the actor */
+        if(actor->destructible){
+                float amount_healed = heal(actor, 20);
+                if(amount_healed > 0){
+                        /* Call the common use function */
+                        return use(actor, item);
+                }
+        }
+        return false;
+}
+
+/* TODO: At the moment does the same as the HEALTH POTION (See above) */
+bool curing_use(struct actor *actor, struct actor *item){
         /* heal the actor */
         if(actor->destructible){
                 float amount_healed = heal(actor, 20);
