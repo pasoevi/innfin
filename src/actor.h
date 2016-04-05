@@ -33,6 +33,10 @@ struct pickable{
         bool (*use)(struct actor *actor, struct actor *item);
 };
 
+struct edible{
+        bool (*eat)(struct actor *actor, struct actor *food);
+}
+
 /* Capacity is currently counted by the number of items */
 struct container{
         int capacity; /* The maximum number of items (actors) in it. */
@@ -74,6 +78,7 @@ bool pick(struct engine *engine, struct actor *actor, struct actor *item);
 bool healer_use(struct actor *actor, struct actor *item);
 bool curing_use(struct actor *actor, struct actor *item);
 bool use(struct actor *actor, struct actor *item);
+bool eat(struct actor *actor, struct actor *food);
 struct actor *make_healer_potion(int x, int y);
 
 struct actor *make_orc(int x, int y);
