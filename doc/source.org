@@ -1,6 +1,13 @@
 #+TITLE: Documentation
 #+AUTHOR: Sergi Pasoev
 #+HTML_HEAD: <link rel="stylesheet" type="text/css" href="styles.css" />
+* Introduction
+ODAM is a role-playing game in the tradition of classic roguelike
+games. As you play the game, you discover various creatures in the
+halls and dungeons carved deep under the earth. Your goal is to choose
+the deity to worship and attempt to do his/her bidding. You can
+abandon your god and convert to other religion later in the game and
+have the objective of the game changed, as well. 
 * Player's Guide
 ** The World
 The game is set in the world deep in the past in which magic
@@ -28,14 +35,19 @@ you have done something of importance on the large scale.
 
 ** Character race
 *** Dark Elf
+Dark elves are the most mysterious of the lot. Seeing their innate
+stats, it is difficult to foresee where they would thrive and where
+they would perish. They can be outstanding ranged combatants with
+their mastery of archery and singing spells. They are, however, hated
+by many creatures and feared by yet more.
 *** Dwarf
 Dwarves are the most typical melee fighters with high health points,
 good defence and high damage. This doesn't mean that they have much
 lower strength in other stats, but this advantage in melee fighting
 drives them (or the player manipulating them...) into further
-developing this skill and  therefor neglecting some other skills. This
+developing this skill and therefore neglecting some other skills. This
 makes them stand out in early to mid game but facing significant
-unforeseen challenges in late game.
+unforeseen challenges in late game if overly specialized.
 *** Human
 In many games humans are typically the most /generic/ species with
 stats closest to averages. In this game, however, human species are
@@ -43,21 +55,21 @@ treated specially as well, but in a slightly different sense. Humans
 have the highest learning capacity and they are more flexible in what
 talents they develop. This makes them /generic/ in a similar sense to
 other roguelikes. The difference lies in that humans are the most
-prone to /corruption/ and /mutation/. This can be both, helpful or
-hindering based on playing style, situation or strategy.
+prone to /corruption/ and most vulnerable to /mutation/. This can be
+both, helpful or hindering based on playing style, situation or
+strategy.
 *** Huttler
 Huttlers are distant relatives of humans, possessing similar
-intelligence, persons and susceptibility toward mutation and
-corruption (and other conditions of living) but have vastly different
-workings in learning and interactions with non-player characters. The
-difference between them and humans becomes the more evident as the
-game progresses. 
+intelligence, person and susceptibility toward mutation and corruption
+(and other conditions of living) but have vastly different workings in
+learning and interactions with non-player characters. The difference
+between them and humans becomes more evident as the game progresses.
 
 Some say that Huttlers parallel hurthlings or hobbits in other
-media. It hasn't been confirmed, however and despite the fact that
+media. It hasn't been confirmed, however, and despite the fact that
 they indeed live in holes or /huts/, they are more inclined to
 barbarism and wildness than to farming and agriculture. Neither are
-they oblivious to the tidings from the larger world. 
+they oblivious to the tidings from the larger world.
 ** Skills
 ** Combat
 *** Weapons
