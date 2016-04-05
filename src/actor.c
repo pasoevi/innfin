@@ -160,7 +160,7 @@ struct actor *make_player(int x, int y){
         tmp->attacker = init_attacker(10, attack);
 
         /* Init destructible */
-        tmp->destructible = init_destructible(100, 100, 4, "your dead body", take_damage, player_die);
+        tmp->destructible = init_destructible(50, 50, 4, "your dead body", take_damage, player_die);
 
         /* Init inventory */
         tmp->inventory = init_container(26);
@@ -191,10 +191,12 @@ bool player_move_or_attack(struct engine *engine, struct actor *actor, int targe
             iter != (struct actor **)TCOD_list_end(engine->actors);
             iter++){
                 struct actor *actor = *iter;
-                bool corpse_or_item = (actor->destructible && is_dead(actor)) || actor->pickable;
+                bool corpse_or_item = (actor->destructible && is_dead(actor))
+                        || actor->pickable;
                 if(corpse_or_item &&
                    actor->x == targetx && actor->y == targety){
-                        engine->gui->message(engine, TCOD_light_gray, "There's a %s here\n", (*iter)->name);
+                        engine->gui->message(engine, TCOD_light_gray,
+                                             "There's a %s here\n", (*iter)->name);
                 }
         }
 
@@ -228,7 +230,8 @@ struct actor *choose_from_inventory(struct engine *engine, struct actor *actor){
 
         /* Blit the inventory console to the root console. */
         TCOD_console_blit(con, 0, 0, INVENTORY_WIDTH, INVENTORY_HEIGHT,
-                          NULL, engine->window_w / 2 - INVENTORY_WIDTH / 2, engine->window_h / 2 - INVENTORY_HEIGHT / 2, 1.f, 1.f);
+                          NULL, engine->window_w / 2 - INVENTORY_WIDTH / 2,
+                          engine->window_h / 2 - INVENTORY_HEIGHT / 2, 1.f, 1.f);
         TCOD_console_flush(NULL);
 
         /* wait for a key press */
@@ -236,13 +239,11 @@ struct actor *choose_from_inventory(struct engine *engine, struct actor *actor){
         TCOD_sys_wait_for_event(TCOD_EVENT_KEY_PRESS, &key, NULL, true);
         if (key.vk == TCODK_CHAR ) {
                 int actor_index = key.c - 'a';
-                if ( actor_index >= 0 && actor_index < TCOD_list_size(actor->inventory->inventory)) {
+                if (actor_index >= 0 && actor_index < TCOD_list_size(actor->inventory->inventory)) {
                         return TCOD_list_get(actor->inventory->inventory, actor_index);
                 }
         }
         return NULL;
-
-
 }
 
 void handle_action_key(struct engine *engine, struct actor *actor){
@@ -272,8 +273,7 @@ void handle_action_key(struct engine *engine, struct actor *actor){
                 }
                 
                 if(!found){
-                        engine->gui->message(engine, TCOD_grey, "There is nothing to pick up here here.\n");
-                        
+                        engine->gui->message(engine, TCOD_grey, "There is nothing to pick up here here.\n");                        
                 }
                 engine->game_status = NEW_TURN;
                 break;
@@ -293,7 +293,6 @@ void handle_action_key(struct engine *engine, struct actor *actor){
         default:
                 engine->gui->message(engine, TCOD_grey, "Unknown command: %c.\n", engine->key.c);
                 break;
-
         }
 }
 
@@ -322,12 +321,20 @@ void player_update(struct engine *engine, struct actor *actor){
         }
 }
 
+
+/* Writes a memorial file */
+static void make_memorial(struct actor *actor){
+        printf("The program should have written a memorial file in the user's home directory. NOT IMPLEMENTED\n"); 
+}
+
 /* Transform the actor into a decaying corpse */
 void player_die(struct engine *engine, struct actor *actor){
         engine->gui->message(engine, TCOD_red, "You die.\n");
         /* Call the common death function */
         die(engine, actor);
+        make_memorial(actor);
         engine->game_status = DEFEAT;
+        
 }
 
 /*** Monster functions ***/
@@ -348,11 +355,11 @@ struct actor *make_monster(int x, int y, const char ch, const char *name, TCOD_c
 }
 
 struct actor *make_orc(int x, int y){
-        return make_monster(x, y, 'o', "orc", TCOD_desaturated_green, 5, 15, 15, 2, "dead orc");
+        return make_monster(x, y, 'o', "orc", TCOD_desaturated_green, 8, 15, 15, 2, "dead orc");
 }
 
 struct actor *make_troll(int x, int y){
-        return make_monster(x, y, 'T', "troll", TCOD_darker_green, 6, 20, 20, 3, "troll carcass");
+        return make_monster(x, y, 'T', "troll", TCOD_darker_green, 10, 20, 20, 3, "troll carcass");
 }
 
 bool monster_move_or_attack(struct engine *engine, struct actor *actor, int targetx, int targety){
