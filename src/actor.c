@@ -301,7 +301,8 @@ void handle_action_key(struct engine *engine, struct actor *actor)
         case 'e':
                 /* Eat */
                 break;
-        case 'i' : // display inventory
+        case 'i' :
+                /* display inventory */
                 {
                         struct actor *item = choose_from_inventory(engine, actor);
                         if (item) {
