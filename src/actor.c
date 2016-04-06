@@ -289,6 +289,15 @@ void handle_action_key(struct engine *engine, struct actor *actor)
                 engine->game_status = NEW_TURN;
                 break;
         }
+        case 'd':
+                /* Drop item */
+                {
+                        struct actor *item = choose_from_inventory(engine, actor);
+                        if(item){
+                                drop(engine, actor, item);
+                                engine->game_status = NEW_TURN;
+                        }
+                }
         case 'e':
                 /* Eat */
                 break;
@@ -484,6 +493,20 @@ bool pick(struct engine *engine, struct actor *actor, struct actor *item)
         }
         return false;
 }
+
+bool drop(struct engine *engine, struct actor *actor, struct actor *item)
+{
+        if(actor->inventory){
+                inventory_remove(actor->inventory, item);
+                TCOD_list_push(engine->actors, item);
+                item->x = actor->x;
+                item->y = actor->y;
+                engine->gui->message(engine, TCOD_light_grey, "%s drops a %s.\n", actor->name, item->name);
+                return true;
+        }
+        return false;
+}
+        
 
 bool healer_use(struct actor *actor, struct actor *item)
 {
