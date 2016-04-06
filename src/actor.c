@@ -8,7 +8,8 @@
 extern void compute_fov(struct engine *engine);
 
 /*** Common functions ***/
-float take_damage(struct engine *engine, struct actor *target, float damage){
+float take_damage(struct engine *engine, struct actor *target, float damage)
+{
         /* Reduce the damage by the fraction that the target can deflect */
 	damage -= target->destructible->defence;
 	if(damage > 0){
@@ -26,7 +27,8 @@ float take_damage(struct engine *engine, struct actor *target, float damage){
    The common update function that calls the intelligent update function
    if present
 */
-void common_update(struct engine *engine, struct actor *actor){
+void common_update(struct engine *engine, struct actor *actor)
+{
         /* 
            Do things that are common to all actors.  nothing at the
            moment.
@@ -36,17 +38,20 @@ void common_update(struct engine *engine, struct actor *actor){
         }
 }
 
-void free_actor(struct actor *actor){
+void free_actor(struct actor *actor)
+{
         free(actor);
 }
 
-void free_actors(TCOD_list_t actors){
+void free_actors(TCOD_list_t actors)
+{
         TCOD_list_clear_and_delete(actors);
 }
 
 struct actor *init_actor(int x, int y, int ch, const char *name,
                          TCOD_color_t col,
-                         void (*render)(struct actor *)){
+                         void (*render)(struct actor *))
+{
         struct actor *tmp = malloc(sizeof *tmp);
         
         tmp->x = x;
@@ -67,7 +72,8 @@ struct actor *init_actor(int x, int y, int ch, const char *name,
 }
 
 struct ai *init_ai(void (*update)(struct engine *engine, struct actor *actor),
-                   bool (*move_or_attack)(struct engine *engine, struct actor *actor, int targetx, int targety)){
+                   bool (*move_or_attack)(struct engine *engine, struct actor *actor, int targetx, int targety))
+{
         struct ai *tmp = malloc(sizeof *tmp);
         tmp->update = update;
         tmp->move_or_attack = move_or_attack;
@@ -75,7 +81,8 @@ struct ai *init_ai(void (*update)(struct engine *engine, struct actor *actor),
 }
 
 struct attacker *init_attacker(float power, 
-                               void (*attack)(struct engine *engine, struct actor *dealer, struct actor *target)){
+                               void (*attack)(struct engine *engine, struct actor *dealer, struct actor *target))
+{
         struct attacker *tmp = malloc(sizeof *tmp);
         tmp->attack = attack;
         tmp->power = power;
@@ -85,7 +92,8 @@ struct attacker *init_attacker(float power,
 struct destructible *init_destructible(float max_hp,
                                        float hp, float defence, const char *corpse_name,
                                        float (*take_damage)(struct engine *engine, struct actor *target, float damage),
-                                       void (*die)(struct engine *engine, struct actor *actor)){
+                                       void (*die)(struct engine *engine, struct actor *actor))
+{
         struct destructible *tmp = malloc(sizeof *tmp);
         
         tmp->die = monster_die;
@@ -97,12 +105,14 @@ struct destructible *init_destructible(float max_hp,
         return tmp;
 }
 
-void render_actor(struct actor *actor){
+void render_actor(struct actor *actor)
+{
         TCOD_console_set_char(NULL, actor->x, actor->y, actor->ch);
         TCOD_console_set_char_foreground(NULL, actor->x, actor->y, actor->col);
 }
 
-void attack(struct engine *engine, struct actor *dealer, struct actor *target){
+void attack(struct engine *engine, struct actor *dealer, struct actor *target)
+{
         float power = dealer->attacker->power;
         float defence = target->destructible->defence;
         if(target->destructible && !is_dead(target)){
@@ -123,7 +133,8 @@ void attack(struct engine *engine, struct actor *dealer, struct actor *target){
         }
 }
 
-bool is_dead(struct actor *actor){
+bool is_dead(struct actor *actor)
+{
 	if(actor->destructible != NULL){
 		return actor->destructible->hp <= 0;
 	}
@@ -131,7 +142,8 @@ bool is_dead(struct actor *actor){
 }
 
 /* Transform the actor into a corpse */
-void die(struct engine *engine, struct actor *actor){
+void die(struct engine *engine, struct actor *actor)
+{
 	actor->ch = '%';
 	actor->col = TCOD_dark_red;
 	actor->name = actor->destructible->corpse_name;
@@ -140,7 +152,8 @@ void die(struct engine *engine, struct actor *actor){
         send_to_back(engine, actor);
 }
 
-float heal(struct actor *actor, float amount){
+float heal(struct actor *actor, float amount)
+{
         actor->destructible->hp += amount;
         if(actor->destructible->hp > actor->destructible->max_hp){
                 amount -= actor->destructible->hp - actor->destructible->max_hp;
@@ -150,7 +163,8 @@ float heal(struct actor *actor, float amount){
 }
 
 /*** Player functions ***/
-struct actor *make_player(int x, int y){
+struct actor *make_player(int x, int y)
+{
         struct actor *tmp = init_actor(x, y, '@', "you", TCOD_white, render_actor);
 
         /* Artificial intelligence */
@@ -168,7 +182,8 @@ struct actor *make_player(int x, int y){
         return tmp;
 }
 
-bool player_move_or_attack(struct engine *engine, struct actor *actor, int targetx, int targety){
+bool player_move_or_attack(struct engine *engine, struct actor *actor, int targetx, int targety)
+{
         if(is_wall(engine->map, targetx, targety)){
                 return false;
         }
@@ -206,7 +221,8 @@ bool player_move_or_attack(struct engine *engine, struct actor *actor, int targe
         return true;
 }
 
-struct actor *choose_from_inventory(struct engine *engine, struct actor *actor){
+struct actor *choose_from_inventory(struct engine *engine, struct actor *actor)
+{
         /* Display the inventory frame */
         TCOD_console_t *con = engine->gui->inventory_con;
         TCOD_color_t color = (TCOD_color_t){200, 180, 50};
@@ -246,7 +262,8 @@ struct actor *choose_from_inventory(struct engine *engine, struct actor *actor){
         return NULL;
 }
 
-void handle_action_key(struct engine *engine, struct actor *actor){
+void handle_action_key(struct engine *engine, struct actor *actor)
+{
         /* */
         switch(engine->key.c){
         case 'g':{
@@ -296,7 +313,8 @@ void handle_action_key(struct engine *engine, struct actor *actor){
         }
 }
 
-void player_update(struct engine *engine, struct actor *actor){
+void player_update(struct engine *engine, struct actor *actor)
+{
         if(actor->destructible && is_dead(actor)){
                 return;
         }
@@ -323,7 +341,8 @@ void player_update(struct engine *engine, struct actor *actor){
 
 
 /* Writes a memorial file */
-static void make_memorial(struct actor *actor){
+static void make_memorial(struct actor *actor)
+{
         printf("The program should have written a memorial file in the user's home directory. NOT IMPLEMENTED\n"); 
 }
 
@@ -339,7 +358,8 @@ void player_die(struct engine *engine, struct actor *actor){
 
 /*** Monster functions ***/
 struct actor *make_monster(int x, int y, const char ch, const char *name, TCOD_color_t col,
-                           float power, float max_hp, float hp, float defence, const char *corpse_name){
+                           float power, float max_hp, float hp, float defence, const char *corpse_name)
+{
         struct actor *tmp = init_actor(x, y, ch, name, col, render_actor);
 
         /* Artificial intelligence */
@@ -354,15 +374,18 @@ struct actor *make_monster(int x, int y, const char ch, const char *name, TCOD_c
         return tmp;
 }
 
-struct actor *make_orc(int x, int y){
+struct actor *make_orc(int x, int y)
+{
         return make_monster(x, y, 'o', "orc", TCOD_desaturated_green, 8, 15, 15, 2, "dead orc");
 }
 
-struct actor *make_troll(int x, int y){
+struct actor *make_troll(int x, int y)
+{
         return make_monster(x, y, 'T', "troll", TCOD_darker_green, 10, 20, 20, 3, "troll carcass");
 }
 
-bool monster_move_or_attack(struct engine *engine, struct actor *actor, int targetx, int targety){
+bool monster_move_or_attack(struct engine *engine, struct actor *actor, int targetx, int targety)
+{
         int dx = targetx - actor->x;
         int dy = targety - actor->y;
         int stepdx = (dx > 0 ? 1 : -1);
@@ -389,7 +412,8 @@ bool monster_move_or_attack(struct engine *engine, struct actor *actor, int targ
         return true;
 }
 
-void monster_update(struct engine *engine, struct actor *actor){
+void monster_update(struct engine *engine, struct actor *actor)
+{
         /* Check if the agent is alive */
         if(actor->destructible && is_dead(actor)){
                 return;
@@ -408,14 +432,16 @@ void monster_update(struct engine *engine, struct actor *actor){
 }
 
 /* Transform a monster into a rotting corpse */
-void monster_die(struct engine *engine, struct actor *actor){
+void monster_die(struct engine *engine, struct actor *actor)
+{
         engine->gui->message(engine, TCOD_light_grey, "%s is dead.\n", actor->name);
         /* Call the common die function */
         die(engine, actor);
 }
 
 /** Inventory functions **/
-struct container *init_container(int capacity){
+struct container *init_container(int capacity)
+{
         struct container *tmp = malloc(sizeof *tmp);
         tmp->capacity = capacity;
         tmp->inventory = TCOD_list_new();
@@ -423,13 +449,15 @@ struct container *init_container(int capacity){
         return tmp;
 }
 
-struct pickable *init_pickable(void){
+struct pickable *init_pickable(void)
+{
         struct pickable *tmp = malloc(sizeof(*tmp));
         return tmp;
 }
 
 struct actor *make_item(int x, int y, const char ch, const char *name, TCOD_color_t col,
-                        bool (*use)(struct actor *actor, struct actor *item)){
+                        bool (*use)(struct actor *actor, struct actor *item))
+{
         struct actor *tmp = init_actor(x, y, ch, name, col, render_actor);
         tmp->pickable = init_pickable();
         tmp->pickable->use = use;
@@ -438,20 +466,24 @@ struct actor *make_item(int x, int y, const char ch, const char *name, TCOD_colo
         return tmp;
 }
 
-struct actor *make_healer_potion(int x, int y){
+struct actor *make_healer_potion(int x, int y)
+{
         return make_item(x, y, '!', "a health potion", TCOD_violet, healer_use);
 }
 
-struct actor *make_curing_potion(int x, int y){
+struct actor *make_curing_potion(int x, int y)
+{
         return make_item(x, y, '~', "a curing potion", TCOD_light_green, curing_use);
 }
 
-void free_container(struct container *container){
+void free_container(struct container *container)
+{
         TCOD_list_clear_and_delete(container->inventory);
         free(container);
 }
 
-bool pick(struct engine *engine, struct actor *actor, struct actor *item){
+bool pick(struct engine *engine, struct actor *actor, struct actor *item)
+{
         if(actor->inventory && inventory_add(actor->inventory, item)){
                 TCOD_list_remove(engine->actors, item);
                 return true;
@@ -459,7 +491,8 @@ bool pick(struct engine *engine, struct actor *actor, struct actor *item){
         return false;
 }
 
-bool healer_use(struct actor *actor, struct actor *item){
+bool healer_use(struct actor *actor, struct actor *item)
+{
         /* heal the actor */
         if(actor->destructible){
                 float amount_healed = heal(actor, 20);
@@ -472,7 +505,8 @@ bool healer_use(struct actor *actor, struct actor *item){
 }
 
 /* TODO: At the moment does the same as the HEALTH POTION (See above) */
-bool curing_use(struct actor *actor, struct actor *item){
+bool curing_use(struct actor *actor, struct actor *item)
+{
         /* heal the actor */
         if(actor->destructible){
                 float amount_healed = heal(actor, 20);
@@ -484,7 +518,8 @@ bool curing_use(struct actor *actor, struct actor *item){
         return false;
 }
 
-bool use(struct actor *actor, struct actor *item){
+bool use(struct actor *actor, struct actor *item)
+{
         if(actor->inventory){
                 inventory_remove(actor->inventory, item);
                 free_actor(item);
@@ -493,11 +528,13 @@ bool use(struct actor *actor, struct actor *item){
         return false;
 }
 
-void free_pickable(struct pickable *pickable){
+void free_pickable(struct pickable *pickable)
+{
         
 }
 
-bool inventory_add(struct container *container, struct actor *actor){
+bool inventory_add(struct container *container, struct actor *actor)
+{
         if(container->capacity > 0 && TCOD_list_size(container->inventory) > container->capacity){
                 return false;
         }
@@ -506,6 +543,7 @@ bool inventory_add(struct container *container, struct actor *actor){
         return true;
 }
 
-void inventory_remove(struct container *container, struct actor *actor){
+void inventory_remove(struct container *container, struct actor *actor)
+{
         TCOD_list_remove(container->inventory, actor);
 }

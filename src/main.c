@@ -6,16 +6,19 @@
 
 struct engine *engine;
 
-void init(void){
+void init(void)
+{
         engine = engine_init(WINDOW_W, WINDOW_H, PROGRAM_NAME);
 }
 
-void clean(){
+void clean()
+{
         free_engine(engine);
 	exit(EXIT_SUCCESS);
 }
 
-int main() {
+int main()
+{
         init();
         
         while (!TCOD_console_is_window_closed()) {

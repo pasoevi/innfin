@@ -5,7 +5,8 @@
 static const int MAX_ROOM_MONSTERS = 3;
 static const int MAX_ROOM_ITEMS = 2;
 
-void dig(struct map *map, int x1, int y1, int x2, int y2){
+void dig(struct map *map, int x1, int y1, int x2, int y2)
+{
         if(x2 < x1){
                 int tmp = x2;
                 x2 = x1;
@@ -27,7 +28,8 @@ void dig(struct map *map, int x1, int y1, int x2, int y2){
         }
 }
 
-void create_room(struct engine *engine, bool first, int x1, int y1, int x2, int y2){
+void create_room(struct engine *engine, bool first, int x1, int y1, int x2, int y2)
+{
         dig(engine->map, x1, y1, x2, y2);
         if(first){
                 /* put the player in the first room */
@@ -59,7 +61,8 @@ void create_room(struct engine *engine, bool first, int x1, int y1, int x2, int 
 
 }
 
-bool visit_node(TCOD_bsp_t *node, void *user_data) {
+bool visit_node(TCOD_bsp_t *node, void *user_data)
+{
         struct engine *engine = (struct engine *)user_data;
 
         /* struct BSPTraverse trv = engine->map->bsp_traverse; */
@@ -90,7 +93,8 @@ bool visit_node(TCOD_bsp_t *node, void *user_data) {
         return true;
 }
 
-void init_map(struct engine *engine, int w, int h){
+void init_map(struct engine *engine, int w, int h)
+{
         engine->map = malloc(sizeof(struct map));
         engine->map->w = w;
         engine->map->h = h;
@@ -111,16 +115,19 @@ void init_map(struct engine *engine, int w, int h){
         TCOD_bsp_traverse_inverted_level_order(engine->map->bsp, visit_node, engine);
 }
 
-void free_map(struct map *map){
+void free_map(struct map *map)
+{
         TCOD_bsp_delete(map->bsp);
         free(map);
 }
 
-bool is_wall(struct map *map, int x, int y){
+bool is_wall(struct map *map, int x, int y)
+{
         return !TCOD_map_is_walkable(map->map, x, y);
 }
 
-bool can_walk(struct engine *engine, int x, int y){
+bool can_walk(struct engine *engine, int x, int y)
+{
         if(is_wall(engine->map, x, y)){
                 return false;
         }
@@ -138,7 +145,8 @@ bool can_walk(struct engine *engine, int x, int y){
         return true;
 }
 
-bool is_in_fov(struct map *map, int x, int y){
+bool is_in_fov(struct map *map, int x, int y)
+{
         if ( x < 0 || x >= map->w || y < 0 || y >= map->h) {
                 
                 return false;
@@ -151,11 +159,13 @@ bool is_in_fov(struct map *map, int x, int y){
         return false;
 }
 
-bool is_explored(struct map *map, int x, int y){
+bool is_explored(struct map *map, int x, int y)
+{
         return map->tiles[x+y*(map->w)].explored;
 }
 
-void compute_fov(struct engine *engine){
+void compute_fov(struct engine *engine)
+{
         TCOD_map_compute_fov(engine->map->map,
                              engine->player->x,
                              engine->player->y,
@@ -164,7 +174,8 @@ void compute_fov(struct engine *engine){
                              FOV_BASIC);
 }
 
-void add_monster(struct engine* engine, int x, int y){
+void add_monster(struct engine* engine, int x, int y)
+{
         TCOD_random_t *rng = TCOD_random_get_instance();
         struct actor *actor;
         if (TCOD_random_get_int(rng, 0, 100) < 80) {
@@ -177,7 +188,8 @@ void add_monster(struct engine* engine, int x, int y){
         TCOD_list_push(engine->actors, actor);
 }
 
-void add_item(struct engine* engine, int x, int y){
+void add_item(struct engine* engine, int x, int y)
+{
         TCOD_random_t *rng = TCOD_random_get_instance();
         struct actor *item;
         if (TCOD_random_get_int(rng, 0, 100) < 80) {
@@ -190,7 +202,8 @@ void add_item(struct engine* engine, int x, int y){
         TCOD_list_push(engine->actors, item);
 }
 
-void map_render(struct map *map){
+void map_render(struct map *map)
+{
         const TCOD_color_t dark_wall = {20, 20, 10};
         const TCOD_color_t dark_ground = {0, 0, 0};
 

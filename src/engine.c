@@ -12,12 +12,14 @@ static const char *WELCOME_MESSAGE =
  * Move the dead actor at the back of the list, so that it doesn't
  * cover the living actors.
  */
-void send_to_back(struct engine *engine, struct actor *actor){
+void send_to_back(struct engine *engine, struct actor *actor)
+{
         TCOD_list_remove(engine->actors, actor);
         TCOD_list_insert_before(engine->actors, actor, 0);
 }
 
-struct engine *engine_init(int w, int h, const char *title){
+struct engine *engine_init(int w, int h, const char *title)
+{
         TCOD_console_init_root(w, h, title, false, TCOD_RENDERER_OPENGL);
         struct engine *tmp = malloc(sizeof *tmp);
 
@@ -44,7 +46,8 @@ struct engine *engine_init(int w, int h, const char *title){
         return tmp;
 }
 
-void engine_update(struct engine *engine){
+void engine_update(struct engine *engine)
+{
         struct actor *player = engine->player;
         
         if(engine->game_status == STARTUP ){
@@ -68,7 +71,8 @@ void engine_update(struct engine *engine){
         }
 }
 
-void engine_render(struct engine *engine){
+void engine_render(struct engine *engine)
+{
         TCOD_console_clear(NULL);
         map_render(engine->map);
         
@@ -90,7 +94,8 @@ void engine_render(struct engine *engine){
         TCOD_console_flush(NULL); 
 }
 
-void free_engine(struct engine *engine){
+void free_engine(struct engine *engine)
+{
         /* free all memory directly or indirectly allocated by the
          * engine 
          */

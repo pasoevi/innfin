@@ -4,21 +4,24 @@
 #include <stdio.h>
 #include <string.h>
 
-static void init_message(struct message **message, const char *text, TCOD_color_t col){
+static void init_message(struct message **message, const char *text, TCOD_color_t col)
+{
         struct message *tmp = malloc(sizeof *tmp);
         tmp->text = strdup(text);
         tmp->col = col;
         *message = tmp;
 }
 
-void free_message(struct message *message){
+void free_message(struct message *message)
+{
         if(message != NULL){
                 free(message->text);                     
                 free(message);
         }
 }
 
-static void message(struct engine *engine, const TCOD_color_t col, const char *text, ...){
+static void message(struct engine *engine, const TCOD_color_t col, const char *text, ...)
+{
         /* Build the text */
         va_list ap;
         char buf[128];
@@ -53,14 +56,16 @@ static void message(struct engine *engine, const TCOD_color_t col, const char *t
 static void render_bar(struct engine *engine, int x, int y, int w,
                        const char *name, const float value,
                        const float max_value, const TCOD_color_t bar_col,
-                       const TCOD_color_t back_col){
+                       const TCOD_color_t back_col)
+{
         TCOD_console_set_default_background(engine->gui->con, back_col);
         TCOD_console_rect(engine->gui->con, x, y, BAR_W, 1, false, TCOD_BKGND_SET);
         TCOD_console_print_ex(engine->gui->con, x + w/2, y, TCOD_BKGND_NONE, TCOD_CENTER,
                               "%s : %g/%g", name, value, max_value);
 }
 
-static void render_log(struct engine *engine, int startx , int starty){
+static void render_log(struct engine *engine, int startx , int starty)
+{
         /* draw the message log */
         struct message **iter;
         float color_coef = 0.4f;
@@ -77,7 +82,8 @@ static void render_log(struct engine *engine, int startx , int starty){
         }
 }
 
-static void render_mouse_look(struct engine *engine){
+static void render_mouse_look(struct engine *engine)
+{
         if (!is_in_fov(engine->map, engine->mouse.cx, engine->mouse.cy)) {
                 /* if mouse is out of fov, nothing to render */
                 return;
@@ -107,7 +113,8 @@ static void render_mouse_look(struct engine *engine){
         TCOD_console_print(engine->gui->con, 1, 0, buf);
 }
 
-static void gui_render(struct engine *engine){
+static void gui_render(struct engine *engine)
+{
         /* Clear the gui console */
         TCOD_console_set_default_background(engine->gui->con, TCOD_black);
         TCOD_console_clear(engine->gui->con);
@@ -126,7 +133,8 @@ void free_gui(struct gui *gui){
         free(gui);
 }
 
-struct gui *init_gui(int w, int h){
+struct gui *init_gui(int w, int h)
+{
         struct gui *tmp = malloc(sizeof *tmp);
         tmp->con = TCOD_console_new(w, h);
         tmp->inventory_con = TCOD_console_new(INVENTORY_WIDTH, INVENTORY_HEIGHT);
