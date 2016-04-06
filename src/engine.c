@@ -50,9 +50,8 @@ void engine_update(struct engine *engine)
 {
         struct actor *player = engine->player;
         
-        if(engine->game_status == STARTUP ){
+        if(engine->game_status == STARTUP )
                 compute_fov(engine);
-        }
         
         engine->game_status = IDLE ;
         
@@ -64,9 +63,8 @@ void engine_update(struct engine *engine)
                      iterator != (struct actor **)TCOD_list_end(engine->actors);
                      iterator++) {
                         struct actor *actor = *iterator;
-                        if(actor != player ){ 
+                        if(actor != player )
                                 actor->update(engine, actor);                
-                        }
                 }
         }
 }
@@ -83,11 +81,9 @@ void engine_render(struct engine *engine)
 
         for(iter = (struct actor **)TCOD_list_begin(engine->actors);
             iter != (struct actor **)TCOD_list_end(engine->actors);
-            iter++){
-                if(is_in_fov(engine->map, (*iter)->x, (*iter)->y)){
+            iter++)
+                if(is_in_fov(engine->map, (*iter)->x, (*iter)->y))
                         (*iter)->render(*iter);
-                }
-        }
         
         engine->player->render(engine->player);
 

@@ -5,7 +5,6 @@ void each_actor(struct engine *engine, TCOD_list_t lst, void (*action)(struct en
         struct actor **iterator;
         for (iterator = (struct actor **)TCOD_list_begin(engine->actors);
              iterator != (struct actor **)TCOD_list_end(engine->actors);
-             iterator++) {
+             iterator++) 
                 action(engine, *iterator);
-        }
 }

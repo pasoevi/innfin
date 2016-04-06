@@ -20,12 +20,12 @@ void dig(struct map *map, int x1, int y1, int x2, int y2)
         }
 
         int tilex, tiley;
-        for(tilex = x1; tilex <= x2; tilex++){
-                for(tiley = y1; tiley <= y2; tiley++){
+        for(tilex = x1; tilex <= x2; tilex++)
+                for(tiley = y1; tiley <= y2; tiley++)
                         TCOD_map_set_properties(map->map, tilex, tiley, true, true);
-                        /* map->tiles[tilex+tiley*map->w].can_walk = true; */
-                }
-        }
+        
+
+
 }
 
 void create_room(struct engine *engine, bool first, int x1, int y1, int x2, int y2)
@@ -52,9 +52,10 @@ void create_room(struct engine *engine, bool first, int x1, int y1, int x2, int 
                 while(num_items > 0){
                         int x = TCOD_random_get_int(rng, x1, x2);
                         int y = TCOD_random_get_int(rng, y1, y2);
-                        if(can_walk(engine, x, y)){
+                        
+                        if(can_walk(engine, x, y))
                                 add_item(engine, x, y);
-                        }
+                        
                         num_items--;
                 }
         }
@@ -128,29 +129,24 @@ bool is_wall(struct map *map, int x, int y)
 
 bool can_walk(struct engine *engine, int x, int y)
 {
-        if(is_wall(engine->map, x, y)){
+        if(is_wall(engine->map, x, y))
                 return false;
-        }
 
         struct actor **actor;
         for(actor = (struct actor **)TCOD_list_begin(engine->actors);
             actor != (struct actor **)TCOD_list_end(engine->actors);
-            actor++){
-                if((*actor)->blocks && (*actor)->x == x && (*actor)->y == y){
+            actor++)
+                if((*actor)->blocks && (*actor)->x == x && (*actor)->y == y)
                         /* There is a blocking actor there, cat't
 			   walk */
                         return false;
-                }
-        }
         return true;
 }
 
 bool is_in_fov(struct map *map, int x, int y)
 {
-        if ( x < 0 || x >= map->w || y < 0 || y >= map->h) {
-                
+        if ( x < 0 || x >= map->w || y < 0 || y >= map->h)
                 return false;
-        }
         
         if(TCOD_map_is_in_fov(map->map, x, y)){
                 map->tiles[x+y*(map->w)].explored = true;
@@ -178,13 +174,13 @@ void add_monster(struct engine* engine, int x, int y)
 {
         TCOD_random_t *rng = TCOD_random_get_instance();
         struct actor *actor;
-        if (TCOD_random_get_int(rng, 0, 100) < 80) {
+        if (TCOD_random_get_int(rng, 0, 100) < 80)
                 /* Create an orc */
                 actor = make_orc(x, y);
-        }else{
+        else
                 /* Create an orc */
                 actor = make_troll(x, y);
-        }
+        
         TCOD_list_push(engine->actors, actor);
 }
 
@@ -192,13 +188,13 @@ void add_item(struct engine* engine, int x, int y)
 {
         TCOD_random_t *rng = TCOD_random_get_instance();
         struct actor *item;
-        if (TCOD_random_get_int(rng, 0, 100) < 80) {
+        if (TCOD_random_get_int(rng, 0, 100) < 80)
                 /* Create a health potion */
                 item = make_healer_potion(x, y);
-        }else{
+        else
                 /* Create a poison potion */
                 item = make_troll(x, y);
-        }
+    
         TCOD_list_push(engine->actors, item);
 }
 
@@ -213,15 +209,14 @@ void map_render(struct map *map)
         int x, y;
         for(x = 0; x < map->w; x++) {
                 for(y = 0; y < map->h; y++) {
-                        if(is_in_fov(map, x, y)){
+                        if(is_in_fov(map, x, y))
                                 TCOD_console_set_char_background(NULL, x, y,
                                                                  is_wall(map, x, y) ? light_wall : light_ground,
                                                                  TCOD_BKGND_SET);
-                        }else{
+                        else
                                 TCOD_console_set_char_background(NULL, x, y,
                                                                  is_wall(map, x, y) ? dark_wall : dark_ground,
                                                                  TCOD_BKGND_SET);
-                        }
                 }
         }
 }

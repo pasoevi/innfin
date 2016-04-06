@@ -41,9 +41,8 @@ static void message(struct engine *engine, const TCOD_color_t col, const char *t
                 }
                 // detect end of the line
                 line_end = strchr(line_begin, '\n');
-                if (line_end){
+                if (line_end)
                         *line_end = '\0';
-                }
                 // add a new message to the log
                 struct message *msg;
                 init_message( &msg, line_begin, col);
@@ -85,18 +84,16 @@ static void render_log(struct engine *engine, int startx , int starty)
                 TCOD_console_set_default_foreground(engine->gui->con, TCOD_color_multiply_scalar((*iter)->col, color_coef));
                 TCOD_console_print(engine->gui->con, startx, y, (*iter)->text);
                 y++;
-                if(color_coef < 1.0f) {
+                if(color_coef < 1.0f)
                         color_coef += 0.3f;
-                }
         }
 }
 
 static void render_mouse_look(struct engine *engine)
 {
-        if (!is_in_fov(engine->map, engine->mouse.cx, engine->mouse.cy)) {
+        if (!is_in_fov(engine->map, engine->mouse.cx, engine->mouse.cy))
                 /* if mouse is out of fov, nothing to render */
                 return;
-        }
 
         char buf[128]={'\0'};
         bool first = true;
@@ -108,11 +105,10 @@ static void render_mouse_look(struct engine *engine)
                 struct actor *actor=*iterator;
                 /* Find actors under the mouse cursor */
                 if (actor->x == engine->mouse.cx && actor->y == engine->mouse.cy ) {
-                        if (!first) {
+                        if (!first)
                                 strcat(buf,", ");
-                        }else{
+                        else
                                 first = false;
-                        }
                         
                         strcat(buf, actor->name);
                 }

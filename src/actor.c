@@ -14,9 +14,8 @@ float take_damage(struct engine *engine, struct actor *target, float damage)
 	damage -= target->destructible->defence;
 	if(damage > 0){
 		target->destructible->hp -= damage;
-		if(target->destructible->hp <= 0){
+		if(target->destructible->hp <= 0)
 			target->destructible->die(engine, target);
-		}
 	}else{
 		damage = 0;
 	}
@@ -33,9 +32,8 @@ void common_update(struct engine *engine, struct actor *actor)
            Do things that are common to all actors.  nothing at the
            moment.
         */
-        if(actor->ai){
+        if(actor->ai)
                 actor->ai->update(engine, actor);
-        }
 }
 
 void free_actor(struct actor *actor)
@@ -138,9 +136,8 @@ void attack(struct engine *engine, struct actor *dealer, struct actor *target)
 
 bool is_dead(struct actor *actor)
 {
-	if(actor->destructible != NULL){
+	if(actor->destructible != NULL)
 		return actor->destructible->hp <= 0;
-	}
 	return false;
 }
 
@@ -187,9 +184,8 @@ struct actor *make_player(int x, int y)
 
 bool player_move_or_attack(struct engine *engine, struct actor *actor, int targetx, int targety)
 {
-        if(is_wall(engine->map, targetx, targety)){
+        if(is_wall(engine->map, targetx, targety))
                 return false;
-        }
        
         /* Look for actors to attack */
         struct actor **iter;
@@ -211,11 +207,8 @@ bool player_move_or_attack(struct engine *engine, struct actor *actor, int targe
                 struct actor *actor = *iter;
                 bool corpse_or_item = (actor->destructible && is_dead(actor))
                         || actor->pickable;
-                if(corpse_or_item &&
-                   actor->x == targetx && actor->y == targety){
-                        engine->gui->message(engine, TCOD_light_gray,
-                                             "There's a %s here\n", (*iter)->name);
-                }
+                if(corpse_or_item && actor->x == targetx && actor->y == targety)
+                        engine->gui->message(engine, TCOD_light_gray, "There's a %s here\n", (*iter)->name);
         }
 
         actor->x = targetx;
@@ -258,9 +251,8 @@ struct actor *choose_from_inventory(struct engine *engine, struct actor *actor)
         TCOD_sys_wait_for_event(TCOD_EVENT_KEY_PRESS, &key, NULL, true);
         if (key.vk == TCODK_CHAR ) {
                 int actor_index = key.c - 'a';
-                if (actor_index >= 0 && actor_index < TCOD_list_size(actor->inventory->inventory)) {
+                if(actor_index >= 0 && actor_index < TCOD_list_size(actor->inventory->inventory))
                         return TCOD_list_get(actor->inventory->inventory, actor_index);
-                }
         }
         return NULL;
 }
@@ -292,9 +284,8 @@ void handle_action_key(struct engine *engine, struct actor *actor)
                         }
                 }
                 
-                if(!found){
+                if(!found)
                         engine->gui->message(engine, TCOD_grey, "There is nothing to pick up here here.\n");                        
-                }
                 engine->game_status = NEW_TURN;
                 break;
         }
@@ -538,9 +529,8 @@ void free_pickable(struct pickable *pickable)
 
 bool inventory_add(struct container *container, struct actor *actor)
 {
-        if(container->capacity > 0 && TCOD_list_size(container->inventory) > container->capacity){
+        if(container->capacity > 0 && TCOD_list_size(container->inventory) > container->capacity)
                 return false;
-        }
 
         TCOD_list_push(container->inventory, actor);
         return true;
