@@ -127,12 +127,14 @@ static void gui_render(struct engine *engine)
         /* Clear the gui console */
         TCOD_console_set_default_background(engine->gui->con, TCOD_black);
         TCOD_console_clear(engine->gui->con);
-        engine->gui->render_log(engine, MSG_X, 1);
-        engine->gui->render_mouse_look(engine);
+
         engine->gui->render_bar(engine, 1, 1, BAR_W,"HP",
                                 engine->player->destructible->hp,
                                 engine->player->destructible->max_hp,
                                 TCOD_light_red, TCOD_darker_red);
+
+        engine->gui->render_log(engine, MSG_X, 1);
+        engine->gui->render_mouse_look(engine);
         
         TCOD_console_blit(engine->gui->con, 0, 0, engine->window_w, PANEL_H,
                           NULL, 0, engine->window_h - PANEL_H, 1.f, 1.f);

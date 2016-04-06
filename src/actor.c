@@ -96,7 +96,7 @@ struct destructible *init_destructible(float max_hp,
 {
         struct destructible *tmp = malloc(sizeof *tmp);
         
-        tmp->die = monster_die;
+        tmp->die = die;
         tmp->defence = defence;
         tmp->corpse_name = corpse_name;
         tmp->take_damage = take_damage;
@@ -117,10 +117,13 @@ void attack(struct engine *engine, struct actor *dealer, struct actor *target)
         float defence = target->destructible->defence;
         if(target->destructible && !is_dead(target)){
                 if(power - defence > 0){
+                        bool is_player = dealer == engine->player;
                         engine->gui->message(engine,
-                                             dealer == engine->player ? TCOD_light_grey : TCOD_red,
-                                             "%s attacks %s for %g hit points.\n",
-                                             dealer->name, target->name, power - defence);
+                                             is_player ? TCOD_light_grey : TCOD_red,
+                                             "%s %s %s for %g hit points.\n",
+                                             dealer->name,
+                                             is_player ? "attack" : "attacks",
+                                             target->name, power - defence);
                 }else{
                         engine->gui->message(engine,
                                              TCOD_light_grey,
