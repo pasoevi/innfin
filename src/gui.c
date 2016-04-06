@@ -59,7 +59,16 @@ static void render_bar(struct engine *engine, int x, int y, int w,
                        const TCOD_color_t back_col)
 {
         TCOD_console_set_default_background(engine->gui->con, back_col);
-        TCOD_console_rect(engine->gui->con, x, y, BAR_W, 1, false, TCOD_BKGND_SET);
+        TCOD_console_rect(engine->gui->con, x, y, w, 1, false, TCOD_BKGND_SET);
+        
+        int bar_w = (int)(value / max_value * w);
+        if(bar_w > 0){
+                /* Draw the bar */
+                TCOD_console_set_default_background(engine->gui->con, TCOD_white);
+                TCOD_console_rect(engine->gui->con, x, y, bar_w, 1, false, TCOD_BKGND_SET);
+        }
+        /* Print text on top of a bar */
+        TCOD_console_set_default_foreground(engine->gui->con, TCOD_white);
         TCOD_console_print_ex(engine->gui->con, x + w/2, y, TCOD_BKGND_NONE, TCOD_CENTER,
                               "%s : %g/%g", name, value, max_value);
 }
@@ -118,12 +127,13 @@ static void gui_render(struct engine *engine)
         /* Clear the gui console */
         TCOD_console_set_default_background(engine->gui->con, TCOD_black);
         TCOD_console_clear(engine->gui->con);
+        engine->gui->render_log(engine, MSG_X, 1);
+        engine->gui->render_mouse_look(engine);
         engine->gui->render_bar(engine, 1, 1, BAR_W,"HP",
                                 engine->player->destructible->hp,
                                 engine->player->destructible->max_hp,
                                 TCOD_light_red, TCOD_darker_red);
-        engine->gui->render_log(engine, MSG_X, 1);
-        engine->gui->render_mouse_look(engine);
+        
         TCOD_console_blit(engine->gui->con, 0, 0, engine->window_w, PANEL_H,
                           NULL, 0, engine->window_h - PANEL_H, 1.f, 1.f);
 }

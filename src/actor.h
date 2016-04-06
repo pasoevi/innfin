@@ -35,7 +35,7 @@ struct pickable{
 
 struct edible{
         bool (*eat)(struct actor *actor, struct actor *food);
-}
+};
 
 /* Capacity is currently counted by the number of items */
 struct container{
