@@ -490,10 +490,9 @@ bool healer_use(struct actor *actor, struct actor *item)
         /* heal the actor */
         if(actor->destructible){
                 float amount_healed = heal(actor, 20);
-                if(amount_healed > 0){
+                if(amount_healed > 0)
                         /* Call the common use function */
                         return use(actor, item);
-                }
         }
         return false;
 }
@@ -504,10 +503,9 @@ bool curing_use(struct actor *actor, struct actor *item)
         /* heal the actor */
         if(actor->destructible){
                 float amount_healed = heal(actor, 20);
-                if(amount_healed > 0){
+                if(amount_healed > 0)
                         /* Call the common use function */
                         return use(actor, item);
-                }
         }
         return false;
 }
