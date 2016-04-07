@@ -10,7 +10,7 @@ published: false
 *Innfin - Innere Finsternis* is a horror-themed fantasy role-playing
 game set in the underworld of dungeons carved into stone and earth. It
 is a roguelike game in the tradition of the classics of the genre,
-like ADOM, Nethack, DCSS and others. As you play the game, you
+like ADOM, Nethack, Angband and others. As you play the game, you
 discover various creatures in the halls and dungeons hidden from the
 world above. Your goal is to choose the deity to worship and attempt
 to do his or her bidding. You can abandon your god and convert to
@@ -29,21 +29,27 @@ cleverest of race.
 ## Portals and Dungeons of Fate
 
 The world consists of dungeons of various levels and portals that are
-accessible from dungeons. There are many rules by which portals appear
-and where they take you to. This depends on various factors, such as
+accessible from them. There are many rules by which portals appear and
+where they take you to. This depends on various factors, such as
 character race, playing style, religion but it does *not* depend on
-character level or skill set, so it isn't always easy to tell whether
-a particular portal will take you somewhere you are good to survive or
-not. Apart from arbitrary portals, there are some that have more
-important role in character development and game progression, such
-portals are very few and are easy to identify. You should know when to
-enter them and in what order.
+character level, experience or skill set, so it isn't always easy to
+tell whether a particular portal will take you somewhere you are good
+to survive or not. Apart from arbitrary portals, there are some that
+have more important role in character development and game
+progression; such portals are very few and easy to identify. You
+should know when to enter them and in what order.
 
 Dungeons of Fate are dungeons that do not follow the pattern of
-increasing difficulty typical for arbitrary dungeons. You know that
-you are in a dungeon of fate when you have made some god angry or
-extremely pleased. You are taken to one of the Dungeons of Fate when
-you have done something of importance on the large scale.
+increasing difficulty typical for main dungeons. You know that you are
+in a Dungeon of Fate when you have made some god angry or extremely
+pleased. This also happens when you have done something of importance
+on the large scale.
+
+Portals and Dungeons of Fate are often the places to seek the
+artifacts and creatures that are crucial for winning the game. Some
+portals permanently leave you away from the main dungeon which makes
+it impossible to complete the quests given by some gods, thus you
+lose.
 
 # Character race
 
@@ -53,7 +59,7 @@ Dark elves are the most mysterious of the lot. Seeing their innate
 stats, it is difficult to foresee where they would thrive and where
 they would perish. They can be outstanding ranged combatants with
 their mastery of archery and singing spells. They are, however, hated
-by many creatures and feared by yet more.
+by many creatures and feared by yet more. 
 
 ## Dwarf
 
@@ -98,6 +104,7 @@ they oblivious to the tidings from the larger world.
 ## Weapons
 
 ## Armory
+
 # Religion
 
 ## Gods
@@ -112,22 +119,27 @@ characters see you as. There are, however, some monsters that are
 inherently aggressive toward your race or to anything at all. Such
 monsters are often *cursed*. 
 
-## Orcs
-
-## Trolls
-
-## Elves
-
 ## Specials
 
 ## Wizards
 
 Wizards possess similar abilities as the player in that that they can
-use magic, use weapons and have advanced tactics in wars.
+use magic, weapons and have advanced tactics in wars. They are often
+in the most important parts of the world.
+
+## Elves
+
+## Orcs
+
+## Trolls
 
 ## Animals
 
 ### Intelligent animals
+
+Some animals possess rudimentary form of intelligence that makes
+extremely powerful if combined with their immense bodies and wild
+temper.
 
 ### Cursed animals
 
@@ -143,6 +155,11 @@ others. Not all animals can be identified as cursed easily.
 ## Health
 
 ## Corruption
+
+If fell monsters of the dungeons want to take your flesh, the dungeon
+itself wants to take your soul. Your sanity is as vulnerable to
+darkness and terror of the underworld as your skin is to the claws of
+fiercest animals.
 
 ## Confusion
 
@@ -175,7 +192,7 @@ drinking potions).
 When you are deaf, you stop sensing danger when attempting to open
 doors or initiating combat with a monster that has its allies
 nearby. You rarely become deaf but it can be very dangerous if it
-happens in critical situations.
+happens in a critical situation.
 
 ## Mutation
 
