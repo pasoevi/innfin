@@ -1,91 +1,32 @@
-<div id="table-of-contents">
-<h2>Table of Contents</h2>
-<div id="text-table-of-contents">
-<ul>
-<li><a href="#sec-1">1. Introduction</a></li>
-<li><a href="#sec-2">2. Player's Guide</a>
-<ul>
-<li><a href="#sec-2-1">2.1. The World</a>
-<ul>
-<li><a href="#sec-2-1-1">2.1.1. Portals and Dungeons of Fate</a></li>
-</ul>
-</li>
-<li><a href="#sec-2-2">2.2. Character race</a>
-<ul>
-<li><a href="#sec-2-2-1">2.2.1. Dark Elf</a></li>
-<li><a href="#sec-2-2-2">2.2.2. Dwarf</a></li>
-<li><a href="#sec-2-2-3">2.2.3. Human</a></li>
-<li><a href="#sec-2-2-4">2.2.4. Huttler</a></li>
-</ul>
-</li>
-<li><a href="#sec-2-3">2.3. Skills</a></li>
-<li><a href="#sec-2-4">2.4. Combat</a>
-<ul>
-<li><a href="#sec-2-4-1">2.4.1. Weapons</a></li>
-<li><a href="#sec-2-4-2">2.4.2. Armory</a></li>
-</ul>
-</li>
-<li><a href="#sec-2-5">2.5. Magic</a></li>
-<li><a href="#sec-2-6">2.6. Religion</a></li>
-<li><a href="#sec-2-7">2.7. Monsters</a>
-<ul>
-<li><a href="#sec-2-7-1">2.7.1. Orcs</a></li>
-<li><a href="#sec-2-7-2">2.7.2. Trolls</a></li>
-<li><a href="#sec-2-7-3">2.7.3. Elves</a></li>
-<li><a href="#sec-2-7-4">2.7.4. Specials</a></li>
-<li><a href="#sec-2-7-5">2.7.5. Wizards</a></li>
-<li><a href="#sec-2-7-6">2.7.6. Animals</a></li>
-</ul>
-</li>
-<li><a href="#sec-2-8">2.8. Conditions affecting living</a>
-<ul>
-<li><a href="#sec-2-8-1">2.8.1. Food</a></li>
-<li><a href="#sec-2-8-2">2.8.2. Health</a></li>
-<li><a href="#sec-2-8-3">2.8.3. Corruption</a></li>
-<li><a href="#sec-2-8-4">2.8.4. Confusion</a></li>
-<li><a href="#sec-2-8-5">2.8.5. Blindness</a></li>
-<li><a href="#sec-2-8-6">2.8.6. Agony</a></li>
-<li><a href="#sec-2-8-7">2.8.7. Deafness</a></li>
-<li><a href="#sec-2-8-8">2.8.8. Mutation</a></li>
-</ul>
-</li>
-<li><a href="#sec-2-9">2.9. Pickable Items</a></li>
-</ul>
-</li>
-<li><a href="#sec-3">3. Developer's Guide</a>
-<ul>
-<li><a href="#sec-3-1">3.1. Source code structure</a>
-<ul>
-<li><a href="#sec-3-1-1">3.1.1. <i>actor.h</i></a></li>
-</ul>
-</li>
-<li><a href="#sec-3-2">3.2. License</a></li>
-</ul>
-</li>
-</ul>
-</div>
-</div>
+---
+layout: page
+title: Innere Finsternis
+description: A Roguelike Game
+ads: false
+permalink: /innfin/
+published: false
+---
 
+*Innfin - Innere Finsternis* is a horror-themed fantasy role-playing
+game set in the underworld of dungeons carved into stone and earth. It
+is a roguelike game in the tradition of the classics of the genre,
+like ADOM, Nethack, DCSS and others. As you play the game, you
+discover various creatures in the halls and dungeons hidden from the
+world above. Your goal is to choose the deity to worship and attempt
+to do his or her bidding. You can abandon your god and convert to
+other religion later in the game and have the objective of the game
+changed, as well.
 
-# Introduction<a id="sec-1" name="sec-1"></a>
+{:toc}
 
-ODAM is a role-playing game in the tradition of classic roguelike
-games. As you play the game, you discover various creatures in the
-halls and dungeons carved deep under the earth. Your goal is to choose
-the deity to worship and attempt to do his/her bidding. You can
-abandon your god and convert to other religion later in the game and
-have the objective of the game changed, as well. 
-
-# Player's Guide<a id="sec-2" name="sec-2"></a>
-
-## The World<a id="sec-2-1" name="sec-2-1"></a>
+# The World
 
 The game is set in the world deep in the past in which magic
 reigned. Not even rudimentary civilization was yet conceived by most
 races. Writing wasn't invented and songs were known but to the
 cleverest of race.
 
-### Portals and Dungeons of Fate<a id="sec-2-1-1" name="sec-2-1-1"></a>
+## Portals and Dungeons of Fate
 
 The world consists of dungeons of various levels and portals that are
 accessible from dungeons. There are many rules by which portals appear
@@ -100,13 +41,13 @@ enter them and in what order.
 
 Dungeons of Fate are dungeons that do not follow the pattern of
 increasing difficulty typical for arbitrary dungeons. You know that
-you are in a dungeon of fate when you have made some god angry and
+you are in a dungeon of fate when you have made some god angry or
 extremely pleased. You are taken to one of the Dungeons of Fate when
 you have done something of importance on the large scale.
 
-## Character race<a id="sec-2-2" name="sec-2-2"></a>
+# Character race
 
-### Dark Elf<a id="sec-2-2-1" name="sec-2-2-1"></a>
+## Dark Elf
 
 Dark elves are the most mysterious of the lot. Seeing their innate
 stats, it is difficult to foresee where they would thrive and where
@@ -114,7 +55,7 @@ they would perish. They can be outstanding ranged combatants with
 their mastery of archery and singing spells. They are, however, hated
 by many creatures and feared by yet more.
 
-### Dwarf<a id="sec-2-2-2" name="sec-2-2-2"></a>
+## Dwarf
 
 Dwarves are the most typical melee fighters with high health points,
 good defence and high damage. This doesn't mean that they have much
@@ -124,7 +65,7 @@ developing this skill and therefore neglecting some other skills. This
 makes them stand out in early to mid game but facing significant
 unforeseen challenges in late game if overly specialized.
 
-### Human<a id="sec-2-2-3" name="sec-2-2-3"></a>
+## Human
 
 In many games humans are typically the most *generic* species with
 stats closest to averages. In this game, however, human species are
@@ -136,7 +77,7 @@ prone to *corruption* and most vulnerable to *mutation*. This can be
 both, helpful or hindering based on playing style, situation or
 strategy.
 
-### Huttler<a id="sec-2-2-4" name="sec-2-2-4"></a>
+## Huttler
 
 Huttlers are distant relatives of humans, possessing similar
 intelligence, person and susceptibility toward mutation and corruption
@@ -147,22 +88,23 @@ between them and humans becomes more evident as the game progresses.
 Some say that Huttlers parallel hurthlings or hobbits in other
 media. It hasn't been confirmed, however, and despite the fact that
 they indeed live in holes or *huts*, they are more inclined to
-barbarism and wildness than to farming and agriculture. Neither are
+barbarism and wilderness than to farming and agriculture. Neither are
 they oblivious to the tidings from the larger world.
 
-## Skills<a id="sec-2-3" name="sec-2-3"></a>
+# Skills
 
-## Combat<a id="sec-2-4" name="sec-2-4"></a>
+# Combat
 
-### Weapons<a id="sec-2-4-1" name="sec-2-4-1"></a>
+## Weapons
 
-### Armory<a id="sec-2-4-2" name="sec-2-4-2"></a>
+## Armory
+# Religion
 
-## Magic<a id="sec-2-5" name="sec-2-5"></a>
+## Gods
 
-## Religion<a id="sec-2-6" name="sec-2-6"></a>
+## Magic
 
-## Monsters<a id="sec-2-7" name="sec-2-7"></a>
+# Monsters
 
 Unlike many other roguelikes where most monsters are immediately your
 enemies, in this game your playing style determines what other
@@ -170,41 +112,41 @@ characters see you as. There are, however, some monsters that are
 inherently aggressive toward your race or to anything at all. Such
 monsters are often *cursed*. 
 
-### Orcs<a id="sec-2-7-1" name="sec-2-7-1"></a>
+## Orcs
 
-### Trolls<a id="sec-2-7-2" name="sec-2-7-2"></a>
+## Trolls
 
-### Elves<a id="sec-2-7-3" name="sec-2-7-3"></a>
+## Elves
 
-### Specials<a id="sec-2-7-4" name="sec-2-7-4"></a>
+## Specials
 
-### Wizards<a id="sec-2-7-5" name="sec-2-7-5"></a>
+## Wizards
 
 Wizards possess similar abilities as the player in that that they can
 use magic, use weapons and have advanced tactics in wars.
 
-### Animals<a id="sec-2-7-6" name="sec-2-7-6"></a>
+## Animals
 
-1.  Intelligent animals
+### Intelligent animals
 
-2.  Cursed animals
+### Cursed animals
 
-    Cursed animals serve some fell purpose in the game. Typically they are
-    cursed to serve some other monsters or gods. To a player, this means
-    that such an animal can pose significantly more threat than
-    others. Not all animals can be identified as cursed easily. 
+Cursed animals serve some fell purpose in the game. Typically they are
+cursed to serve some other monsters or gods. To a player, this means
+that such an animal can pose significantly more threat than
+others. Not all animals can be identified as cursed easily.
 
-## Conditions affecting living<a id="sec-2-8" name="sec-2-8"></a>
+# Conditions affecting living
 
-### Food<a id="sec-2-8-1" name="sec-2-8-1"></a>
+## Food
 
-### Health<a id="sec-2-8-2" name="sec-2-8-2"></a>
+## Health
 
-### Corruption<a id="sec-2-8-3" name="sec-2-8-3"></a>
+## Corruption
 
-### Confusion<a id="sec-2-8-4" name="sec-2-8-4"></a>
+## Confusion
 
-### Blindness<a id="sec-2-8-5" name="sec-2-8-5"></a>
+## Blindness
 
 Any character can be affected by blindness. None are exempt. When a
 player character becomes blind, the field of vision becomes a gray
@@ -214,7 +156,7 @@ semi-permanent, when it lasts until you sing a Bard's Song, drink
 *potion of seeing*, invoke a spell or drink a potion that cures
 blindness or ask your god.
 
-### Agony<a id="sec-2-8-6" name="sec-2-8-6"></a>
+## Agony
 
 Agony affects characters of different race differently. Your skills,
 level, items are all irrelevant. What your character does in agony
@@ -228,22 +170,22 @@ mass killing other monsters, invoking actions that harm you,
 excessively drinking potions (not waiting a single turn between
 drinking potions).
 
-### Deafness<a id="sec-2-8-7" name="sec-2-8-7"></a>
+## Deafness
 
 When you are deaf, you stop sensing danger when attempting to open
 doors or initiating combat with a monster that has its allies
 nearby. You rarely become deaf but it can be very dangerous if it
 happens in critical situations.
 
-### Mutation<a id="sec-2-8-8" name="sec-2-8-8"></a>
+## Mutation
 
-## Pickable Items<a id="sec-2-9" name="sec-2-9"></a>
+# Pickable Items
 
-# Developer's Guide<a id="sec-3" name="sec-3"></a>
+# Developer's Guide
 
-## Source code structure<a id="sec-3-1" name="sec-3-1"></a>
+## Source code structure
 
-### *actor.h*<a id="sec-3-1-1" name="sec-3-1-1"></a>
+### *actor.h*
 
 This header file contains all the functions related to the actors,
 including NPC and items (potions, scrolls, books, etc). All of this is
@@ -256,4 +198,4 @@ important \`ai\` helper structure, which, if the actor possesses it,
 gives the wearer the ability to have intelligence, perhaps even
 increasing one, such as capacity for learning. 
 
-## License<a id="sec-3-2" name="sec-3-2"></a>
+# License

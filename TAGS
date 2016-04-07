@@ -1,102 +1,1069 @@
 
-src/actor.c,248
-void init_actor(7,108
-void render_actor(20,533
-bool move_or_attack(25,724
-void actor_update(51,1654
-void player_update(75,2370
-bool is_dead(79,2484
-float take_damage(86,2613
-void die(100,2914
-void player_die(110,3205
-void attack(115,3296
+include/bresenham.h,311
+#define _TCOD_BRESENHAM_H29,1534
+typedef bool (*TCOD_line_listener_t)TCOD_line_listener_t31,1561
+	int stepx;40,2018
+	int stepy;41,2030
+	int e;42,2042
+	int deltax;43,2050
+	int deltay;44,2063
+	int origx;45,2076
+	int origy;46,2089
+	int destx;47,2102
+	int desty;48,2115
+} TCOD_bresenham_data_t;49,2128
 
-src/actor.h,749
+include/bsp.h,288
+#define _TCOD_BSP_H29,1528
+	TCOD_tree_t tree;32,1566
+	int x,33,1621
+	int x,y,33,1621
+	int x,y,w,33,1621
+	int x,y,w,h;33,1621
+	int position;34,1662
+	uint8 level;35,1705
+	bool horizontal;36,1743
+} TCOD_bsp_t;37,1790
+typedef bool (*TCOD_bsp_callback_t)TCOD_bsp_callback_t39,1805
+
+include/color.h,968
+#define _TCOD_COLOR_H29,1530
+	uint8 r,32,1570
+	uint8 r,g,32,1570
+	uint8 r,g,b;32,1570
+} TCOD_color_t;33,1584
+	TCOD_COLOR_RED,61,3146
+	TCOD_COLOR_FLAME,62,3163
+	TCOD_COLOR_ORANGE,63,3182
+	TCOD_COLOR_AMBER,64,3202
+	TCOD_COLOR_YELLOW,65,3221
+	TCOD_COLOR_LIME,66,3241
+	TCOD_COLOR_CHARTREUSE,67,3259
+	TCOD_COLOR_GREEN,68,3283
+	TCOD_COLOR_SEA,69,3302
+	TCOD_COLOR_TURQUOISE,70,3319
+	TCOD_COLOR_CYAN,71,3342
+	TCOD_COLOR_SKY,72,3360
+	TCOD_COLOR_AZURE,73,3377
+	TCOD_COLOR_BLUE,74,3396
+	TCOD_COLOR_HAN,75,3414
+	TCOD_COLOR_VIOLET,76,3431
+	TCOD_COLOR_PURPLE,77,3451
+	TCOD_COLOR_FUCHSIA,78,3471
+	TCOD_COLOR_MAGENTA,79,3492
+	TCOD_COLOR_PINK,80,3513
+	TCOD_COLOR_CRIMSON,81,3531
+	TCOD_COLOR_NB82,3552
+	TCOD_COLOR_DESATURATED,87,3597
+	TCOD_COLOR_LIGHTEST,88,3622
+	TCOD_COLOR_LIGHTER,89,3644
+	TCOD_COLOR_LIGHT,90,3665
+	TCOD_COLOR_NORMAL,91,3684
+	TCOD_COLOR_DARK,92,3704
+	TCOD_COLOR_DARKER,93,3722
+	TCOD_COLOR_DARKEST,94,3742
+	TCOD_COLOR_LEVELS95,3763
+
+include/console.h,142
+#define _TCOD_CONSOLE_H29,1532
+#define TCOD_BKGND_ALPHA(33,1585
+#define TCOD_BKGND_ADDALPHA(34,1682
+typedef void * TCOD_console_t;36,1783
+
+include/console_types.h,5205
+#define _TCOD_CONSOLE_TYPES_H29,1566
+	TCODK_NONE,32,1615
+	TCODK_ESCAPE,33,1629
+	TCODK_BACKSPACE,34,1645
+	TCODK_TAB,35,1664
+	TCODK_ENTER,36,1677
+	TCODK_SHIFT,37,1692
+	TCODK_CONTROL,38,1707
+	TCODK_ALT,39,1724
+	TCODK_PAUSE,40,1737
+	TCODK_CAPSLOCK,41,1752
+	TCODK_PAGEUP,42,1770
+	TCODK_PAGEDOWN,43,1786
+	TCODK_END,44,1804
+	TCODK_HOME,45,1817
+	TCODK_UP,46,1831
+	TCODK_LEFT,47,1843
+	TCODK_RIGHT,48,1857
+	TCODK_DOWN,49,1872
+	TCODK_PRINTSCREEN,50,1886
+	TCODK_INSERT,51,1907
+	TCODK_DELETE,52,1923
+	TCODK_LWIN,53,1939
+	TCODK_RWIN,54,1953
+	TCODK_APPS,55,1967
+	TCODK_0,56,1981
+	TCODK_1,57,1992
+	TCODK_2,58,2003
+	TCODK_3,59,2014
+	TCODK_4,60,2025
+	TCODK_5,61,2036
+	TCODK_6,62,2047
+	TCODK_7,63,2058
+	TCODK_8,64,2069
+	TCODK_9,65,2080
+	TCODK_KP0,66,2091
+	TCODK_KP1,67,2104
+	TCODK_KP2,68,2117
+	TCODK_KP3,69,2130
+	TCODK_KP4,70,2143
+	TCODK_KP5,71,2156
+	TCODK_KP6,72,2169
+	TCODK_KP7,73,2182
+	TCODK_KP8,74,2195
+	TCODK_KP9,75,2208
+	TCODK_KPADD,76,2221
+	TCODK_KPSUB,77,2236
+	TCODK_KPDIV,78,2251
+	TCODK_KPMUL,79,2266
+	TCODK_KPDEC,80,2281
+	TCODK_KPENTER,81,2296
+	TCODK_F1,82,2313
+	TCODK_F2,83,2325
+	TCODK_F3,84,2337
+	TCODK_F4,85,2349
+	TCODK_F5,86,2361
+	TCODK_F6,87,2373
+	TCODK_F7,88,2385
+	TCODK_F8,89,2397
+	TCODK_F9,90,2409
+	TCODK_F10,91,2421
+	TCODK_F11,92,2434
+	TCODK_F12,93,2447
+	TCODK_NUMLOCK,94,2460
+	TCODK_SCROLLLOCK,95,2477
+	TCODK_SPACE,96,2497
+	TCODK_CHAR97,2512
+} TCOD_keycode_t;98,2525
+	TCOD_keycode_t vk;102,2608
+	char c;103,2645
+	bool pressed 104,2698
+	bool lalt 105,2780
+	bool lctrl 106,2794
+	bool ralt 107,2809
+	bool rctrl 108,2823
+	bool shift 109,2838
+} TCOD_key_t;110,2853
+	TCOD_CHAR_HLINE=114,2907
+	TCOD_CHAR_VLINE=115,2930
+	TCOD_CHAR_NE=116,2953
+	TCOD_CHAR_NW=117,2973
+	TCOD_CHAR_SE=118,2993
+	TCOD_CHAR_SW=119,3013
+	TCOD_CHAR_TEEW=120,3033
+	TCOD_CHAR_TEEE=121,3055
+	TCOD_CHAR_TEEN=122,3077
+	TCOD_CHAR_TEES=123,3099
+	TCOD_CHAR_CROSS=124,3121
+	TCOD_CHAR_DHLINE=126,3165
+	TCOD_CHAR_DVLINE=127,3189
+	TCOD_CHAR_DNE=128,3213
+	TCOD_CHAR_DNW=129,3234
+	TCOD_CHAR_DSE=130,3255
+	TCOD_CHAR_DSW=131,3276
+	TCOD_CHAR_DTEEW=132,3297
+	TCOD_CHAR_DTEEE=133,3320
+	TCOD_CHAR_DTEEN=134,3343
+	TCOD_CHAR_DTEES=135,3366
+	TCOD_CHAR_DCROSS=136,3389
+	TCOD_CHAR_BLOCK1=138,3428
+	TCOD_CHAR_BLOCK2=139,3452
+	TCOD_CHAR_BLOCK3=140,3476
+	TCOD_CHAR_ARROW_N=142,3515
+	TCOD_CHAR_ARROW_S=143,3539
+	TCOD_CHAR_ARROW_E=144,3563
+	TCOD_CHAR_ARROW_W=145,3587
+	TCOD_CHAR_ARROW2_N=147,3639
+	TCOD_CHAR_ARROW2_S=148,3664
+	TCOD_CHAR_ARROW2_E=149,3689
+	TCOD_CHAR_ARROW2_W=150,3714
+	TCOD_CHAR_DARROW_H=152,3761
+	TCOD_CHAR_DARROW_V=153,3786
+	TCOD_CHAR_CHECKBOX_UNSET=155,3829
+	TCOD_CHAR_CHECKBOX_SET=156,3861
+	TCOD_CHAR_RADIO_UNSET=157,3891
+	TCOD_CHAR_RADIO_SET=158,3918
+	TCOD_CHAR_SUBP_NW=160,3977
+	TCOD_CHAR_SUBP_NE=161,4002
+	TCOD_CHAR_SUBP_N=162,4027
+	TCOD_CHAR_SUBP_SE=163,4051
+	TCOD_CHAR_SUBP_DIAG=164,4076
+	TCOD_CHAR_SUBP_E=165,4103
+	TCOD_CHAR_SUBP_SW=166,4127
+	TCOD_CHAR_SMILIE 168,4174
+	TCOD_CHAR_SMILIE_INV 169,4198
+	TCOD_CHAR_HEART 170,4226
+	TCOD_CHAR_DIAMOND 171,4249
+	TCOD_CHAR_CLUB 172,4274
+	TCOD_CHAR_SPADE 173,4296
+	TCOD_CHAR_BULLET 174,4319
+	TCOD_CHAR_BULLET_INV 175,4343
+	TCOD_CHAR_MALE 176,4371
+	TCOD_CHAR_FEMALE 177,4394
+	TCOD_CHAR_NOTE 178,4419
+	TCOD_CHAR_NOTE_DOUBLE 179,4442
+	TCOD_CHAR_LIGHT 180,4472
+	TCOD_CHAR_EXCLAM_DOUBLE 181,4496
+	TCOD_CHAR_PILCROW 182,4528
+	TCOD_CHAR_SECTION 183,4554
+	TCOD_CHAR_POUND 184,4580
+	TCOD_CHAR_MULTIPLICATION 185,4605
+	TCOD_CHAR_FUNCTION 186,4639
+	TCOD_CHAR_RESERVED 187,4667
+	TCOD_CHAR_HALF 188,4695
+	TCOD_CHAR_ONE_QUARTER 189,4719
+	TCOD_CHAR_COPYRIGHT 190,4750
+	TCOD_CHAR_CENT 191,4779
+	TCOD_CHAR_YEN 192,4803
+	TCOD_CHAR_CURRENCY 193,4826
+	TCOD_CHAR_THREE_QUARTERS 194,4854
+	TCOD_CHAR_DIVISION 195,4888
+	TCOD_CHAR_GRADE 196,4916
+	TCOD_CHAR_UMLAUT 197,4941
+	TCOD_CHAR_POW1 198,4967
+	TCOD_CHAR_POW3 199,4991
+	TCOD_CHAR_POW2 200,5015
+	TCOD_CHAR_BULLET_SQUARE 201,5039
+} TCOD_chars_t;203,5091
+	TCOD_COLCTRL_1 206,5126
+	TCOD_COLCTRL_2,207,5148
+	TCOD_COLCTRL_3,208,5166
+	TCOD_COLCTRL_4,209,5184
+	TCOD_COLCTRL_5,210,5202
+	TCOD_COLCTRL_NUMBER=211,5220
+	TCOD_COLCTRL_FORE_RGB,212,5245
+	TCOD_COLCTRL_BACK_RGB,213,5270
+	TCOD_COLCTRL_STOP214,5295
+} TCOD_colctrl_t;215,5315
+	TCOD_BKGND_NONE,218,5352
+	TCOD_BKGND_SET,219,5371
+	TCOD_BKGND_MULTIPLY,220,5389
+	TCOD_BKGND_LIGHTEN,221,5412
+	TCOD_BKGND_DARKEN,222,5434
+	TCOD_BKGND_SCREEN,223,5455
+	TCOD_BKGND_COLOR_DODGE,224,5476
+	TCOD_BKGND_COLOR_BURN,225,5502
+	TCOD_BKGND_ADD,226,5527
+	TCOD_BKGND_ADDA,227,5545
+	TCOD_BKGND_BURN,228,5564
+	TCOD_BKGND_OVERLAY,229,5583
+	TCOD_BKGND_ALPH,230,5605
+	TCOD_BKGND_DEFAULT231,5624
+} TCOD_bkgnd_flag_t;232,5645
+	TCOD_KEY_PRESSED=235,5685
+	TCOD_KEY_RELEASED=236,5707
+} TCOD_key_status_t;237,5730
+	TCOD_FONT_LAYOUT_ASCII_INCOL=241,5795
+	TCOD_FONT_LAYOUT_ASCII_INROW=242,5829
+	TCOD_FONT_TYPE_GREYSCALE=243,5863
+	TCOD_FONT_TYPE_GRAYSCALE=244,5893
+	TCOD_FONT_LAYOUT_TCOD=245,5923
+} TCOD_font_flags_t;246,5950
+	TCOD_RENDERER_GLSL,249,5990
+	TCOD_RENDERER_OPENGL,250,6012
+	TCOD_RENDERER_SDL,251,6036
+	TCOD_NB_RENDERERS,252,6057
+} TCOD_renderer_t;253,6078
+	TCOD_LEFT,256,6116
+	TCOD_RIGHT,257,6130
+	TCOD_CENTER 258,6145
+} TCOD_alignment_t;259,6160
+
+include/fov.h,73
+#define _TCOD_FOV_H29,1528
+typedef void *TCOD_map_t;TCOD_map_t31,1549
+
+include/fov_types.h,477
+#define _TCOD_FOV_TYPES_H29,1562
+	FOV_BASIC,38,2082
+	FOV_DIAMOND,39,2095
+	FOV_SHADOW,40,2110
+	FOV_PERMISSIVE_0,41,2124
+	FOV_PERMISSIVE_1,42,2144
+	FOV_PERMISSIVE_2,43,2164
+	FOV_PERMISSIVE_3,44,2184
+	FOV_PERMISSIVE_4,45,2204
+	FOV_PERMISSIVE_5,46,2224
+	FOV_PERMISSIVE_6,47,2244
+	FOV_PERMISSIVE_7,48,2264
+	FOV_PERMISSIVE_8,49,2284
+	FOV_RESTRICTIVE,50,2304
+	NB_FOV_ALGORITHMS 51,2323
+	NB_FOV_ALGORITHMS } TCOD_fov_algorithm_t;51,2323
+#define FOV_PERMISSIVE(52,2367
+
+include/heightmap.h,127
+#define _TCOD_HEIGHTMAP_H28,1533
+	int w,31,1577
+	int w,h;31,1577
+	float *values;values32,1587
+} TCOD_heightmap_t;33,1603
+
+include/image.h,49
+typedef void *TCOD_image_t;TCOD_image_t28,1508
+
+include/lex.h,1613
+#define _TCOD_LEX_H29,1556
+#define TCOD_LEX_FLAG_NOCASE 35,1656
+#define TCOD_LEX_FLAG_NESTING_COMMENT 36,1688
+#define TCOD_LEX_FLAG_TOKENIZE_COMMENTS 37,1729
+#define TCOD_LEX_ERROR 39,1774
+#define TCOD_LEX_UNKNOWN 40,1801
+#define TCOD_LEX_SYMBOL 41,1829
+#define TCOD_LEX_KEYWORD 42,1856
+#define TCOD_LEX_IDEN 43,1884
+#define TCOD_LEX_STRING 44,1909
+#define TCOD_LEX_INTEGER 45,1936
+#define TCOD_LEX_FLOAT 46,1964
+#define TCOD_LEX_CHAR 47,1990
+#define TCOD_LEX_EOF 48,2015
+#define TCOD_LEX_COMMENT 49,2039
+#define TCOD_LEX_MAX_SYMBOLS 51,2069
+#define TCOD_LEX_SYMBOL_SIZE 52,2103
+#define TCOD_LEX_MAX_KEYWORDS 53,2135
+#define TCOD_LEX_KEYWORD_SIZE 54,2170
+	int file_line,57,2224
+	int file_line, token_type,57,2224
+	int file_line, token_type, token_int_val,57,2224
+	int file_line, token_type, token_int_val, token_idx;57,2224
+	float token_float_val;58,2279
+	char *tok;tok59,2304
+    int toklen;60,2317
+	char lastStringDelim;61,2334
+	char *pos;pos62,2358
+	char *buf;buf63,2371
+	char *filename;filename64,2384
+	char *last_javadoc_comment;last_javadoc_comment65,2402
+	int nb_symbols,67,2454
+	int nb_symbols, nb_keywords,67,2454
+	int nb_symbols, nb_keywords, flags;67,2454
+	char symbols[symbols68,2492
+	keywords[keywords69,2556
+	const char *simpleCmt;simpleCmt70,2618
+	const char *cmtStart,cmtStart71,2643
+	const char *cmtStart, *cmtStop,cmtStop71,2643
+	const char *cmtStart, *cmtStop, *javadocCmtStart;javadocCmtStart71,2643
+	const char *stringDelim;stringDelim72,2695
+	bool javadoc_read;73,2722
+	bool allocBuf;74,2743
+	bool savept;75,2760
+} TCOD_lex_t;76,2833
+
+include/libtcod.h,1523
+#define _TCODLIB_H29,1555
+#  define TCOD_VISUAL_STUDIO56,2242
+#  define TCOD_WINDOWS57,2272
+#    define TCOD_WIN6459,2313
+#    define TCOD_64BITS60,2337
+#    define TCOD_WIN3262,2371
+#  define TCOD_WINDOWS65,2435
+#  define TCOD_MINGW3266,2459
+#  define TCOD_WIN3267,2483
+#  define TCOD_HAIKU69,2533
+#  define TCOD_GCC70,2555
+#    define TCOD_64BITS72,2599
+#  define TCOD_LINUX75,2660
+#  define TCOD_GCC76,2682
+#    define TCOD_LINUX6478,2726
+#    define TCOD_64BITS79,2752
+#    define TCOD_LINUX3281,2786
+#  define TCOD_FREEBSD84,2852
+#  define TCOD_GCC85,2876
+#    define TCOD_FREEBSD6487,2920
+#    define TCOD_64BITS88,2948
+#    define TCOD_FREEBSD3290,2982
+#  define TCOD_MACOSX93,3069
+#  define TCOD_GCC94,3092
+#define _SDL_main_h106,3523
+typedef unsigned char uint8;111,3594
+typedef char int8;112,3624
+typedef unsigned short uint16;113,3644
+typedef short int16;114,3676
+typedef unsigned int uint32;115,3698
+typedef int int32;116,3728
+typedef long intptr;118,3818
+typedef unsigned long uintptr;119,3840
+#define TCOD_HEXVERSION 121,3874
+#define TCOD_STRVERSION 122,3908
+#define TCOD_TECHVERSION 123,3941
+typedef uint8 bool;128,4041
+#define false 129,4062
+#define true 130,4087
+#define bool 134,4200
+#define TCODLIB_API 140,4293
+#define TCODLIB_API 142,4343
+#define TCODLIB_API145,4401
+#define vsnwprintf 161,4910
+#define vsnwprintf 164,4969
+#define MAX(170,5119
+#define MIN(171,5155
+#define ABS(172,5191
+#define CLAMP(173,5224
+#define LERP(174,5293
+#undef bool196,5744
+
+include/libtcod_int.h,9106
+#define _TCODLIB_INT_H29,1559
+	int c;39,1746
+	int cf;40,1783
+	TCOD_color_t fore;41,1825
+	TCOD_color_t back;42,1869
+	uint8 dirt;43,1913
+} char_t;44,1966
+	char_t *buf;buf48,2032
+	char_t *oldbuf;oldbuf49,2069
+	int w,51,2176
+	int w,h;51,2176
+	TCOD_bkgnd_flag_t bkgnd_flag;53,2256
+	TCOD_alignment_t alignment;55,2347
+	TCOD_color_t fore,57,2430
+	TCOD_color_t fore,back,57,2430
+	TCOD_color_t fore,back,key;57,2430
+	uint8 fade;58,2460
+	bool haskey;59,2474
+} TCOD_console_data_t;60,2524
+	bool transparent:transparent64,2594
+	bool walkable:walkable65,2616
+	bool fov:fov66,2635
+} cell_t;67,2649
+	int width;69,2678
+	int height;70,2691
+	int nbcells;71,2705
+	cell_t *cells;cells72,2720
+} map_t;73,2737
+	TCOD_random_algo_t algo;78,2841
+	TCOD_distribution_t distribution;80,2889
+	uint32 mt[mt82,2956
+	int cur_mt;83,2974
+	uint32 Q[Q86,3092
+	uint32 Q[4096], c;86,3092
+    int cur;87,3113
+} mersenne_data_t;88,3127
+	int fontNbCharHoriz;92,3215
+	int fontNbCharVertic;93,3238
+	bool font_tcod_layout;95,3291
+	bool font_in_row;96,3316
+	bool font_greyscale;97,3336
+	int font_width;99,3390
+	int font_height;100,3408
+	char font_file[font_file101,3427
+	char window_title[window_title102,3450
+	int *ascii_to_tcod;ascii_to_tcod104,3520
+	bool *colored;colored106,3603
+	TCOD_console_data_t *root;root108,3645
+	int max_font_chars;110,3703
+	bool fullscreen;112,3749
+	int fullscreen_offsetx;113,3768
+	int fullscreen_offsety;114,3794
+	int fullscreen_width;116,3846
+	int fullscreen_height;117,3870
+	int actual_fullscreen_width;119,3921
+	int actual_fullscreen_height;120,3952
+	TCOD_renderer_t renderer;122,4008
+	SDL_renderer_t sdl_cbk;124,4074
+	TCOD_color_t fading_color;126,4120
+	uint8 fade;127,4149
+} TCOD_internal_context_t;128,4163
+#undef printf135,4324
+#undef vprintf138,4363
+#define printf(140,4387
+#define vprintf(141,4470
+#undef assert144,4572
+#define assert(146,4595
+#define TCOD_IF(150,4724
+#define TCOD_IFNOT(151,4751
+#define TCOD_ASSERT(152,4784
+#define TCOD_LOG(153,4808
+#define TCOD_IF(155,4836
+#define TCOD_IFNOT(156,4867
+#define TCOD_ASSERT(157,4908
+#define TCOD_LOG(158,4942
+#define TCOD_BLACK 234,8819
+#define TCOD_DARKEST_GREY 235,8845
+#define TCOD_DARKER_GREY 236,8881
+#define TCOD_DARK_GREY 237,8916
+#define TCOD_GREY 238,8949
+#define TCOD_LIGHT_GREY 239,8980
+#define TCOD_LIGHTER_GREY 240,9017
+#define TCOD_LIGHTEST_GREY 241,9056
+#define TCOD_WHITE 242,9096
+#define TCOD_DARKEST_SEPIA 244,9130
+#define TCOD_DARKER_SEPIA 245,9167
+#define TCOD_DARK_SEPIA 246,9203
+#define TCOD_SEPIA 247,9237
+#define TCOD_LIGHT_SEPIA 248,9268
+#define TCOD_LIGHTER_SEPIA 249,9306
+#define TCOD_LIGHTEST_SEPIA 250,9346
+#define TCOD_DESATURATED_RED 253,9408
+#define TCOD_DESATURATED_FLAME 254,9448
+#define TCOD_DESATURATED_ORANGE 255,9490
+#define TCOD_DESATURATED_AMBER 256,9533
+#define TCOD_DESATURATED_YELLOW 257,9576
+#define TCOD_DESATURATED_LIME 258,9620
+#define TCOD_DESATURATED_CHARTREUSE 259,9662
+#define TCOD_DESATURATED_GREEN 260,9709
+#define TCOD_DESATURATED_SEA 261,9751
+#define TCOD_DESATURATED_TURQUOISE 262,9791
+#define TCOD_DESATURATED_CYAN 263,9838
+#define TCOD_DESATURATED_SKY 264,9880
+#define TCOD_DESATURATED_AZURE 265,9921
+#define TCOD_DESATURATED_BLUE 266,9963
+#define TCOD_DESATURATED_HAN 267,10004
+#define TCOD_DESATURATED_VIOLET 268,10044
+#define TCOD_DESATURATED_PURPLE 269,10087
+#define TCOD_DESATURATED_FUCHSIA 270,10131
+#define TCOD_DESATURATED_MAGENTA 271,10176
+#define TCOD_DESATURATED_PINK 272,10221
+#define TCOD_DESATURATED_CRIMSON 273,10262
+#define TCOD_LIGHTEST_RED 276,10324
+#define TCOD_LIGHTEST_FLAME 277,10363
+#define TCOD_LIGHTEST_ORANGE 278,10404
+#define TCOD_LIGHTEST_AMBER 279,10446
+#define TCOD_LIGHTEST_YELLOW 280,10487
+#define TCOD_LIGHTEST_LIME 281,10529
+#define TCOD_LIGHTEST_CHARTREUSE 282,10569
+#define TCOD_LIGHTEST_GREEN 283,10615
+#define TCOD_LIGHTEST_SEA 284,10656
+#define TCOD_LIGHTEST_TURQUOISE 285,10695
+#define TCOD_LIGHTEST_CYAN 286,10740
+#define TCOD_LIGHTEST_SKY 287,10780
+#define TCOD_LIGHTEST_AZURE 288,10819
+#define TCOD_LIGHTEST_BLUE 289,10860
+#define TCOD_LIGHTEST_HAN 290,10900
+#define TCOD_LIGHTEST_VIOLET 291,10939
+#define TCOD_LIGHTEST_PURPLE 292,10981
+#define TCOD_LIGHTEST_FUCHSIA 293,11023
+#define TCOD_LIGHTEST_MAGENTA 294,11066
+#define TCOD_LIGHTEST_PINK 295,11109
+#define TCOD_LIGHTEST_CRIMSON 296,11149
+#define TCOD_LIGHTER_RED 299,11209
+#define TCOD_LIGHTER_FLAME 300,11247
+#define TCOD_LIGHTER_ORANGE 301,11287
+#define TCOD_LIGHTER_AMBER 302,11328
+#define TCOD_LIGHTER_YELLOW 303,11368
+#define TCOD_LIGHTER_LIME 304,11409
+#define TCOD_LIGHTER_CHARTREUSE 305,11448
+#define TCOD_LIGHTER_GREEN 306,11493
+#define TCOD_LIGHTER_SEA 307,11533
+#define TCOD_LIGHTER_TURQUOISE 308,11571
+#define TCOD_LIGHTER_CYAN 309,11615
+#define TCOD_LIGHTER_SKY 310,11654
+#define TCOD_LIGHTER_AZURE 311,11692
+#define TCOD_LIGHTER_BLUE 312,11732
+#define TCOD_LIGHTER_HAN 313,11771
+#define TCOD_LIGHTER_VIOLET 314,11809
+#define TCOD_LIGHTER_PURPLE 315,11850
+#define TCOD_LIGHTER_FUCHSIA 316,11891
+#define TCOD_LIGHTER_MAGENTA 317,11933
+#define TCOD_LIGHTER_PINK 318,11975
+#define TCOD_LIGHTER_CRIMSON 319,12014
+#define TCOD_LIGHT_RED 322,12071
+#define TCOD_LIGHT_FLAME 323,12105
+#define TCOD_LIGHT_ORANGE 324,12142
+#define TCOD_LIGHT_AMBER 325,12180
+#define TCOD_LIGHT_YELLOW 326,12217
+#define TCOD_LIGHT_LIME 327,12255
+#define TCOD_LIGHT_CHARTREUSE 328,12291
+#define TCOD_LIGHT_GREEN 329,12333
+#define TCOD_LIGHT_SEA 330,12369
+#define TCOD_LIGHT_TURQUOISE 331,12404
+#define TCOD_LIGHT_CYAN 332,12445
+#define TCOD_LIGHT_SKY 333,12481
+#define TCOD_LIGHT_AZURE 334,12516
+#define TCOD_LIGHT_BLUE 335,12553
+#define TCOD_LIGHT_HAN 336,12588
+#define TCOD_LIGHT_VIOLET 337,12623
+#define TCOD_LIGHT_PURPLE 338,12661
+#define TCOD_LIGHT_FUCHSIA 339,12699
+#define TCOD_LIGHT_MAGENTA 340,12738
+#define TCOD_LIGHT_PINK 341,12777
+#define TCOD_LIGHT_CRIMSON 342,12813
+#define TCOD_RED 345,12868
+#define TCOD_FLAME 346,12894
+#define TCOD_ORANGE 347,12923
+#define TCOD_AMBER 348,12954
+#define TCOD_YELLOW 349,12984
+#define TCOD_LIME 350,13015
+#define TCOD_CHARTREUSE 351,13044
+#define TCOD_GREEN 352,13079
+#define TCOD_SEA 353,13107
+#define TCOD_TURQUOISE 354,13135
+#define TCOD_CYAN 355,13169
+#define TCOD_SKY 356,13198
+#define TCOD_AZURE 357,13226
+#define TCOD_BLUE 358,13256
+#define TCOD_HAN 359,13283
+#define TCOD_VIOLET 360,13310
+#define TCOD_PURPLE 361,13341
+#define TCOD_FUCHSIA 362,13372
+#define TCOD_MAGENTA 363,13404
+#define TCOD_PINK 364,13436
+#define TCOD_CRIMSON 365,13465
+#define TCOD_DARK_RED 368,13510
+#define TCOD_DARK_FLAME 369,13541
+#define TCOD_DARK_ORANGE 370,13575
+#define TCOD_DARK_AMBER 371,13610
+#define TCOD_DARK_YELLOW 372,13645
+#define TCOD_DARK_LIME 373,13681
+#define TCOD_DARK_CHARTREUSE 374,13715
+#define TCOD_DARK_GREEN 375,13754
+#define TCOD_DARK_SEA 376,13787
+#define TCOD_DARK_TURQUOISE 377,13819
+#define TCOD_DARK_CYAN 378,13858
+#define TCOD_DARK_SKY 379,13892
+#define TCOD_DARK_AZURE 380,13925
+#define TCOD_DARK_BLUE 381,13959
+#define TCOD_DARK_HAN 382,13991
+#define TCOD_DARK_VIOLET 383,14023
+#define TCOD_DARK_PURPLE 384,14058
+#define TCOD_DARK_FUCHSIA 385,14094
+#define TCOD_DARK_MAGENTA 386,14131
+#define TCOD_DARK_PINK 387,14168
+#define TCOD_DARK_CRIMSON 388,14201
+#define TCOD_DARKER_RED 391,14253
+#define TCOD_DARKER_FLAME 392,14286
+#define TCOD_DARKER_ORANGE 393,14322
+#define TCOD_DARKER_AMBER 394,14359
+#define TCOD_DARKER_YELLOW 395,14395
+#define TCOD_DARKER_LIME 396,14433
+#define TCOD_DARKER_CHARTREUSE 397,14468
+#define TCOD_DARKER_GREEN 398,14509
+#define TCOD_DARKER_SEA 399,14544
+#define TCOD_DARKER_TURQUOISE 400,14578
+#define TCOD_DARKER_CYAN 401,14618
+#define TCOD_DARKER_SKY 402,14654
+#define TCOD_DARKER_AZURE 403,14688
+#define TCOD_DARKER_BLUE 404,14724
+#define TCOD_DARKER_HAN 405,14758
+#define TCOD_DARKER_VIOLET 406,14792
+#define TCOD_DARKER_PURPLE 407,14829
+#define TCOD_DARKER_FUCHSIA 408,14866
+#define TCOD_DARKER_MAGENTA 409,14905
+#define TCOD_DARKER_PINK 410,14943
+#define TCOD_DARKER_CRIMSON 411,14978
+#define TCOD_DARKEST_RED 414,15033
+#define TCOD_DARKEST_FLAME 415,15066
+#define TCOD_DARKEST_ORANGE 416,15102
+#define TCOD_DARKEST_AMBER 417,15139
+#define TCOD_DARKEST_YELLOW 418,15175
+#define TCOD_DARKEST_LIME 419,15212
+#define TCOD_DARKEST_CHARTREUSE 420,15247
+#define TCOD_DARKEST_GREEN 421,15288
+#define TCOD_DARKEST_SEA 422,15323
+#define TCOD_DARKEST_TURQUOISE 423,15357
+#define TCOD_DARKEST_CYAN 424,15397
+#define TCOD_DARKEST_SKY 425,15432
+#define TCOD_DARKEST_AZURE 426,15466
+#define TCOD_DARKEST_BLUE 427,15502
+#define TCOD_DARKEST_HAN 428,15536
+#define TCOD_DARKEST_VIOLET 429,15570
+#define TCOD_DARKEST_PURPLE 430,15607
+#define TCOD_DARKEST_FUCHSIA 431,15644
+#define TCOD_DARKEST_MAGENTA 432,15682
+#define TCOD_DARKEST_PINK 433,15720
+#define TCOD_DARKEST_CRIMSON 434,15755
+#define TCOD_BRASS 437,15811
+#define TCOD_COPPER 438,15842
+#define TCOD_GOLD 439,15875
+#define TCOD_SILVER 440,15904
+#define TCOD_CELADON 443,15960
+#define TCOD_PEACH 444,15994
+
+include/list.h,76
+#define _TCOD_LIST_H29,1529
+typedef void *TCOD_list_t;TCOD_list_t31,1551
+
+include/mersenne.h,82
+#define _TCOD_RANDOM_H29,1531
+typedef void *TCOD_random_t;TCOD_random_t33,1584
+
+include/mersenne_types.h,478
+#define _TCOD_RANDOM_TYPES_H29,1565
+	int nb_rolls;33,1632
+	int nb_faces;34,1648
+	float multiplier;35,1664
+	float addsub;36,1684
+} TCOD_dice_t;37,1700
+    TCOD_RNG_MT,41,1757
+    TCOD_RNG_CMWC42,1775
+} TCOD_random_algo_t;43,1794
+	TCOD_DISTRIBUTION_LINEAR,46,1835
+	TCOD_DISTRIBUTION_GAUSSIAN,47,1863
+	TCOD_DISTRIBUTION_GAUSSIAN_RANGE,48,1893
+	TCOD_DISTRIBUTION_GAUSSIAN_INVERSE,49,1929
+	TCOD_DISTRIBUTION_GAUSSIAN_RANGE_INVERSE50,1967
+} TCOD_distribution_t;51,2010
+
+include/mouse.h,30
+#define _TCOD_MOUSE_H29,1530
+
+include/mouse_types.h,436
+#define _TCOD_MOUSE_TYPES_H29,1564
+  int x,33,1631
+  int x,y;33,1631
+  int dx,34,1667
+  int dx,dy;34,1667
+  int cx,35,1724
+  int cx,cy;35,1724
+  int dcx,36,1781
+  int dcx,dcy;36,1781
+  bool lbutton 37,1847
+  bool rbutton 38,1890
+  bool mbutton 39,1934
+  bool lbutton_pressed 40,1979
+  bool rbutton_pressed 41,2038
+  bool mbutton_pressed 42,2098
+  bool wheel_up 43,2159
+  bool wheel_down 44,2199
+} TCOD_mouse_t;45,2243
+
+include/namegen.h,71
+#define _TCOD_NAMEGEN_H33,1641
+typedef void * TCOD_namegen_t;36,1697
+
+include/noise_defaults.h,197
+#define _TCOD_NOISE_DEFAULTS2,30
+#define TCOD_NOISE_MAX_OCTAVES	4,62
+#define TCOD_NOISE_MAX_DIMENSIONS	5,100
+#define TCOD_NOISE_DEFAULT_HURST 6,138
+#define TCOD_NOISE_DEFAULT_LACUNARITY 7,184
+
+include/noise.h,224
+#define _TCOD_PERLIN_H29,1531
+typedef void *TCOD_noise_t;TCOD_noise_t31,1555
+	TCOD_NOISE_PERLIN 34,1599
+	TCOD_NOISE_SIMPLEX 35,1623
+	TCOD_NOISE_WAVELET 36,1648
+	TCOD_NOISE_DEFAULT 37,1673
+} TCOD_noise_type_t;38,1697
+
+include/parser.h,2241
+#define _TCOD_PARSER_H29,1531
+	TCOD_TYPE_NONE,33,1589
+	TCOD_TYPE_BOOL,34,1606
+	TCOD_TYPE_CHAR,35,1623
+	TCOD_TYPE_INT,36,1640
+	TCOD_TYPE_FLOAT,37,1656
+	TCOD_TYPE_STRING,38,1674
+	TCOD_TYPE_COLOR,39,1693
+	TCOD_TYPE_DICE,40,1711
+	TCOD_TYPE_VALUELIST00,41,1728
+	TCOD_TYPE_VALUELIST01,42,1752
+	TCOD_TYPE_VALUELIST02,43,1776
+	TCOD_TYPE_VALUELIST03,44,1800
+	TCOD_TYPE_VALUELIST04,45,1824
+	TCOD_TYPE_VALUELIST05,46,1848
+	TCOD_TYPE_VALUELIST06,47,1872
+	TCOD_TYPE_VALUELIST07,48,1896
+	TCOD_TYPE_VALUELIST08,49,1920
+	TCOD_TYPE_VALUELIST09,50,1944
+	TCOD_TYPE_VALUELIST10,51,1968
+	TCOD_TYPE_VALUELIST11,52,1992
+	TCOD_TYPE_VALUELIST12,53,2016
+	TCOD_TYPE_VALUELIST13,54,2040
+	TCOD_TYPE_VALUELIST14,55,2064
+	TCOD_TYPE_VALUELIST15,56,2088
+	TCOD_TYPE_CUSTOM00,57,2112
+	TCOD_TYPE_CUSTOM01,58,2133
+	TCOD_TYPE_CUSTOM02,59,2154
+	TCOD_TYPE_CUSTOM03,60,2175
+	TCOD_TYPE_CUSTOM04,61,2196
+	TCOD_TYPE_CUSTOM05,62,2217
+	TCOD_TYPE_CUSTOM06,63,2238
+	TCOD_TYPE_CUSTOM07,64,2259
+	TCOD_TYPE_CUSTOM08,65,2280
+	TCOD_TYPE_CUSTOM09,66,2301
+	TCOD_TYPE_CUSTOM10,67,2322
+	TCOD_TYPE_CUSTOM11,68,2343
+	TCOD_TYPE_CUSTOM12,69,2364
+	TCOD_TYPE_CUSTOM13,70,2385
+	TCOD_TYPE_CUSTOM14,71,2406
+	TCOD_TYPE_CUSTOM15,72,2427
+	TCOD_TYPE_LIST=73,2448
+} TCOD_value_type_t;74,2469
+	bool b;78,2527
+	char c;79,2536
+	int32 i;80,2545
+	float f;81,2555
+	char *s;s82,2565
+	TCOD_color_t col;83,2575
+	TCOD_dice_t dice;84,2594
+	TCOD_list_t list;85,2613
+	void *custom;custom86,2632
+} TCOD_value_t;87,2647
+typedef void *TCOD_parser_struct_t;TCOD_parser_struct_t90,2688
+	bool (*new_struct)new_struct104,3749
+	bool (*new_flag)new_flag105,3813
+	bool (*new_property)new_property106,3850
+	bool (*end_struct)end_struct107,3939
+	void (*error)error108,4004
+} TCOD_parser_listener_t;109,4037
+typedef TCOD_value_t (*TCOD_parser_custom_t)TCOD_parser_custom_t112,4091
+typedef void *TCOD_parser_t;TCOD_parser_t115,4248
+	char *name;name139,5923
+	TCOD_list_t flags;141,5980
+	TCOD_list_t props;143,6050
+	TCOD_list_t lists;145,6097
+	TCOD_list_t structs;147,6147
+} TCOD_struct_int_t;148,6169
+	TCOD_list_t structs;152,6250
+	TCOD_parser_custom_t customs[customs154,6307
+	bool fatal;156,6369
+	TCOD_list_t props;158,6436
+} TCOD_parser_int_t;159,6456
+
+include/path.h,190
+#define _TCOD_PATH_H29,1557
+typedef float (*TCOD_path_func_t)TCOD_path_func_t31,1581
+typedef void *TCOD_path_t;TCOD_path_t32,1676
+typedef void *TCOD_dijkstra_t;TCOD_dijkstra_t49,2608
+
+include/sys.h,1197
+#define _TCOD_SYS_H29,1556
+  TCOD_EVENT_KEY_PRESS=48,2496
+  TCOD_EVENT_KEY_RELEASE=49,2523
+  TCOD_EVENT_KEY=50,2552
+  TCOD_EVENT_KEY=TCOD_EVENT_KEY_PRESS|TCOD_EVENT_KEY_PRESS50,2552
+  TCOD_EVENT_KEY=TCOD_EVENT_KEY_PRESS|TCOD_EVENT_KEY_RELEASE,TCOD_EVENT_KEY_RELEASE50,2552
+  TCOD_EVENT_MOUSE_MOVE=51,2615
+  TCOD_EVENT_MOUSE_PRESS=52,2643
+  TCOD_EVENT_MOUSE_RELEASE=53,2672
+  TCOD_EVENT_MOUSE=54,2704
+  TCOD_EVENT_MOUSE=TCOD_EVENT_MOUSE_MOVE|TCOD_EVENT_MOUSE_MOVE54,2704
+  TCOD_EVENT_MOUSE=TCOD_EVENT_MOUSE_MOVE|TCOD_EVENT_MOUSE_PRESS|TCOD_EVENT_MOUSE_PRESS54,2704
+  TCOD_EVENT_MOUSE=TCOD_EVENT_MOUSE_MOVE|TCOD_EVENT_MOUSE_PRESS|TCOD_EVENT_MOUSE_RELEASE,TCOD_EVENT_MOUSE_RELEASE54,2704
+  TCOD_EVENT_ANY=55,2795
+  TCOD_EVENT_ANY=TCOD_EVENT_KEY|TCOD_EVENT_KEY55,2795
+  TCOD_EVENT_ANY=TCOD_EVENT_KEY|TCOD_EVENT_MOUSE,TCOD_EVENT_MOUSE55,2795
+} TCOD_event_t;56,2846
+typedef void *TCOD_thread_t;TCOD_thread_t75,3853
+typedef void *TCOD_semaphore_t;TCOD_semaphore_t76,3883
+typedef void *TCOD_mutex_t;TCOD_mutex_t77,3916
+typedef void *TCOD_cond_t;TCOD_cond_t78,3945
+typedef void *TCOD_library_t;TCOD_library_t101,5040
+typedef void (*SDL_renderer_t)SDL_renderer_t106,5317
+
+include/tree.h,216
+#define _TCOD_TREE_H29,1529
+typedef struct _TCOD_tree_t 31,1551
+	struct _TCOD_tree_t *next;next32,1581
+	struct _TCOD_tree_t *father;father33,1609
+	struct _TCOD_tree_t *sons;sons34,1639
+} TCOD_tree_t;35,1667
+
+include/txtfield.h,66
+#define _TCOD_TEXT_H_30,1560
+typedef void * TCOD_text_t;32,1585
+
+include/wrappers.h,68
+#define WRAPPERS_H28,1526
+typedef unsigned int colornum_t;31,1597
+
+include/zip.h,73
+#define _TCOD_ZIP_H29,1528
+typedef void *TCOD_zip_t;TCOD_zip_t31,1549
+
+src/actor.c,1461
+float take_damage(11,192
+void common_update(29,664
+void free_actor(39,914
+void free_actors(44,977
+struct actor *init_actor(init_actor49,1063
+struct ai *init_ai(init_ai72,1649
+struct attacker *init_attacker(init_attacker81,1988
+struct destructible *init_destructible(init_destructible90,2282
+void render_actor(106,2918
+void attack(112,3110
+bool is_dead(137,4435
+void die(145,4601
+float heal(155,4872
+struct actor *make_player(make_player166,5261
+bool player_move_or_attack(185,5805
+struct actor *choose_from_inventory(choose_from_inventory220,7211
+void handle_action_key(260,8995
+void player_update(320,11583
+static void make_memorial(348,12449
+void player_die(354,12666
+struct actor *make_monster(make_monster364,12970
+struct actor *make_orc(make_orc381,13596
+struct actor *make_troll(make_troll386,13735
+bool monster_move_or_attack(391,13879
+void monster_update(419,14885
+void monster_die(439,15522
+struct container *init_container(init_container447,15772
+struct pickable *init_pickable(init_pickable456,15974
+struct actor *make_item(make_item462,16089
+struct actor *make_healer_potion(make_healer_potion473,16469
+struct actor *make_curing_potion(make_curing_potion478,16602
+void free_container(483,16740
+bool pick(489,16877
+bool drop(498,17144
+bool healer_use(512,17615
+bool curing_use(525,18045
+bool use(537,18402
+void free_pickable(547,18640
+bool inventory_add(552,18700
+void inventory_remove(561,18977
+
+src/actor.h,1299
 #define ACTOR_H2,16
-struct Attacker{Attacker11,122
-        float power;12,139
-        void (*attack)attack13,160
-struct Destructible{Destructible16,232
-        float max_hp;17,253
-        float hp;18,303
-        float defence;19,349
-        const char *corpse_name;corpse_name20,399
-        void (*take_damage)take_damage21,475
-        void (*die)die22,540
-struct Actor{Actor25,586
-        int x;26,600
-        int y;27,615
-        char ch;28,630
-        bool blocks;29,647
-        struct Attacker *attacker;attacker30,701
-	struct Destructible *destructible;destructible31,736
-        const char *name;name32,772
-        TCOD_color_t col;33,798
-        void (*update)update34,824
-        void (*render)render35,892
+static const int TRACKING_TURNS 7,75
+struct ai{ai12,143
+	int move_count;13,154
+        void (*update)update14,212
+        bool (*move_or_attack)move_or_attack15,280
+struct attacker{attacker18,386
+        float power;19,403
+        void (*attack)attack20,424
+struct destructible{destructible23,519
+        float max_hp;24,540
+        float hp;25,590
+        float defence;26,636
+        const char *corpse_name;corpse_name27,686
+        float (*take_damage)take_damage28,762
+        void (*die)die29,851
+struct pickable{pickable32,920
+        bool (*use)use33,937
+struct edible{edible36,1003
+        bool (*eat)eat37,1018
+struct container{container41,1143
+        int capacity;42,1161
+        TCOD_list_t inventory;43,1233
+struct actor{actor46,1274
+        int x;47,1288
+        int y;48,1303
+        char ch;49,1318
+        bool blocks;50,1335
+        struct attacker *attacker;attacker51,1389
+	struct destructible *destructible;destructible52,1424
+	struct ai *ai;ai53,1460
+        struct pickable *pickable;pickable54,1476
+        struct container *inventory;inventory55,1511
+        const char *name;name56,1548
+        TCOD_color_t col;57,1574
+        void (*update)update58,1600
+        void (*render)render59,1668
 
-src/engine.c,81
-void engine_init(10,247
-void engine_update(34,1076
-void engine_render(74,2445
+src/engine.c,213
+static const char *WELCOME_MESSAGE WELCOME_MESSAGE8,103
+void send_to_back(15,326
+struct engine *engine_init(engine_init21,501
+void engine_update(49,1369
+void engine_render(72,2224
+void free_engine(93,2818
 
-src/engine.h,519
+src/engine.h,706
 #define ENGINE_H2,17
-enum GameStatus 8,93
-       STARTUP,9,111
-       IDLE,10,127
-       NEW_TURN,11,140
-       VICTORY,12,157
-       DEFEAT13,173
-struct Engine{Engine16,191
-        TCOD_list_t *actors;actors17,206
-        struct Actor *player;player18,235
-        struct Map *map;map19,265
-        int fov_radius;20,290
-        bool compute_fov;21,314
-        TCOD_key_t key;22,340
-        enum GameStatus game_status;23,364
-        void (*update)update24,401
-        void (*render)render25,442
+        WINDOW_W 10,116
+        WINDOW_H 11,139
+enum GameStatus 14,165
+        STARTUP,15,183
+        IDLE,16,200
+        NEW_TURN,17,214
+        VICTORY,18,232
+        DEFEAT19,249
+struct engine{engine22,268
+        TCOD_list_t *actors;actors23,283
+        struct actor *player;player24,312
+        struct map *map;map25,342
+        int fov_radius;26,367
+        bool compute_fov;27,391
+        TCOD_key_t key;28,417
+        TCOD_mouse_t mouse;29,441
+        enum GameStatus game_status;30,469
+        struct gui *gui;gui31,506
+        int window_w;32,531
+        int window_h;33,553
+        void (*update)update34,575
+        void (*render)render35,616
 
-src/main.c,166
+src/gui.c,285
+static void init_message(7,97
+void free_message(15,322
+static void message(23,498
+static void render_bar(55,1627
+static void render_log(75,2615
+static void render_mouse_look(92,3298
+static void gui_render(121,4439
+void free_gui(139,5168
+struct gui *init_gui(init_gui144,5268
+
+src/gui.h,721
+#define GUI_H2,14
+        PANEL_H 7,76
+        BAR_W 8,97
+        MSG_X 9,117
+        MSG_X = BAR_W 9,117
+        MSG_HEIGHT 10,144
+        MSG_HEIGHT = PANEL_H 10,144
+        INVENTORY_WIDTH 11,178
+        INVENTORY_HEIGHT 12,208
+struct message{message15,242
+        char *text;text16,258
+        TCOD_color_t col;17,278
+struct gui{gui20,308
+        TCOD_console_t *con;con21,320
+        TCOD_console_t *inventory_con;inventory_con22,349
+        void (*render)render23,388
+        void (*render_bar)render_bar24,435
+        void (*render_log)render_log28,705
+        void (*message)message29,780
+        void (*render_mouse_look)render_mouse_look30,875
+        TCOD_list_t *log;log31,933
+
+src/main.c,115
 #define PROGRAM_NAME 5,62
-        WINDOW_W 8,102
-        WINDOW_H 9,125
-struct Engine *engine;engine12,151
-void init(14,175
-void clean(18,259
-int main(27,469
+struct engine *engine;engine7,96
+void init(9,120
+void clean(14,205
+int main(20,273
 
-src/map.c,308
+src/map.c,395
 static const int MAX_ROOM_MONSTERS 5,57
-void dig(7,98
-void create_room(29,705
-bool visit_node(50,1554
-void init_map(81,2762
-bool is_wall(102,3519
-bool can_walk(106,3621
-bool is_in_fov(124,4193
-bool is_explored(132,4410
-void compute_fov(136,4512
-void add_monster(140,4680
-void map_render(153,5201
+static const int MAX_ROOM_ITEMS 6,97
+void dig(8,135
+void create_room(31,646
+bool visit_node(65,1988
+void init_map(97,3196
+void free_map(119,3954
+bool is_wall(125,4044
+bool can_walk(130,4147
+bool is_in_fov(146,4679
+bool is_explored(158,4995
+void compute_fov(163,5098
+void add_monster(173,5411
+void add_item(187,5830
+void map_render(201,6266
 
-src/map.h,500
+src/map.h,503
 #define MAP_H2,14
 static const int ROOM_MAX_SIZE 8,92
 static const int ROOM_MIN_SIZE 9,129
-struct Tile{Tile13,182
+struct tile{tile13,182
         bool explored;14,195
-struct BSPTraverse{BSPTraverse21,346
-	int room_num;22,366
-	int lastx;23,381
-	int lasty;24,393
-struct Map{Map28,412
-        int w;29,424
-        int h;30,439
-        void (*render)render31,454
-        struct Tile tiles[tiles32,492
-        TCOD_bsp_t *bsp;bsp33,528
-        TCOD_map_t map;34,553
-	struct BSPTraverse bsp_traverse;35,577
+struct bsp_traverse{bsp_traverse17,222
+	int room_num;18,243
+	int lastx;19,258
+	int lasty;20,270
+struct map{map23,286
+        int w;24,298
+        int h;25,313
+        void (*render)render26,328
+        struct tile tiles[tiles27,366
+        TCOD_bsp_t *bsp;bsp28,402
+        TCOD_map_t map;29,427
+	struct bsp_traverse bsp_traverse;30,451
+
+src/util.c,22
+void each_actor(3,19
+
+src/util.h,20
+#define UTIL_H2,15
+
+src/inventory.h,0
+
+src/inventory.c,0
