@@ -144,7 +144,7 @@ bool is_dead(struct actor *actor)
 	return false;
 }
 
-/* Transform the actor into a corpse */
+/* Transform an actor into a corpse */
 void die(struct engine *engine, struct actor *actor)
 {
 	actor->ch = '%';
@@ -250,7 +250,7 @@ bool player_move_or_attack(struct engine *engine, struct actor *actor, int targe
                 bool corpse_or_item = (actor->destructible && is_dead(actor))
                         || actor->pickable;
                 if(corpse_or_item && actor->x == targetx && actor->y == targety)
-                        engine->gui->message(engine, TCOD_light_gray, "There's a %s here\n", (*iter)->name);
+                        engine->gui->message(engine, TCOD_light_gray, "There's %s here\n", (*iter)->name);
         }
 
         actor->x = targetx;
@@ -720,9 +720,8 @@ bool healer_use(struct engine *engine, struct actor *actor, struct actor *item)
                 float amount_healed = heal(actor, item->pickable->power);
                 if(amount_healed > 0){
                         /* Call the common use function */
-                        engine->gui->message(engine, TCOD_green, "You finish drinking a %s.",
+                        engine->gui->message(engine, TCOD_green, "You finish drinking %s.\n",
                                              item->name);
-                
                         engine->gui->message(engine, TCOD_green, "You feel somewhat better.\n");
                         return use(actor, item);
                 }
@@ -737,7 +736,7 @@ bool curing_use(struct engine *engine, struct actor *actor, struct actor *item)
         
         /* 
          * Then heal the actor. Same as health potion but restores hp
-         * by a random, usually less amount
+         * by a random, usually lower amount.
          */
         return healer_use(engine, actor, item);
 }
