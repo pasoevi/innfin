@@ -188,12 +188,16 @@ void add_item(struct engine* engine, int x, int y)
 {
         TCOD_random_t *rng = TCOD_random_get_instance();
         struct actor *item;
-        if (TCOD_random_get_int(rng, 0, 100) < 80)
+        int dice = TCOD_random_get_int(rng, 0, 100);
+        if (dice < 50)
                 /* Create a health potion */
                 item = make_healer_potion(x, y);
-        else
+        else if(dice < 80)
                 /* Create a poison potion */
-                item = make_troll(x, y);
+                item = make_curing_potion(x, y);
+        else
+                item = make_lightning_wand(x, y);
+
     
         TCOD_list_push(engine->actors, item);
 }

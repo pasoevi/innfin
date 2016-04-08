@@ -23,6 +23,7 @@ struct ai{
  * the power parameter as a seed.
  */
 struct attacker{
+        struct actor *weapon; /* */
         float power;
         void (*attack)(struct engine *engine, struct actor *dealer, struct actor *target);
 };
@@ -46,7 +47,7 @@ struct destructible{
 struct pickable{
         float range; /* range the item is powerful at */
         float power; /* damage dealt if an attacker item, hit_points restored if a healer */
-        bool (*use)(struct actor *actor, struct actor *item);
+        bool (*use)(struct engine *engine, struct actor *actor, struct actor *item);
 };
 
 struct edible{
@@ -92,16 +93,33 @@ float get_distance(struct actor *actor, int x, int y);
 struct actor *get_closest_monster(struct engine *engine, int x, int y, float range);
 
 struct container *init_container(int capacity);
-struct pickable *init_pickable(float power, bool (*use)(struct actor *actor, struct actor *item));
+struct pickable *init_pickable(float power, float range, bool (*use)(struct engine *engine, struct actor *actor, struct actor *item));
 bool inventory_add(struct container *container, struct actor *actor);
 void inventory_remove(struct container *container, struct actor *actor);
 bool pick(struct engine *engine, struct actor *actor, struct actor *item);
 bool drop(struct engine *engine, struct actor *actor, struct actor *item);
-bool healer_use(struct actor *actor, struct actor *item);
-bool curing_use(struct actor *actor, struct actor *item);
+/*
+ * Deals a huge damage to the nearest monster.
+ */
+bool lightning_wand_use(struct engine *engine, struct actor *actor, struct actor *item);
+/* 
+ * Heals with a fixed amount of hit points.
+ */
+bool healer_use(struct engine *engine, struct actor *actor, struct actor *item);
+/* 
+ * Cures poisoning and similar effects of ill health and then heals by
+ * a random number of hit points.
+ */
+bool curing_use(struct engine *engine, struct actor *actor, struct actor *item);
+/* 
+ * A common function to all usable items. All item-specific *_use
+ * functions should call this as the last statemunt.
+ */
 bool use(struct actor *actor, struct actor *item);
 bool eat(struct actor *actor, struct actor *food);
 struct actor *make_healer_potion(int x, int y);
+struct actor *make_curing_potion(int x, int y);
+struct actor *make_lightning_wand(int x, int y);
 
 struct actor *make_orc(int x, int y);
 struct actor *make_troll(int x, int y);

@@ -163,12 +163,6 @@ float heal(struct actor *actor, float amount)
         return amount;
 }
 
-float get_distance_btwn_points(int x1, int y1, int x2, int y2){
-        int dx = x1 - x2;
-        int dy = y1 - y2;
-        return sqrtf(dx * dx + dy * dy);
-}
-
 /* Get distance between the actor and the (x, y) point on map */
 float get_distance(struct actor *actor, int x, int y){
         return get_distance_btwn_points(actor->x, actor->y, x, y);
@@ -207,7 +201,7 @@ struct actor *make_player(int x, int y)
         tmp->attacker = init_attacker(10, attack);
 
         /* Init destructible */
-        tmp->destructible = init_destructible(100, 100, 4, "your dead body", take_damage, player_die);
+        tmp->destructible = init_destructible(100, 100, 6, "your dead body", take_damage, player_die);
 
         /* Init inventory */
         tmp->inventory = init_container(26);
@@ -339,7 +333,7 @@ void handle_action_key(struct engine *engine, struct actor *actor)
                 {
                         struct actor *item = choose_from_inventory(engine, actor);
                         if (item) {
-                                item->pickable->use(actor, item);
+                                item->pickable->use(engine, actor, item);
                                 engine->game_status = NEW_TURN;
                         }
                 }
@@ -486,32 +480,38 @@ struct container *init_container(int capacity)
         return tmp;
 }
 
-struct pickable *init_pickable(float power, bool (*use)(struct actor *actor, struct actor *item)) 
+struct pickable *init_pickable(float power, float range, bool (*use)(struct engine *engine, struct actor *actor, struct actor *item)) 
 {
         struct pickable *tmp = malloc(sizeof(*tmp));
         tmp->power = power;
+        tmp->range = range;
         tmp->use = use;                
         return tmp;
 }
 
-struct actor *make_item(int x, int y, int power, const char ch, const char *name, TCOD_color_t col,
-                        bool (*use)(struct actor *actor, struct actor *item))
+struct actor *make_item(int x, int y, float power, float range, const char ch, const char *name, TCOD_color_t col,
+                        bool (*use)(struct engine *engine, struct actor *actor, struct actor *item))
 {
         struct actor *tmp = init_actor(x, y, ch, name, col, render_actor);
-        tmp->pickable = init_pickable(10, use);
+        tmp->pickable = init_pickable(power, range, use);
         tmp->blocks = false;
         
         return tmp;
 }
 
+struct actor *make_lightning_wand(int x, int y){
+        return make_item(x, y, 50, 10, '/', "a lightning wand", TCOD_yellow, lightning_wand_use);
+}
+
 struct actor *make_healer_potion(int x, int y)
 {
-        return make_item(x, y, 10, '!', "a health potion", TCOD_violet, healer_use);
+        return make_item(x, y, 10, 0, '!', "a health potion", TCOD_violet, healer_use);
 }
 
 struct actor *make_curing_potion(int x, int y)
 {
-        return make_item(x, y, 10, '~', "a curing potion", TCOD_light_green, curing_use);
+        float amount = 5; /* TODO: this needs to be made random. */
+        return make_item(x, y, amount, 0, '~', "a curing potion", TCOD_light_green, curing_use);
 }
 
 void free_container(struct container *container)
@@ -541,9 +541,25 @@ bool drop(struct engine *engine, struct actor *actor, struct actor *item)
         }
         return false;
 }
-        
 
-bool healer_use(struct actor *actor, struct actor *item)
+/*
+ * Deals a huge damage to the nearest monster.
+ */
+bool lightning_wand_use(struct engine *engine, struct actor *actor, struct actor *item)
+{
+        struct actor *closest = get_closest_monster(engine, actor->x, actor->y, item->pickable->range);
+        if(!closest){
+                engine->gui->message(engine, TCOD_light_grey, "No monsters in range to strike.\n");
+                return false;
+        }
+
+        engine->gui->message(engine, TCOD_light_yellow, "A lightning bolt strikes %s with the damage of %g.\n",
+                             closest->name, item->pickable->power);
+        closest->destructible->take_damage(engine, closest, item->pickable->power);
+        return use(actor, item);
+}
+
+bool healer_use(struct engine *engine, struct actor *actor, struct actor *item)
 {
         /* heal the actor */
         if(actor->destructible){
@@ -556,7 +572,7 @@ bool healer_use(struct actor *actor, struct actor *item)
 }
 
 /* TODO: At the moment does the same as the HEALTH POTION (See above) */
-bool curing_use(struct actor *actor, struct actor *item)
+bool curing_use(struct engine *engine, struct actor *actor, struct actor *item)
 {
         /* Cure the poisoning. NOT YET IMPLEMENTED*/
         
@@ -564,7 +580,7 @@ bool curing_use(struct actor *actor, struct actor *item)
          * Then heal the actor. Same as health potion but restores hp
          * by a random, usually less amount
          */
-        return healer_use(actor, item);
+        return healer_use(engine, actor, item);
 }
 
 bool use(struct actor *actor, struct actor *item)
