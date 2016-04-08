@@ -14,8 +14,10 @@ float take_damage(struct engine *engine, struct actor *target, float damage)
 	damage -= target->destructible->defence;
 	if(damage > 0){
 		target->destructible->hp -= damage;
-		if(target->destructible->hp <= 0)
+		if(target->destructible->hp <= 0){
+                        target->destructible->hp = 0; /* prevent hp from goint below zero */
 			target->destructible->die(engine, target);
+                }
 	}else{
 		damage = 0;
 	}
@@ -202,6 +204,8 @@ struct actor *make_player(int x, int y)
 
         /* Init destructible */
         tmp->destructible = init_destructible(100, 100, 6, "your dead body", take_damage, player_die);
+        tmp->destructible->max_stomach = 500;
+        tmp->destructible->stomach = tmp->destructible->max_stomach;
 
         /* Init inventory */
         tmp->inventory = init_container(26);
@@ -211,6 +215,17 @@ struct actor *make_player(int x, int y)
 
 bool player_move_or_attack(struct engine *engine, struct actor *actor, int targetx, int targety)
 {
+        /* Consume energy from stomach and kill the player if beyond
+         * starvation.
+         */
+        if(!make_hungry(actor, 1)){
+                engine->gui->message(engine, TCOD_light_grey, "You starve to death.\n");
+                actor->destructible->die(engine, actor);
+                return false;
+        }
+
+        warn_about_hunger(engine, actor);
+        
         if(is_wall(engine->map, targetx, targety))
                 return false;
        
@@ -244,14 +259,27 @@ bool player_move_or_attack(struct engine *engine, struct actor *actor, int targe
         return true;
 }
 
-struct actor *choose_from_inventory(struct engine *engine, struct actor *actor)
+bool is_edible(struct actor *actor){
+        bool is_edible = false;
+        if(actor->destructible && is_dead(actor))
+                is_edible = true;
+        return is_edible;
+}
+
+/* A dummy function to return true for all actors */
+bool is_usable(struct actor *actor){
+        return actor->pickable;
+}
+
+struct actor *choose_from_inventory(struct engine *engine, struct actor *actor, const char *window_title,
+                                    bool (*predicate)(struct actor *actor))
 {
         /* Display the inventory frame */
         TCOD_console_t *con = engine->gui->inventory_con;
         TCOD_color_t color = (TCOD_color_t){200, 180, 50};
         TCOD_console_set_default_foreground(con, color);
         TCOD_console_print_frame(con, 0, 0, INVENTORY_WIDTH, INVENTORY_HEIGHT, true,
-                                 TCOD_BKGND_DEFAULT, "inventory");
+                                 TCOD_BKGND_DEFAULT, window_title);
 
         /* Display the items with their respective shortcuts */
         TCOD_console_set_default_foreground(con, TCOD_white);
@@ -262,9 +290,11 @@ struct actor *choose_from_inventory(struct engine *engine, struct actor *actor)
             iter != (struct actor **)TCOD_list_end(actor->inventory->inventory);
             iter++){
                 struct actor *item = *iter;
-                TCOD_console_print(con, 2, y, "(%c) %s", shortcut, item->name);
-                y++;
-                shortcut++;
+                if(predicate(item)){
+                        TCOD_console_print(con, 2, y, "(%c) %s", shortcut, item->name);
+                        y++;
+                        shortcut++;
+                }
         }
 
         /* Blit the inventory console to the root console. */
@@ -288,50 +318,60 @@ void handle_action_key(struct engine *engine, struct actor *actor)
 {
         /* */
         switch(engine->key.c){
-        case 'g':{
-                bool found = false;
-                /* Check for existing items on this loction */
-                struct actor **iter;
-                for(iter = (struct actor **)TCOD_list_begin(engine->actors);
-                    iter != (struct actor **)TCOD_list_end(engine->actors);
-                    iter++){
-                        struct actor *actor = *iter;
-                        if(actor->pickable && actor->x == engine->player->x && actor->y == engine->player->y){
-                                /* Try picking up the item */
-                                if(pick(engine, engine->player, actor)){
-                                        found = true;
-                                        engine->gui->message(engine, TCOD_green, "You pick up %s.\n", actor->name);
-                                        break;
-                                }else if(!found){
-                                        found = true;
-                                        engine->gui->message(engine, TCOD_green, "You tried to pick up %s. Inventory is full.\n", actor->name);
+        case 'g':
+                {
+                        bool found = false;
+                        /* Check for existing items on this loction */
+                        struct actor **iter;
+                        for(iter = (struct actor **)TCOD_list_begin(engine->actors);
+                            iter != (struct actor **)TCOD_list_end(engine->actors);
+                            iter++){
+                                struct actor *actor = *iter;
+                                if(actor->pickable && actor->x == engine->player->x && actor->y == engine->player->y){
+                                        /* Try picking up the item */
+                                        if(pick(engine, engine->player, actor)){
+                                                found = true;
+                                                engine->gui->message(engine, TCOD_green, "You pick up %s.\n", actor->name);
+                                                break;
+                                        }else if(!found){
+                                                found = true;
+                                                engine->gui->message(engine, TCOD_green, "You tried to pick up %s. Inventory is full.\n", actor->name);
                                         
-                                }
+                                        }
                                 
+                                }
                         }
-                }
                 
-                if(!found)
-                        engine->gui->message(engine, TCOD_grey, "There is nothing to pick up here here.\n");                        
-                engine->game_status = NEW_TURN;
+                        if(!found)
+                                engine->gui->message(engine, TCOD_grey, "There is nothing to pick up here here.\n");                        
+                        engine->game_status = NEW_TURN;
+
+                }
                 break;
-        }
         case 'd':
                 /* Drop item */
                 {
-                        struct actor *item = choose_from_inventory(engine, actor);
+                        struct actor *item = choose_from_inventory(engine, actor, "drop", is_usable);
                         if(item){
                                 drop(engine, actor, item);
                                 engine->game_status = NEW_TURN;
                         }
                 }
+                break;
         case 'e':
                 /* Eat */
+                {
+                        struct actor *item = choose_from_inventory(engine, actor, "eat", is_edible);
+                        if(item){
+                                item->pickable->use(engine, actor, item);
+                                engine->game_status = NEW_TURN;
+                        }
+                }
                 break;
         case 'i' :
                 /* display inventory */
                 {
-                        struct actor *item = choose_from_inventory(engine, actor);
+                        struct actor *item = choose_from_inventory(engine, actor, "inventory", is_usable);
                         if (item) {
                                 item->pickable->use(engine, actor, item);
                                 engine->game_status = NEW_TURN;
@@ -407,12 +447,12 @@ struct actor *make_monster(int x, int y, const char ch, const char *name, TCOD_c
 
 struct actor *make_orc(int x, int y)
 {
-        return make_monster(x, y, 'o', "orc", TCOD_desaturated_green, 8, 15, 15, 2, "dead orc");
+        return make_monster(x, y, 'o', "an orc", TCOD_desaturated_green, 8, 15, 15, 2, "a dead orc");
 }
 
 struct actor *make_troll(int x, int y)
 {
-        return make_monster(x, y, 'T', "troll", TCOD_darker_green, 10, 20, 20, 3, "troll carcass");
+        return make_monster(x, y, 'T', "a troll", TCOD_darker_green, 10, 20, 20, 3, "a troll carcass");
 }
 
 bool monster_move_or_attack(struct engine *engine, struct actor *actor, int targetx, int targety)
@@ -462,10 +502,13 @@ void monster_update(struct engine *engine, struct actor *actor)
         }
 }
 
-/* Transform a monster into a rotting corpse */
+/* 
+ * Transform a monster into an edible corpse.
+ */
 void monster_die(struct engine *engine, struct actor *actor)
 {
         engine->gui->message(engine, TCOD_light_grey, "%s is dead.\n", actor->name);
+        actor->pickable = init_pickable(0, 0, eat);
         /* Call the common die function */
         die(engine, actor);
 }
@@ -503,9 +546,21 @@ struct actor *make_lightning_wand(int x, int y){
         return make_item(x, y, 50, 10, '/', "a lightning wand", TCOD_yellow, lightning_wand_use);
 }
 
+struct actor *make_potion_of_posion(int x, int y){
+        return make_item(x, y, 10, 0, '6', "a potion of poisoning", TCOD_violet, potion_of_poison_use);
+}
+
 struct actor *make_healer_potion(int x, int y)
 {
         return make_item(x, y, 10, 0, '!', "a health potion", TCOD_violet, healer_use);
+}
+
+struct actor *make_food(int x, int y)
+{
+        struct actor *food = make_monster(x, y, '%', "food", TCOD_orange, 8, 50, 0, 2, "food");
+        food->pickable = init_pickable(0, 0, eat);
+        return food;
+        
 }
 
 struct actor *make_curing_potion(int x, int y)
@@ -543,7 +598,8 @@ bool drop(struct engine *engine, struct actor *actor, struct actor *item)
 }
 
 /*
- * Deals a huge damage to the nearest monster.
+ * Deals a huge damage to the nearest monster. Makes the invoker
+ * hungry.
  */
 bool lightning_wand_use(struct engine *engine, struct actor *actor, struct actor *item)
 {
@@ -553,10 +609,98 @@ bool lightning_wand_use(struct engine *engine, struct actor *actor, struct actor
                 return false;
         }
 
-        engine->gui->message(engine, TCOD_light_yellow, "A lightning bolt strikes %s with the damage of %g.\n",
-                             closest->name, item->pickable->power);
-        closest->destructible->take_damage(engine, closest, item->pickable->power);
-        return use(actor, item);
+        /* Make sure you aren't too hungry to invoke that wand. */
+        if(make_hungry(actor, 5)){
+                /* 
+                 * Store the target monster name as it will be changed to the
+                 * corpse name upon fatal impact.
+                 */
+                const char *name = closest->name; 
+                float dmg_dealt = closest->destructible->take_damage(engine, closest, item->pickable->power);
+                engine->gui->message(engine, TCOD_light_yellow, "A lightning bolt strikes %s with the damage of %g.\n",
+                                     name, dmg_dealt);
+                return use(actor, item);
+        }else{
+                engine->gui->message(engine, TCOD_light_grey, "You are too hungry to invoke that wand.\n");
+                return false;
+        }
+}
+
+bool potion_of_poison_use(struct engine *engine, struct actor *actor, struct actor *item)
+{
+        /* heal the actor */
+        if(actor->destructible){
+                float amount_healed = heal(actor, item->pickable->power);
+                if(amount_healed > 0)
+                        /* Call the common use function */
+                        return use(actor, item);
+        }
+        return false;
+}
+
+bool is_hungry(struct actor *actor){
+        if(actor->destructible && actor->destructible->stomach < actor->destructible->max_stomach - 10)
+                return true;
+        return false;
+}
+
+void warn_about_hunger(struct engine *engine, struct actor *actor){
+        if(actor->destructible->stomach < 5)
+                engine->gui->message(engine, TCOD_lightest_red, "You are fainting.\n");
+        else if(actor->destructible->stomach < 15)
+                engine->gui->message(engine, TCOD_light_red, "You are starving.\n");
+        else if(actor->destructible->stomach < 35)
+                engine->gui->message(engine, TCOD_red, "You are very hungry.\n");
+        else if(actor->destructible->stomach < 40)
+                engine->gui->message(engine, TCOD_dark_red, "You are hungry.\n");
+        else if(actor->destructible->stomach > actor->destructible->max_stomach - 10)
+                engine->gui->message(engine, TCOD_green, "You are full.\n");
+}
+
+/* Returns -1 if inedible */
+float calculate_food_value(struct actor *food){
+        float value = 0;
+        if(!food->destructible)
+                value =  -1;
+        else
+                value = food->destructible->max_hp;
+        return value;
+}
+
+/* 
+ * Actions that require energy make the actor hungry by amount. Return
+ * -1 if the user will starve to death.
+ */
+bool make_hungry(struct actor *actor, float amount){
+        if(actor->destructible && actor->destructible->stomach - amount >= 0){
+                actor->destructible->stomach -= amount;
+                return true;
+        }
+        return false;
+        
+}
+
+/* 
+ * A generic eat function. Units eaten will be equal to the 50% of the
+ * max_hp of the corpse, *not* of the actor eating it.
+ */
+bool eat(struct engine *engine, struct actor *actor, struct actor *food){
+        bool used = false;
+        if(food->destructible && is_dead(food) && is_hungry(actor)){
+                float can_eat = actor->destructible->max_stomach - actor->destructible->stomach;
+                float food_value = calculate_food_value(food);
+
+                if(food_value <= can_eat){
+                        actor->destructible->stomach += food_value;
+                        engine->gui->message(engine, TCOD_green, "You finish eating %s.\n", food->destructible->corpse_name);
+                        used = use(actor, food);
+                }
+        }
+
+        if(!used)
+                engine->gui->message(engine, TCOD_green, "You aren't hungry enough to eat.\n");
+                
+        return used;
 }
 
 bool healer_use(struct engine *engine, struct actor *actor, struct actor *item)

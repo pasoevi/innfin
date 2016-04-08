@@ -16,10 +16,11 @@ struct ai{
 };
 
 /*
- * An actor that has this structure allocated is is able to make
- * attacks that are defined by: 
- * power - how mach damage is dealt.
- * attack - the function that calculates the damage dealt considering
+ * An actor that has this structure allocated is able to make attacks
+ * that are defined by:
+ *
+ * - power - how mach damage is dealt.
+ * - attack - the function that calculates and deals the damage considering
  * the power parameter as a seed.
  */
 struct attacker{
@@ -29,9 +30,13 @@ struct attacker{
 };
 
 /*
- * An actor that has this structure allocated is vulnerable to attacks.
+ * An actor that has this structure allocated is vulnerable to
+ * attacks. As an added effect, this actor will require food and rest
+ * to sustain himself.
  */
 struct destructible{
+        float stomach; /* number of food units eaten */
+        float max_stomach; /* max number of units the actor can eat */
         float max_hp; /* maximum health points */
         float hp; /* current health points */
         float defence; /* hit points deflected */
@@ -41,20 +46,26 @@ struct destructible{
 };
 
 /*
- * A structure used to represent spells, potions and all other usable
+ * A structure used to represent wands, potions and all other usable
  * items.
  */
 struct pickable{
+        bool auto_pickup; /* desired by every actor, they pick it without pressing 'g'*/
         float range; /* range the item is powerful at */
         float power; /* damage dealt if an attacker item, hit_points restored if a healer */
         bool (*use)(struct engine *engine, struct actor *actor, struct actor *item);
 };
 
+/* 
+ * NOTE: Not used yet. Use the *pickable* structure instead and use
+ * the method *use*
+ */
 struct edible{
         bool (*eat)(struct actor *actor, struct actor *food);
 };
 
-/* Capacity is currently counted by the number of items and *not* by
+/* 
+ * Capacity is currently counted by the number of items and *not* by
  * weight or other quality of the items.
  */
 struct container{
@@ -115,8 +126,12 @@ bool curing_use(struct engine *engine, struct actor *actor, struct actor *item);
  * A common function to all usable items. All item-specific *_use
  * functions should call this as the last statemunt.
  */
+bool potion_of_poison_use(struct engine *engine, struct actor *actor, struct actor *item);
 bool use(struct actor *actor, struct actor *item);
-bool eat(struct actor *actor, struct actor *food);
+bool eat(struct engine *engine, struct actor *actor, struct actor *food);
+void warn_about_hunger(struct engine *engine, struct actor *actor);
+bool make_hungry(struct actor *actor, float amount);
+struct actor *make_food(int x, int y);
 struct actor *make_healer_potion(int x, int y);
 struct actor *make_curing_potion(int x, int y);
 struct actor *make_lightning_wand(int x, int y);
