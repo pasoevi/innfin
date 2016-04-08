@@ -113,6 +113,7 @@ void attack(struct engine *engine, struct actor *dealer, struct actor *target)
 {
         float power = dealer->attacker->power;
         float defence = target->destructible->defence;
+        
         if(target->destructible && !is_dead(target)){
                 if(power - defence > 0){
                         bool is_player = dealer == engine->player;
@@ -162,6 +163,38 @@ float heal(struct actor *actor, float amount)
         return amount;
 }
 
+float get_distance_btwn_points(int x1, int y1, int x2, int y2){
+        int dx = x1 - x2;
+        int dy = y1 - y2;
+        return sqrtf(dx * dx + dy * dy);
+}
+
+/* Get distance between the actor and the (x, y) point on map */
+float get_distance(struct actor *actor, int x, int y){
+        return get_distance_btwn_points(actor->x, actor->y, x, y);
+}
+
+/* Get the closest monster to the point (x, y) within range */
+struct actor *get_closest_monster(struct engine *engine, int x, int y, float range){
+        struct actor *closest = NULL;
+        float best_distance = 1E6f;
+
+        struct actor **iter;
+        for(iter = (struct actor **)TCOD_list_begin(engine->actors);
+            iter != (struct actor **)TCOD_list_end(engine->actors);
+            iter++){
+                struct actor *actor = *iter;
+                if(actor != engine->player && actor->destructible && !is_dead(actor)){
+                        float distance = get_distance(actor, x, y);
+                        if(distance < best_distance && (distance <= range || range == 0.0f)){
+                                best_distance = distance;
+                                closest = actor;
+                        }
+                }
+        }
+        return closest;
+}
+
 /*** Player functions ***/
 struct actor *make_player(int x, int y)
 {
@@ -174,7 +207,7 @@ struct actor *make_player(int x, int y)
         tmp->attacker = init_attacker(10, attack);
 
         /* Init destructible */
-        tmp->destructible = init_destructible(50, 50, 4, "your dead body", take_damage, player_die);
+        tmp->destructible = init_destructible(100, 100, 4, "your dead body", take_damage, player_die);
 
         /* Init inventory */
         tmp->inventory = init_container(26);
@@ -453,18 +486,19 @@ struct container *init_container(int capacity)
         return tmp;
 }
 
-struct pickable *init_pickable(void)
+struct pickable *init_pickable(float power, bool (*use)(struct actor *actor, struct actor *item)) 
 {
         struct pickable *tmp = malloc(sizeof(*tmp));
+        tmp->power = power;
+        tmp->use = use;                
         return tmp;
 }
 
-struct actor *make_item(int x, int y, const char ch, const char *name, TCOD_color_t col,
+struct actor *make_item(int x, int y, int power, const char ch, const char *name, TCOD_color_t col,
                         bool (*use)(struct actor *actor, struct actor *item))
 {
         struct actor *tmp = init_actor(x, y, ch, name, col, render_actor);
-        tmp->pickable = init_pickable();
-        tmp->pickable->use = use;
+        tmp->pickable = init_pickable(10, use);
         tmp->blocks = false;
         
         return tmp;
@@ -472,12 +506,12 @@ struct actor *make_item(int x, int y, const char ch, const char *name, TCOD_colo
 
 struct actor *make_healer_potion(int x, int y)
 {
-        return make_item(x, y, '!', "a health potion", TCOD_violet, healer_use);
+        return make_item(x, y, 10, '!', "a health potion", TCOD_violet, healer_use);
 }
 
 struct actor *make_curing_potion(int x, int y)
 {
-        return make_item(x, y, '~', "a curing potion", TCOD_light_green, curing_use);
+        return make_item(x, y, 10, '~', "a curing potion", TCOD_light_green, curing_use);
 }
 
 void free_container(struct container *container)
@@ -513,7 +547,7 @@ bool healer_use(struct actor *actor, struct actor *item)
 {
         /* heal the actor */
         if(actor->destructible){
-                float amount_healed = heal(actor, 20);
+                float amount_healed = heal(actor, item->pickable->power);
                 if(amount_healed > 0)
                         /* Call the common use function */
                         return use(actor, item);
@@ -524,14 +558,13 @@ bool healer_use(struct actor *actor, struct actor *item)
 /* TODO: At the moment does the same as the HEALTH POTION (See above) */
 bool curing_use(struct actor *actor, struct actor *item)
 {
-        /* heal the actor */
-        if(actor->destructible){
-                float amount_healed = heal(actor, 20);
-                if(amount_healed > 0)
-                        /* Call the common use function */
-                        return use(actor, item);
-        }
-        return false;
+        /* Cure the poisoning. NOT YET IMPLEMENTED*/
+        
+        /* 
+         * Then heal the actor. Same as health potion but restores hp
+         * by a random, usually less amount
+         */
+        return healer_use(actor, item);
 }
 
 bool use(struct actor *actor, struct actor *item)

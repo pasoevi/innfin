@@ -15,11 +15,21 @@ struct ai{
         bool (*move_or_attack)(struct engine *engine, struct actor *actor, int targetx, int targety);
 };
 
+/*
+ * An actor that has this structure allocated is is able to make
+ * attacks that are defined by: 
+ * power - how mach damage is dealt.
+ * attack - the function that calculates the damage dealt considering
+ * the power parameter as a seed.
+ */
 struct attacker{
         float power;
         void (*attack)(struct engine *engine, struct actor *dealer, struct actor *target);
 };
 
+/*
+ * An actor that has this structure allocated is vulnerable to attacks.
+ */
 struct destructible{
         float max_hp; /* maximum health points */
         float hp; /* current health points */
@@ -29,7 +39,13 @@ struct destructible{
         void (*die)(struct engine *engine, struct actor *actor);
 };
 
+/*
+ * A structure used to represent spells, potions and all other usable
+ * items.
+ */
 struct pickable{
+        float range; /* range the item is powerful at */
+        float power; /* damage dealt if an attacker item, hit_points restored if a healer */
         bool (*use)(struct actor *actor, struct actor *item);
 };
 
@@ -37,7 +53,9 @@ struct edible{
         bool (*eat)(struct actor *actor, struct actor *food);
 };
 
-/* Capacity is currently counted by the number of items */
+/* Capacity is currently counted by the number of items and *not* by
+ * weight or other quality of the items.
+ */
 struct container{
         int capacity; /* The maximum number of items (actors) in it. */
         TCOD_list_t inventory; /* */
@@ -70,8 +88,11 @@ struct actor * init_actor(int w, int h, int ch, const char *name, TCOD_color_t c
 void free_actor(struct actor *actor);
 void free_actors(TCOD_list_t actors);
 
+float get_distance(struct actor *actor, int x, int y);
+struct actor *get_closest_monster(struct engine *engine, int x, int y, float range);
+
 struct container *init_container(int capacity);
-struct pickable *init_pickable(void);
+struct pickable *init_pickable(float power, bool (*use)(struct actor *actor, struct actor *item));
 bool inventory_add(struct container *container, struct actor *actor);
 void inventory_remove(struct container *container, struct actor *actor);
 bool pick(struct engine *engine, struct actor *actor, struct actor *item);

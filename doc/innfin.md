@@ -88,7 +88,7 @@ strategy.
 Huttlers are distant relatives of humans, possessing similar
 intelligence, person and susceptibility toward mutation and corruption
 (and other conditions of living) but have vastly different workings in
-learning and interactions with non-player characters. The difference
+learning and interaction with non-player characters. The difference
 between them and humans becomes more evident as the game progresses.
 
 Some say that Huttlers parallel hurthlings or hobbits in other
@@ -146,7 +146,7 @@ temper.
 Cursed animals serve some fell purpose in the game. Typically they are
 cursed to serve some other monsters or gods. To a player, this means
 that such an animal can pose significantly more threat than
-others. Not all animals can be identified as cursed easily.
+others. Not all animals can easily be identified as cursed.
 
 # Conditions affecting living
 
