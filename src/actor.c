@@ -281,8 +281,12 @@ struct actor *choose_from_inventory(struct engine *engine, struct actor *actor, 
         TCOD_console_print_frame(con, 0, 0, INVENTORY_WIDTH, INVENTORY_HEIGHT, true,
                                  TCOD_BKGND_DEFAULT, window_title);
 
-        /* Display the items with their respective shortcuts */
+        /* 
+         * Count the items that specify the predicate and display the
+         * items with their respective shortcuts.
+         */
         TCOD_console_set_default_foreground(con, TCOD_white);
+        int num_items = 0;
         int shortcut = 'a';
         int y = 1;
         struct actor **iter;
@@ -293,8 +297,10 @@ struct actor *choose_from_inventory(struct engine *engine, struct actor *actor, 
                 if(predicate(item)){
                         TCOD_console_print(con, 2, y, "(%c) %s", shortcut, item->name);
                         y++;
-                        shortcut++;
+                        num_items++;
                 }
+                shortcut++;
+                
         }
 
         /* Blit the inventory console to the root console. */
@@ -308,8 +314,13 @@ struct actor *choose_from_inventory(struct engine *engine, struct actor *actor, 
         TCOD_sys_wait_for_event(TCOD_EVENT_KEY_PRESS, &key, NULL, true);
         if (key.vk == TCODK_CHAR ) {
                 int actor_index = key.c - 'a';
-                if(actor_index >= 0 && actor_index < TCOD_list_size(actor->inventory->inventory))
-                        return TCOD_list_get(actor->inventory->inventory, actor_index);
+                if(actor_index >= 0 && actor_index < TCOD_list_size(actor->inventory->inventory)){
+                        struct actor *tmp = TCOD_list_get(actor->inventory->inventory, actor_index);
+                        if(predicate(tmp))
+                                return tmp;
+                        else
+                                engine->gui->message(engine, TCOD_light_grey, "You can't do that.\n");
+                }
         }
         return NULL;
 }
@@ -560,7 +571,6 @@ struct actor *make_food(int x, int y)
         struct actor *food = make_monster(x, y, '%', "food", TCOD_orange, 8, 50, 0, 2, "food");
         food->pickable = init_pickable(0, 0, eat);
         return food;
-        
 }
 
 struct actor *make_curing_potion(int x, int y)
@@ -686,7 +696,7 @@ bool make_hungry(struct actor *actor, float amount){
  */
 bool eat(struct engine *engine, struct actor *actor, struct actor *food){
         bool used = false;
-        if(food->destructible && is_dead(food) && is_hungry(actor)){
+        if(food->destructible && is_dead(food)){
                 float can_eat = actor->destructible->max_stomach - actor->destructible->stomach;
                 float food_value = calculate_food_value(food);
 
@@ -708,9 +718,14 @@ bool healer_use(struct engine *engine, struct actor *actor, struct actor *item)
         /* heal the actor */
         if(actor->destructible){
                 float amount_healed = heal(actor, item->pickable->power);
-                if(amount_healed > 0)
+                if(amount_healed > 0){
                         /* Call the common use function */
+                        engine->gui->message(engine, TCOD_green, "You finish drinking a %s.",
+                                             item->name);
+                
+                        engine->gui->message(engine, TCOD_green, "You feel somewhat better.\n");
                         return use(actor, item);
+                }
         }
         return false;
 }
