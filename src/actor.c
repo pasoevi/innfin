@@ -533,7 +533,8 @@ struct container *init_container(int capacity)
         return tmp;
 }
 
-struct pickable *init_pickable(float power, float range, bool (*use)(struct engine *engine, struct actor *actor, struct actor *item)) 
+struct pickable *init_pickable(float power, float range,
+                               bool (*use)(struct engine *engine, struct actor *actor, struct actor *item)) 
 {
         struct pickable *tmp = malloc(sizeof(*tmp));
         tmp->power = power;
@@ -542,7 +543,8 @@ struct pickable *init_pickable(float power, float range, bool (*use)(struct engi
         return tmp;
 }
 
-struct actor *make_item(int x, int y, float power, float range, const char ch, const char *name, TCOD_color_t col,
+struct actor *make_item(int x, int y, float power, float range, const char ch,
+                        const char *name, TCOD_color_t col,
                         bool (*use)(struct engine *engine, struct actor *actor, struct actor *item))
 {
         struct actor *tmp = init_actor(x, y, ch, name, col, render_actor);
