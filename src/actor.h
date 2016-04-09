@@ -129,6 +129,7 @@ bool curing_use(struct engine *engine, struct actor *actor, struct actor *item);
 bool potion_of_poison_use(struct engine *engine, struct actor *actor, struct actor *item);
 bool use(struct actor *actor, struct actor *item);
 bool eat(struct engine *engine, struct actor *actor, struct actor *food);
+struct message get_hunger_status(struct actor *actor);
 void warn_about_hunger(struct engine *engine, struct actor *actor);
 bool make_hungry(struct actor *actor, float amount);
 struct actor *make_food(int x, int y);

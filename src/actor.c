@@ -224,8 +224,6 @@ bool player_move_or_attack(struct engine *engine, struct actor *actor, int targe
                 return false;
         }
 
-        warn_about_hunger(engine, actor);
-        
         if(is_wall(engine->map, targetx, targety))
                 return false;
        
@@ -655,17 +653,27 @@ bool is_hungry(struct actor *actor){
         return false;
 }
 
-void warn_about_hunger(struct engine *engine, struct actor *actor){
-        if(actor->destructible->stomach < 5)
-                engine->gui->message(engine, TCOD_lightest_red, "You are fainting.\n");
-        else if(actor->destructible->stomach < 15)
-                engine->gui->message(engine, TCOD_light_red, "You are starving.\n");
-        else if(actor->destructible->stomach < 35)
-                engine->gui->message(engine, TCOD_red, "You are very hungry.\n");
-        else if(actor->destructible->stomach < 40)
-                engine->gui->message(engine, TCOD_dark_red, "You are hungry.\n");
-        else if(actor->destructible->stomach > actor->destructible->max_stomach - 10)
-                engine->gui->message(engine, TCOD_green, "You are full.\n");
+struct message get_hunger_status(struct actor *actor){
+        struct message status;
+        status.text = "";
+        
+        if(actor->destructible->stomach < 10){
+                status.col = TCOD_lightest_red;
+                status.text = "fainting";
+        }else if(actor->destructible->stomach < 40){
+                status.col = TCOD_light_red;
+                status.text = "starving";
+        }else if(actor->destructible->stomach < 80){
+                status.col = TCOD_red;
+                status.text = "very hungry";
+        }else if(actor->destructible->stomach < 100){
+                status.col = TCOD_dark_red;
+                status.text = "hungry";
+        }else if(actor->destructible->stomach > actor->destructible->max_stomach - 10){
+                status.col = TCOD_green;
+                status.text = "full";
+        }
+        return status;
 }
 
 /* Returns -1 if inedible */

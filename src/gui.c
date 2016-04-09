@@ -66,10 +66,24 @@ static void render_bar(struct engine *engine, int x, int y, int w,
                 TCOD_console_set_default_background(engine->gui->con, TCOD_white);
                 TCOD_console_rect(engine->gui->con, x, y, bar_w, 1, false, TCOD_BKGND_SET);
         }
+        
         /* Print text on top of a bar */
-        TCOD_console_set_default_foreground(engine->gui->con, TCOD_white);
+        TCOD_color_t hp_color = TCOD_black;
+        TCOD_console_set_default_foreground(engine->gui->con, hp_color);
         TCOD_console_print_ex(engine->gui->con, x + w/2, y, TCOD_BKGND_NONE, TCOD_CENTER,
                               "%s : %g/%g", name, value, max_value);
+}
+
+static void render_fixed_text(TCOD_console_t *con, int x, int y, TCOD_color_t col, const char *text){
+        TCOD_console_set_default_foreground(con, col);
+        TCOD_console_print_ex(con, x, y, TCOD_BKGND_NONE, TCOD_LEFT,
+                              "%s", text);
+}
+
+static void render_status(TCOD_console_t *con, int x, int y, struct actor *actor){
+        struct message status = get_hunger_status(actor);
+        if(strlen(status.text) > 0)
+                render_fixed_text(con, x, y, status.col, status.text);
 }
 
 static void render_log(struct engine *engine, int startx , int starty)
@@ -124,11 +138,13 @@ static void gui_render(struct engine *engine)
         TCOD_console_set_default_background(engine->gui->con, TCOD_black);
         TCOD_console_clear(engine->gui->con);
 
-        engine->gui->render_bar(engine, 1, 1, BAR_W,"HP",
+        /* Render health bar */
+        engine->gui->render_bar(engine, 1, 1, BAR_W, "HP",
                                 engine->player->destructible->hp,
                                 engine->player->destructible->max_hp,
                                 TCOD_light_red, TCOD_darker_red);
-
+        render_status(engine->gui->con, 1, 3, engine->player);
+        
         engine->gui->render_log(engine, MSG_X, 1);
         engine->gui->render_mouse_look(engine);
         
