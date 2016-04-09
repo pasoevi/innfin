@@ -51,7 +51,8 @@ struct destructible{
  */
 struct pickable{
         bool auto_pickup; /* desired by every actor, they pick it without pressing 'g'*/
-        float range; /* range the item is powerful at */
+        float targetting_range; /* range at which the target can be selected */
+        float range; /* range the item has effect starting from the target tile */
         float power; /* damage dealt if an attacker item, hit_points restored if a healer */
         bool (*use)(struct engine *engine, struct actor *actor, struct actor *item);
 };
@@ -113,6 +114,10 @@ bool drop(struct engine *engine, struct actor *actor, struct actor *item);
  * Deals a huge damage to the nearest monster.
  */
 bool lightning_wand_use(struct engine *engine, struct actor *actor, struct actor *item);
+/*
+ * Deals huge damage to monsters within certain range.
+ */
+bool fireball_wand_use(struct engine *engine, struct actor *actor, struct actor *item);
 /* 
  * Heals with a fixed amount of hit points.
  */
@@ -136,6 +141,7 @@ struct actor *make_food(int x, int y);
 struct actor *make_healer_potion(int x, int y);
 struct actor *make_curing_potion(int x, int y);
 struct actor *make_lightning_wand(int x, int y);
+struct actor *make_fireball_wand(int x, int y);
 
 struct actor *make_orc(int x, int y);
 struct actor *make_troll(int x, int y);

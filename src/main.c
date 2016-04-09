@@ -24,6 +24,7 @@ int main()
         while (!TCOD_console_is_window_closed()) {
                 engine->update(engine);
                 engine->render(engine);
+                TCOD_console_flush(NULL); 
         }
         
 	clean();

@@ -46,6 +46,8 @@ bool is_in_fov(struct map *map, int x, int y);
 bool can_walk(struct engine *engine, int x, int y);
 void set_wall(struct map *map, int x, int y);
 
+bool pick_tile(struct engine *engine, int *x, int *y, float max_range);
+
 /*
  * Compute the field of view for the map. You pass the engine
  * object. The field of view is computer for engine->map->map.

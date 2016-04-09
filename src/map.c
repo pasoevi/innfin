@@ -23,9 +23,6 @@ void dig(struct map *map, int x1, int y1, int x2, int y2)
         for(tilex = x1; tilex <= x2; tilex++)
                 for(tiley = y1; tiley <= y2; tiley++)
                         TCOD_map_set_properties(map->map, tilex, tiley, true, true);
-        
-
-
 }
 
 void create_room(struct engine *engine, bool first, int x1, int y1, int x2, int y2)
@@ -189,19 +186,58 @@ void add_item(struct engine* engine, int x, int y)
         TCOD_random_t *rng = TCOD_random_get_instance();
         struct actor *item;
         int dice = TCOD_random_get_int(rng, 0, 100);
-        if (dice < 40)
+        if (dice < 30)
                 /* Create a health potion */
                 item = make_healer_potion(x, y);
-        else if(dice < 60)
+        else if(dice < 50)
                 /* Create a poison potion */
                 item = make_curing_potion(x, y);
-        else if(dice < 80)
+        else if(dice < 60)
                 item = make_lightning_wand(x, y);
+        else if(dice < 90)
+                item = make_fireball_wand(x, y);
         else
                 item = make_food(x, y);
 
     
         TCOD_list_push(engine->actors, item);
+}
+
+bool pick_tile(struct engine *engine, int *x, int *y, float max_range){
+        while (!TCOD_console_is_window_closed()) {
+                engine->render(engine);
+                /* Highlight the possible range */
+                int cx, cy;
+                for (cx = 0; cx < engine->map->w; cx++){
+                        for (cy = 0; cy < engine->map->h; cy++){
+                                if (is_in_fov(engine->map, cx, cy)
+                                    &&  ( max_range == 0 || get_distance(engine->player, cx, cy) <= max_range)) {
+                                        TCOD_color_t col = TCOD_console_get_char_background(NULL, cx, cy);
+                                        col = TCOD_color_multiply_scalar(col, 1.4f);
+                                        TCOD_console_set_char_background(NULL, cx, cy, col, TCOD_BKGND_SET);
+                                }
+                        }
+                }
+
+                TCOD_sys_check_for_event(TCOD_EVENT_KEY_PRESS | TCOD_EVENT_MOUSE, &(engine->key), &(engine->mouse));
+                if(is_in_fov(engine->map, engine->mouse.cx, engine->mouse.cy)
+                   && (max_range == 0 || get_distance(engine->player, engine->mouse.cx, engine->mouse.cy) <= max_range)) {
+                        TCOD_console_set_char_background(NULL, engine->mouse.cx, engine->mouse.cy, TCOD_white, TCOD_BKGND_SET);
+                        if ( engine->mouse.lbutton_pressed ) {
+                                *x=engine->mouse.cx;
+                                *y=engine->mouse.cy;
+                                return true;
+                        }
+                 
+                }
+                if (engine->mouse.rbutton_pressed || engine->key.vk != TCODK_NONE) {
+                        return false;
+                }
+
+                TCOD_console_flush(NULL);
+        }
+
+        return false;
 }
 
 void map_render(struct map *map)

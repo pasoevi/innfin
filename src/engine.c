@@ -86,8 +86,6 @@ void engine_render(struct engine *engine)
                         (*iter)->render(*iter);
         
         engine->player->render(engine->player);
-
-        TCOD_console_flush(NULL); 
 }
 
 void free_engine(struct engine *engine)

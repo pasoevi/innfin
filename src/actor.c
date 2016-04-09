@@ -555,7 +555,14 @@ struct actor *make_item(int x, int y, float power, float range, const char ch,
 }
 
 struct actor *make_lightning_wand(int x, int y){
-        return make_item(x, y, 50, 10, '/', "a lightning wand", TCOD_yellow, lightning_wand_use);
+        return make_item(x, y, 30, 10, '/', "a lightning wand", TCOD_yellow, lightning_wand_use);
+}
+
+struct actor *make_fireball_wand(int x, int y){
+        struct actor *item = 
+                make_item(x, y, 10, 3, '/', "a fireball wand", TCOD_dark_orange, fireball_wand_use);
+        item->pickable->targetting_range = 8;
+        return item;
 }
 
 struct actor *make_potion_of_posion(int x, int y){
@@ -636,6 +643,34 @@ bool lightning_wand_use(struct engine *engine, struct actor *actor, struct actor
                 return false;
         }
 }
+
+bool fireball_wand_use(struct engine *engine, struct actor *actor, struct actor *item)
+{
+        engine->gui->message(engine, TCOD_cyan, "Left-click a target tile for the fireball,\nor right-click to cancel.");
+        int x, y;
+        if (!pick_tile(engine, &x, &y, item->pickable->targetting_range))
+                return false;
+        
+        engine->gui->message(engine, TCOD_orange, "the fireball explodes, burning everything within %g tiles."
+                             ,item->pickable->range);
+
+        struct actor **iter;
+        for (iter = (struct actor **)TCOD_list_begin(engine->actors);
+             iter != (struct actor **)TCOD_list_end(engine->actors);
+             iter++) {
+                struct actor *actor = *iter;
+                if (actor->destructible && !is_dead(actor)
+                    && get_distance(actor, x, y) <= item->pickable->range) {
+                        engine->gui->message(engine, TCOD_orange, "The %s gets burned for %g hit points.",
+                                             actor->name, item->pickable->power);
+                        actor->destructible->take_damage(engine, actor, item->pickable->power);
+                }
+                
+        }       
+        return use(actor, item);
+}
+             
+        
 
 bool potion_of_poison_use(struct engine *engine, struct actor *actor, struct actor *item)
 {
