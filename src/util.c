@@ -36,3 +36,14 @@ void each_actor(struct engine *engine, TCOD_list_t lst, void (*action)(struct en
              iterator++) 
                 action(engine, *iterator);
 }
+
+const char *generate_name(const char *filename)
+{
+        TCOD_namegen_parse(filename, TCOD_random_get_instance());
+        return TCOD_namegen_generate("Celtic male", false);
+}
+
+void free_name_generator(void)
+{
+        TCOD_namegen_destroy();
+}

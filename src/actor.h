@@ -128,7 +128,9 @@ struct actor * init_actor(int w, int h, int ch, const char *name, TCOD_color_t c
 void free_actor(struct actor *actor);
 void free_actors(TCOD_list_t actors);
 
+/* Get distance between the actor and the point specified by x and y. */
 float get_distance(struct actor *actor, int x, int y);
+/* Get actor at specified location */
 struct actor *get_actor(struct engine *engine, int x, int y);
 struct actor *get_closest_monster(struct engine *engine, int x, int y, float range);
 
@@ -140,8 +142,10 @@ bool pick(struct engine *engine, struct actor *actor, struct actor *item);
 bool drop(struct engine *engine, struct actor *actor, struct actor *item);
 
 /*
- * Calculate the amount by which to increase hunger upon using the
- * item.
+ * Calculate the amount by which to increase hunger upon using an
+ * item. Many items have their specific calculating functions, if so,
+ * an item pickable will have a pointer to his own calculating
+ * function. Call that function instead of this.
  */
 float calculate_food_cost(struct actor *actor, struct actor *item);
 /* 
@@ -169,7 +173,8 @@ bool fireball_wand_use(struct engine *engine, struct actor *actor, struct actor 
 bool healer_use(struct engine *engine, struct actor *actor, struct actor *item);
 /* 
  * Cures poisoning and similar effects of ill health and then heals by
- * a random number of hit points.
+ * a random number of hit points. Usually heals by less number than
+ * the health potion.
  */
 bool curing_use(struct engine *engine, struct actor *actor, struct actor *item);
 /*
@@ -182,7 +187,10 @@ bool potion_of_poison_use(struct engine *engine, struct actor *actor, struct act
  * max_hp of the corpse, *not* of the actor eating it.
  */
 bool eat(struct engine *engine, struct actor *actor, struct actor *food);
-
+/* 
+ * Returns message structure that contains the text (hungry, starving,
+ * etc) and the appropriate color with which to display in status bar.
+ */
 struct message get_hunger_status(struct actor *actor);
 bool make_hungry(struct actor *actor, float amount);
 struct actor *make_food(int x, int y);
@@ -194,7 +202,7 @@ struct actor *make_confusion_wand(int x, int y);
 
 struct actor *make_orc(int x, int y);
 struct actor *make_troll(int x, int y);
-void make_kobold(struct actor **actor, int x, int y);
+struct actor *make_goblin(int x, int y);
 struct actor *make_player(int x, int y);
 void render_actor(struct actor *actor);
 void player_update(struct engine *engine, struct actor *actor);
@@ -205,6 +213,10 @@ void attack(struct engine *engine, struct actor *dealer, struct actor *target);
 bool is_dead(struct actor *actor);
 float take_damage(struct engine *engine, struct actor *target, float damage);
 
+/* 
+ * Temporary AI for actors that are confused. They move to random
+ * directions attacking everything in their way. 
+ */
 void confused_update(struct engine *engine, struct actor *actor);
 
 /* 
@@ -216,9 +228,12 @@ void confused_update(struct engine *engine, struct actor *actor);
 void die(struct engine *engine, struct actor *actor);
 
 /* 
-   Called when the player hit points equal to zero. It first calls the
-   common die function.
-*/
+ * Called when the player hit points equal to zero. It first calls the
+ * common die function. 
+ *
+ * Also calls the function that creates character memorial file and
+ * deletes saved game if present.
+ */
 void player_die(struct engine *engine, struct actor *actor);
 void monster_die(struct engine *engine, struct actor *actor);
 #endif

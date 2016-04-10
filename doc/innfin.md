@@ -9,13 +9,12 @@ published: false
 
 *Innfin - Innere Finsternis* is a horror-themed fantasy role-playing
 game set in the underworld of dungeons carved into stone and earth. It
-is a roguelike game in the tradition of the classics of the genre,
-like ADOM, Nethack, Angband and others. As you play the game, you
-discover various creatures in the halls and dungeons hidden from the
-world above. Your goal is to choose the deity to worship and attempt
-to do his or her bidding. You can abandon your god and convert to
-other religion later in the game and have the objective of the game
-changed, as well.
+is a roguelike game in the tradition of classics of the genre, like
+ADOM, Nethack, Angband and others. As you play the game, you discover
+various creatures in the halls and dungeons hidden from the world
+above. Your goal is to choose a deity to worship and attempt to do his
+or her bidding. You can abandon your god and convert to other religion
+later in the game and have the objective of the game changed, as well.
 
 {:toc}
 
@@ -130,6 +129,8 @@ in the most important parts of the world.
 ## Elves
 
 ## Orcs
+
+## Goblins
 
 ## Trolls
 

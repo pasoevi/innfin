@@ -191,9 +191,13 @@ void add_monster(struct engine* engine, int x, int y)
 {
         TCOD_random_t *rng = TCOD_random_get_instance();
         struct actor *actor;
-        if (TCOD_random_get_int(rng, 0, 100) < 80)
+        int dice = TCOD_random_get_int(rng, 0, 100);
+        if (dice < 50)
                 /* Create an orc */
                 actor = make_orc(x, y);
+        else if (dice < 80)
+                /* Create a goblin */
+                actor = make_goblin(x, y);
         else
                 /* Create an orc */
                 actor = make_troll(x, y);

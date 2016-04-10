@@ -22,6 +22,7 @@
 #include <stdio.h>
 #include "engine.h"
 #include "map.h"
+#include "util.h"
 
 extern void clean(void);
 
@@ -106,12 +107,14 @@ void engine_render(struct engine *engine)
                         (*iter)->render(*iter);
         
         engine->player->render(engine->player);
+        printf("%s\n", generate_name("data/namegen/jice_celtic.cfg"));
 }
 
 void free_engine(struct engine *engine)
 {
-        /* free all memory directly or indirectly allocated by the
-         * engine 
+        /* 
+         * Free all memory directly or indirectly allocated by the
+         * engine.
          */
         
         free_gui(engine->gui);

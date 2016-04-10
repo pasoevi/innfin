@@ -323,7 +323,8 @@ bool player_move_or_attack(struct engine *engine, struct actor *actor, int targe
         return true;
 }
 
-bool is_edible(struct actor *actor){
+bool is_edible(struct actor *actor)
+{
         bool is_edible = false;
         if(actor->destructible && is_dead(actor))
                 is_edible = true;
@@ -331,7 +332,8 @@ bool is_edible(struct actor *actor){
 }
 
 /* A dummy function to return true for all actors */
-bool is_usable(struct actor *actor){
+bool is_usable(struct actor *actor)
+{
         return actor->pickable;
 }
 
@@ -524,6 +526,11 @@ struct actor *make_monster(int x, int y, const char ch, const char *name, TCOD_c
 struct actor *make_orc(int x, int y)
 {
         return make_monster(x, y, 'o', "an orc", TCOD_desaturated_green, 8, 15, 15, 2, "a dead orc");
+}
+
+struct actor *make_goblin(int x, int y)
+{
+        return make_monster(x, y, 'g', "a goblin", TCOD_green, 5, 14, 14, 3, "a dead goblin");
 }
 
 struct actor *make_troll(int x, int y)
@@ -804,7 +811,8 @@ bool is_hungry(struct actor *actor){
         return false;
 }
 
-struct message get_hunger_status(struct actor *actor){
+struct message get_hunger_status(struct actor *actor)
+{
         struct message status;
         status.text = "";
         
@@ -828,7 +836,8 @@ struct message get_hunger_status(struct actor *actor){
 }
 
 /* Returns -1 if inedible */
-float calculate_food_value(struct actor *food){
+float calculate_food_value(struct actor *food)
+{
         float value = 0;
         if(!food->destructible)
                 value =  -1;
@@ -841,7 +850,8 @@ float calculate_food_value(struct actor *food){
  * Actions that require energy make the actor hungry by amount. Return
  * -1 if the user will starve to death.
  */
-bool make_hungry(struct actor *actor, float amount){
+bool make_hungry(struct actor *actor, float amount)
+{
         if(actor->destructible && actor->destructible->stomach - amount >= 0){
                 actor->destructible->stomach -= amount;
                 return true;
@@ -860,7 +870,8 @@ bool use(struct actor *actor, struct actor *item)
         return false;
 }
 
-bool eat(struct engine *engine, struct actor *actor, struct actor *food){
+bool eat(struct engine *engine, struct actor *actor, struct actor *food)
+{
         bool used = false;
         if(food->destructible && is_dead(food)){
                 float can_eat = actor->destructible->max_stomach - actor->destructible->stomach;
