@@ -107,7 +107,6 @@ void engine_render(struct engine *engine)
                         (*iter)->render(*iter);
         
         engine->player->render(engine->player);
-        printf("%s\n", generate_name("data/namegen/jice_celtic.cfg"));
 }
 
 void free_engine(struct engine *engine)
