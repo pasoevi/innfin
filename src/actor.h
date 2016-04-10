@@ -206,6 +206,11 @@ void monster_update(struct engine *engine, struct actor *actor);
  * directions attacking everything in their way. 
  */
 void confused_update(struct engine *engine, struct actor *actor);
+/*
+ * Monsters that wander do not immediately attack anybody, but they
+ * start behaving as typical attacker intelligences once attacked.
+ */
+void wandering_update(struct engine *engine, struct actor *actor);
 bool player_move_or_attack(struct engine *engine, struct actor *actor, int x, int y);
 bool monster_move_or_attack(struct engine *engine, struct actor *actor, int x, int y);
 void attack(struct engine *engine, struct actor *dealer, struct actor *target);

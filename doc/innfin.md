@@ -75,18 +75,18 @@ lose.
 Dark elves are the most mysterious of the lot. Seeing their innate
 stats, it is difficult to foresee where they would thrive and where
 they would perish. They can be outstanding ranged combatants with
-their mastery of archery and singing spells. They are, however, hated
-by many creatures and feared by yet more. 
+their mastery of archery and spells singing. They are, however, hated
+by many creatures and feared by yet more.
 
 ## Dwarf
 
 Dwarves are the most typical melee fighters with high health points,
 good defence and high damage. This doesn't mean that they have much
-lower strength in other stats, but this advantage in melee fighting
-drives them (or the player manipulating them&#x2026;) into further
-developing this skill and therefore neglecting some other skills. This
-makes them stand out in early to mid game but facing significant
-unforeseen challenges in late game if overly specialized.
+lower ability in other stats, but this advantage in melee fighting
+drives them (or the player manipulating them) into further developing
+this skill and therefore neglecting some other skills. This makes them
+stand out in early to mid game but facing significant unforeseen
+challenges in late game if overly specialized.
 
 ## Human
 
@@ -160,7 +160,7 @@ The untainted domain of Aronkhar has known little of darkness and
 corruption that is brewing in the farthest rims of the world and fast
 approaching with advancing civilization. His calls for his faithful
 warriors is at its strongest, defending the integrity of the blissful
-world which is 
+world.
 
 ### Marmrhak
 
@@ -201,17 +201,18 @@ characters see you as. There are, however, some monsters that are
 inherently aggressive toward your race or to anything at all. Such
 monsters are often *cursed*. 
 
-## Specials
-
-Most creatures in the dungeons are held there as 
-
 ## Wizards
 
 Wizards possess similar abilities as the player in that that they can
 use magic, weapons and have advanced tactics in wars. They are often
 in the most important parts of the world.
 
-## Elves
+## Specials
+
+Specials are non-natives of the dungeons. They have *entered* the
+dungeons just like you have. Like wizards, they are users of
+magic. Specials have more personality to them, like names, stories or
+quests. They are often of very intelligent races.
 
 ## Orcs
 
