@@ -189,13 +189,15 @@ void add_item(struct engine* engine, int x, int y)
         if (dice < 30)
                 /* Create a health potion */
                 item = make_healer_potion(x, y);
-        else if(dice < 50)
+        else if(dice < 40)
                 /* Create a poison potion */
                 item = make_curing_potion(x, y);
-        else if(dice < 60)
+        else if(dice < 50)
                 item = make_lightning_wand(x, y);
-        else if(dice < 90)
+        else if(dice < 60)
                 item = make_fireball_wand(x, y);
+        else if(dice < 90)
+                item = make_confusion_wand(x, y);
         else
                 item = make_food(x, y);
 

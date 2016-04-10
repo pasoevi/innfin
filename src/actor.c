@@ -38,6 +38,37 @@ void common_update(struct engine *engine, struct actor *actor)
                 actor->ai->update(engine, actor);
 }
 
+void confused_update(struct engine *engine, struct actor *actor)
+{
+        /* Check if the actor is alive */
+        if(actor->destructible && is_dead(actor)){
+                return;
+        }
+        
+        TCOD_random_t *rng = TCOD_random_get_instance();
+        int dx = TCOD_random_get_int(rng, -1, 1);
+        int dy = TCOD_random_get_int(rng, -1, 1);
+        if (dx != 0 || dy != 0) {
+                int destx = actor->x + dx;
+                int desty = actor->y + dy;
+                if (can_walk(engine, destx, desty)) {
+                        actor->x = destx;
+                        actor->y = desty;
+                } else {
+                        struct actor *target = get_actor(engine, destx, desty);
+                        if (target) {
+                                actor->attacker->attack(engine, actor, target);
+                        }
+                }
+        }
+        actor->ai->num_turns--;
+        if ( actor->ai->num_turns == 0 ) {
+                struct ai *tmp = actor->ai;
+                actor->ai = actor->ai->old_ai;
+                free(tmp);
+        }
+}
+
 void free_actor(struct actor *actor)
 {
         free(actor);
@@ -166,12 +197,14 @@ float heal(struct actor *actor, float amount)
 }
 
 /* Get distance between the actor and the (x, y) point on map */
-float get_distance(struct actor *actor, int x, int y){
+float get_distance(struct actor *actor, int x, int y)
+{
         return get_distance_btwn_points(actor->x, actor->y, x, y);
 }
 
 /* Get the closest monster to the point (x, y) within range */
-struct actor *get_closest_monster(struct engine *engine, int x, int y, float range){
+struct actor *get_closest_monster(struct engine *engine, int x, int y, float range)
+{
         struct actor *closest = NULL;
         float best_distance = 1E6f;
 
@@ -189,6 +222,19 @@ struct actor *get_closest_monster(struct engine *engine, int x, int y, float ran
                 }
         }
         return closest;
+}
+
+struct actor *get_actor(struct engine *engine, int x, int y)
+{
+        struct actor **iter;
+        for (iter = (struct actor **)TCOD_list_begin(engine->actors);
+             iter != (struct actor **)TCOD_list_end(engine->actors);
+             iter++) {
+                struct actor *actor = *iter;
+                if (actor->x == x && actor->y == y && actor->destructible && !is_dead(actor))
+                        return actor;
+        }
+        return NULL;        
 }
 
 /*** Player functions ***/
@@ -543,6 +589,16 @@ struct pickable *init_pickable(float power, float range,
         return tmp;
 }
 
+struct ai *make_confused_ai(struct actor *actor, int num_turns)
+{
+        struct ai *tmp = malloc(sizeof *tmp);
+        tmp->update = confused_update;
+        tmp->move_or_attack = actor->ai->move_or_attack;
+        tmp->num_turns = num_turns;
+        tmp->old_ai = actor->ai;
+        return tmp;
+}
+
 struct actor *make_item(int x, int y, float power, float range, const char ch,
                         const char *name, TCOD_color_t col,
                         bool (*use)(struct engine *engine, struct actor *actor, struct actor *item))
@@ -561,6 +617,14 @@ struct actor *make_lightning_wand(int x, int y){
 struct actor *make_fireball_wand(int x, int y){
         struct actor *item = 
                 make_item(x, y, 10, 3, '/', "a fireball wand", TCOD_dark_orange, fireball_wand_use);
+        item->pickable->targetting_range = 8;
+        return item;
+}
+
+struct actor *make_confusion_wand(int x, int y)
+{
+        struct actor *item = 
+                make_item(x, y, 0, 1, '/', "a wand of confusion", TCOD_light_green, confusion_wand_use);
         item->pickable->targetting_range = 8;
         return item;
 }
@@ -661,7 +725,7 @@ bool fireball_wand_use(struct engine *engine, struct actor *actor, struct actor 
                 struct actor *actor = *iter;
                 if (actor->destructible && !is_dead(actor)
                     && get_distance(actor, x, y) <= item->pickable->range) {
-                        engine->gui->message(engine, TCOD_orange, "The %s gets burned for %g hit points.",
+                        engine->gui->message(engine, TCOD_orange, "%s gets burned for %g hit points.",
                                              actor->name, item->pickable->power);
                         actor->destructible->take_damage(engine, actor, item->pickable->power);
                 }
@@ -670,7 +734,23 @@ bool fireball_wand_use(struct engine *engine, struct actor *actor, struct actor 
         return use(actor, item);
 }
              
+bool confusion_wand_use(struct engine *engine, struct actor *actor, struct actor *item)
+{
+        engine->gui->message(engine, TCOD_cyan, "Left-click an enemy to confuse it,\nor right-click to cancel.");
+        int x,y;
+        if (!pick_tile(engine, &x, &y, item->pickable->targetting_range))
+                return false;
         
+        struct actor *target = get_actor(engine, x, y);
+        if (!target)
+                return false;
+        
+        struct ai *confused_ai = make_confused_ai(target, 5);
+        target->ai = confused_ai;
+        engine->gui->message(engine, TCOD_light_green, "The eyes of %s look vacant,\nas he starts to stumble around!",
+                             target->name);
+        return use(actor, item);
+}
 
 bool potion_of_poison_use(struct engine *engine, struct actor *actor, struct actor *item)
 {

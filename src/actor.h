@@ -13,6 +13,8 @@ struct ai{
 	int move_count; /* allow monsters to track the player */
         void (*update)(struct engine *engine, struct actor *actor);
         bool (*move_or_attack)(struct engine *engine, struct actor *actor, int targetx, int targety);
+        struct ai *old_ai; /* confused actors have their previous minds saved here. */
+        int num_turns;
 };
 
 /*
@@ -102,6 +104,7 @@ void free_actor(struct actor *actor);
 void free_actors(TCOD_list_t actors);
 
 float get_distance(struct actor *actor, int x, int y);
+struct actor *get_actor(struct engine *engine, int x, int y);
 struct actor *get_closest_monster(struct engine *engine, int x, int y, float range);
 
 struct container *init_container(int capacity);
@@ -110,14 +113,26 @@ bool inventory_add(struct container *container, struct actor *actor);
 void inventory_remove(struct container *container, struct actor *actor);
 bool pick(struct engine *engine, struct actor *actor, struct actor *item);
 bool drop(struct engine *engine, struct actor *actor, struct actor *item);
+
+/* 
+ * A common function to all usable items. All item-specific *_use
+ * functions should call this as the last statemunt.
+ */
+bool use(struct actor *actor, struct actor *item);
 /*
- * Deals a huge damage to the nearest monster.
+ * Deals huge damage to the nearest monster.
  */
 bool lightning_wand_use(struct engine *engine, struct actor *actor, struct actor *item);
+/*
+ * Confuses a target for a few turns, making him walki into and attack
+ * anything in random directions.
+ */
+bool confusion_wand_use(struct engine *engine, struct actor *actor, struct actor *item);
 /*
  * Deals huge damage to monsters within certain range.
  */
 bool fireball_wand_use(struct engine *engine, struct actor *actor, struct actor *item);
+
 /* 
  * Heals with a fixed amount of hit points.
  */
@@ -127,12 +142,11 @@ bool healer_use(struct engine *engine, struct actor *actor, struct actor *item);
  * a random number of hit points.
  */
 bool curing_use(struct engine *engine, struct actor *actor, struct actor *item);
-/* 
- * A common function to all usable items. All item-specific *_use
- * functions should call this as the last statemunt.
+/*
+ * Poisons the target for a good number of turns. Deals damage over
+ * each turn until cured.
  */
 bool potion_of_poison_use(struct engine *engine, struct actor *actor, struct actor *item);
-bool use(struct actor *actor, struct actor *item);
 bool eat(struct engine *engine, struct actor *actor, struct actor *food);
 struct message get_hunger_status(struct actor *actor);
 void warn_about_hunger(struct engine *engine, struct actor *actor);
@@ -142,6 +156,7 @@ struct actor *make_healer_potion(int x, int y);
 struct actor *make_curing_potion(int x, int y);
 struct actor *make_lightning_wand(int x, int y);
 struct actor *make_fireball_wand(int x, int y);
+struct actor *make_confusion_wand(int x, int y);
 
 struct actor *make_orc(int x, int y);
 struct actor *make_troll(int x, int y);
@@ -155,6 +170,8 @@ bool monster_move_or_attack(struct engine *engine, struct actor *actor, int x, i
 void attack(struct engine *engine, struct actor *dealer, struct actor *target);
 bool is_dead(struct actor *actor);
 float take_damage(struct engine *engine, struct actor *target, float damage);
+
+void confused_update(struct engine *engine, struct actor *actor);
 
 /* 
    A common function that is called when ANY actor dies. NOTE: Do not
