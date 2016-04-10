@@ -54,6 +54,11 @@ struct destructible{
 struct pickable{
         bool auto_pickup; /* desired by every actor, they pick it without pressing 'g'*/
         float targetting_range; /* range at which the target can be selected */
+        float (*calculate_food_cost)(struct actor *actor, struct actor *item);
+        float default_food_cost; /* the amount by which hunger
+                                    increases. *DO NOT* access this
+                                    directly, use the
+                                    calculate_food_cost function */
         float range; /* range the item has effect starting from the target tile */
         float power; /* damage dealt if an attacker item, hit_points restored if a healer */
         bool (*use)(struct engine *engine, struct actor *actor, struct actor *item);
@@ -114,13 +119,18 @@ void inventory_remove(struct container *container, struct actor *actor);
 bool pick(struct engine *engine, struct actor *actor, struct actor *item);
 bool drop(struct engine *engine, struct actor *actor, struct actor *item);
 
+/*
+ * Calculate the amount by which to increase hunger upon using the
+ * item.
+ */
+float calculate_food_cost(struct actor *actor, struct actor *item);
 /* 
  * A common function to all usable items. All item-specific *_use
  * functions should call this as the last statemunt.
  */
 bool use(struct actor *actor, struct actor *item);
 /*
- * Deals huge damage to the nearest monster.
+ * Deals huge damage to the nearest monster. 
  */
 bool lightning_wand_use(struct engine *engine, struct actor *actor, struct actor *item);
 /*
@@ -147,9 +157,13 @@ bool curing_use(struct engine *engine, struct actor *actor, struct actor *item);
  * each turn until cured.
  */
 bool potion_of_poison_use(struct engine *engine, struct actor *actor, struct actor *item);
+/* 
+ * A generic eat function. Units eaten will be equal to the 50% of the
+ * max_hp of the corpse, *not* of the actor eating it.
+ */
 bool eat(struct engine *engine, struct actor *actor, struct actor *food);
+
 struct message get_hunger_status(struct actor *actor);
-void warn_about_hunger(struct engine *engine, struct actor *actor);
 bool make_hungry(struct actor *actor, float amount);
 struct actor *make_food(int x, int y);
 struct actor *make_healer_potion(int x, int y);

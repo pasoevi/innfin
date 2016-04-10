@@ -605,19 +605,25 @@ struct actor *make_item(int x, int y, float power, float range, const char ch,
 {
         struct actor *tmp = init_actor(x, y, ch, name, col, render_actor);
         tmp->pickable = init_pickable(power, range, use);
+        tmp->pickable->calculate_food_cost = calculate_food_cost;
         tmp->blocks = false;
         
         return tmp;
 }
 
-struct actor *make_lightning_wand(int x, int y){
-        return make_item(x, y, 30, 10, '/', "a lightning wand", TCOD_yellow, lightning_wand_use);
+struct actor *make_lightning_wand(int x, int y)
+{
+        struct actor *item = 
+                make_item(x, y, 30, 10, '/', "a lightning wand", TCOD_yellow, lightning_wand_use);
+        item->pickable->default_food_cost = 13;
+        return item;
 }
 
 struct actor *make_fireball_wand(int x, int y){
         struct actor *item = 
                 make_item(x, y, 10, 3, '/', "a fireball wand", TCOD_dark_orange, fireball_wand_use);
         item->pickable->targetting_range = 8;
+        item->pickable->default_food_cost = 15;
         return item;
 }
 
@@ -626,6 +632,7 @@ struct actor *make_confusion_wand(int x, int y)
         struct actor *item = 
                 make_item(x, y, 0, 1, '/', "a wand of confusion", TCOD_light_green, confusion_wand_use);
         item->pickable->targetting_range = 8;
+        item->pickable->default_food_cost = 8;
         return item;
 }
 
@@ -679,10 +686,6 @@ bool drop(struct engine *engine, struct actor *actor, struct actor *item)
         return false;
 }
 
-/*
- * Deals a huge damage to the nearest monster. Makes the invoker
- * hungry.
- */
 bool lightning_wand_use(struct engine *engine, struct actor *actor, struct actor *item)
 {
         struct actor *closest = get_closest_monster(engine, actor->x, actor->y, item->pickable->range);
@@ -692,7 +695,7 @@ bool lightning_wand_use(struct engine *engine, struct actor *actor, struct actor
         }
 
         /* Make sure you aren't too hungry to invoke that wand. */
-        if(make_hungry(actor, 5)){
+        if(make_hungry(actor, item->pickable->calculate_food_cost(actor, item))){
                 /* 
                  * Store the target monster name as it will be changed to the
                  * corpse name upon fatal impact.
@@ -714,24 +717,29 @@ bool fireball_wand_use(struct engine *engine, struct actor *actor, struct actor 
         int x, y;
         if (!pick_tile(engine, &x, &y, item->pickable->targetting_range))
                 return false;
-        
-        engine->gui->message(engine, TCOD_orange, "the fireball explodes, burning everything within %g tiles."
-                             ,item->pickable->range);
 
-        struct actor **iter;
-        for (iter = (struct actor **)TCOD_list_begin(engine->actors);
-             iter != (struct actor **)TCOD_list_end(engine->actors);
-             iter++) {
-                struct actor *actor = *iter;
-                if (actor->destructible && !is_dead(actor)
-                    && get_distance(actor, x, y) <= item->pickable->range) {
-                        engine->gui->message(engine, TCOD_orange, "%s gets burned for %g hit points.",
-                                             actor->name, item->pickable->power);
-                        actor->destructible->take_damage(engine, actor, item->pickable->power);
+        if(make_hungry(actor, item->pickable->calculate_food_cost(actor, item))){
+                engine->gui->message(engine, TCOD_orange, "the fireball explodes, burning everything within %g tiles."
+                                     ,item->pickable->range);
+                struct actor **iter;
+                for (iter = (struct actor **)TCOD_list_begin(engine->actors);
+                     iter != (struct actor **)TCOD_list_end(engine->actors);
+                     iter++) {
+                        struct actor *actor = *iter;
+                        if (actor->destructible && !is_dead(actor)
+                            && get_distance(actor, x, y) <= item->pickable->range) {
+                                engine->gui->message(engine, TCOD_orange, "%s gets burned for %g hit points.",
+                                                     actor->name, item->pickable->power);
+                                actor->destructible->take_damage(engine, actor, item->pickable->power);
+                        }
                 }
-                
-        }       
-        return use(actor, item);
+                return use(actor, item);
+        }else{
+                engine->gui->message(engine, TCOD_light_grey, "You are too hungry to invoke that wand.\n");
+                return false;
+        }
+        
+        
 }
              
 bool confusion_wand_use(struct engine *engine, struct actor *actor, struct actor *item)
@@ -740,16 +748,22 @@ bool confusion_wand_use(struct engine *engine, struct actor *actor, struct actor
         int x,y;
         if (!pick_tile(engine, &x, &y, item->pickable->targetting_range))
                 return false;
+
+        if(make_hungry(actor, item->pickable->calculate_food_cost(actor, item))){
+                struct actor *target = get_actor(engine, x, y);
+                if (!target)
+                        return false;
         
-        struct actor *target = get_actor(engine, x, y);
-        if (!target)
+                struct ai *confused_ai = make_confused_ai(target, 5);
+                target->ai = confused_ai;
+                engine->gui->message(engine, TCOD_light_green, "The eyes of %s look vacant,\nas he starts to stumble around!",
+                                     target->name);
+                return use(actor, item);
+        }else{
+                engine->gui->message(engine, TCOD_light_grey, "You are too hungry to invoke that wand.\n");
                 return false;
+        }
         
-        struct ai *confused_ai = make_confused_ai(target, 5);
-        target->ai = confused_ai;
-        engine->gui->message(engine, TCOD_light_green, "The eyes of %s look vacant,\nas he starts to stumble around!",
-                             target->name);
-        return use(actor, item);
 }
 
 bool potion_of_poison_use(struct engine *engine, struct actor *actor, struct actor *item)
@@ -816,10 +830,16 @@ bool make_hungry(struct actor *actor, float amount){
         
 }
 
-/* 
- * A generic eat function. Units eaten will be equal to the 50% of the
- * max_hp of the corpse, *not* of the actor eating it.
- */
+bool use(struct actor *actor, struct actor *item)
+{
+        if(actor->inventory){
+                inventory_remove(actor->inventory, item);
+                free_actor(item);
+                return true;
+        }
+        return false;
+}
+
 bool eat(struct engine *engine, struct actor *actor, struct actor *food){
         bool used = false;
         if(food->destructible && is_dead(food)){
@@ -867,15 +887,10 @@ bool curing_use(struct engine *engine, struct actor *actor, struct actor *item)
         return healer_use(engine, actor, item);
 }
 
-bool use(struct actor *actor, struct actor *item)
+float calculate_food_cost(struct actor *actor, struct actor *item)
 {
-        if(actor->inventory){
-                inventory_remove(actor->inventory, item);
-                free_actor(item);
-                return true;
-        }
-        return false;
-}
+        return item->pickable->default_food_cost;
+}        
 
 void free_pickable(struct pickable *pickable)
 {
