@@ -25,6 +25,11 @@ reigned. Not even rudimentary civilization was yet conceived by most
 races. Writing wasn't invented and songs were known but to the
 cleverest of race.
 
+## Main Dungeon
+
+You start your adventure on the highest, level 1 of the dungeon. On
+each floor 
+
 ## Portals and Dungeons of Fate
 
 The world consists of dungeons of various levels and portals that are
@@ -98,7 +103,22 @@ they oblivious to the tidings from the larger world.
 
 # Skills
 
+If some areas of this game have relatively more limited choices, like
+weapons, shields, clothing, the skill set and religion systems is
+where abundance can be enjoyed.
+
 # Combat
+
+Winning the game isn't primarily about killing monsters and becoming
+as strong as possible. Nevertheless, the dungeons present the player
+with various kinds of danger. It is crucial to be able to defend
+yourself as you do not always have a chance to escape. There is also
+much that can be gained by visiting some places that are particularly
+well-defended and only the strong fighters can venture to.
+
+This section covers more basic forms of combat, i.e. barehanded or
+weapon-based fighting. For magic spell casting and divine help, see
+the Religion section.
 
 ## Weapons
 
@@ -106,9 +126,33 @@ they oblivious to the tidings from the larger world.
 
 # Religion
 
+Religion is important in the game not only in providing more advanced
+mechanics and diversity, but also as the most crucial area of the game
+as the goal is directly determined by what god you worship. More
+advanced spells also are learned by practicing religion. This becomes
+even more important as the world is in its early days and magic-less
+races haven't yet learned enough technology, and but the crudest and
+simplest weapons are easily available.
+
 ## Gods
 
+### Aronkhar
+
+### Marmrhak
+
+### Sazanah
+
+### Miorharl
+
 ## Magic
+
+Most of the magic spells are learned by divine help, save for some
+more basic forms of magic which require nothing but a wand. A wand,
+indeed, is the basis of all spell casting. There aren't wands of many
+different kinds, they uniformly differ by size - which determines
+spells of what order they can cast. Casting difficult spells with
+mediocre wands can either succeed, break the wand or miscast, which
+can be dangerous in with certain spells.
 
 # Monsters
 
@@ -119,6 +163,8 @@ inherently aggressive toward your race or to anything at all. Such
 monsters are often *cursed*. 
 
 ## Specials
+
+Most creatures in the dungeons are held there as 
 
 ## Wizards
 
@@ -153,6 +199,17 @@ others. Not all animals can easily be identified as cursed.
 
 ## Food
 
+In the underworld hunger, lack of light and sanity is another instance
+of immediate danger you have to cope with. You can escape or avoid
+most monsters, but you can't escape hunger. Though scarce and
+deficient, the dungeons offer you some stores of it if you look in
+right places. You will often be facing hunger and the stores you can
+carry with yourself are limited, so you can only survive if you learn
+that the world you are in is vastly different from the one you come
+from, you will eventually learn that the luck lies in how fast you
+learn what you can eat and how often you should do it.
+
+
 ## Health
 
 ## Corruption
@@ -161,6 +218,10 @@ If fell monsters of the dungeons want to take your flesh, the dungeon
 itself wants to take your soul. Your sanity is as vulnerable to
 darkness and terror of the underworld as your skin is to the claws of
 fiercest animals.
+
+Some aspects of your character are monitored, like remaining health
+points, items it is wearing or whether it is hungry. Level of
+corruption, though, affects your play in ways you cannot easily check.
 
 ## Confusion
 
