@@ -85,14 +85,6 @@ struct pickable{
 };
 
 /* 
- * NOTE: Not used yet. Use the *pickable* structure instead and use
- * the method *use*
- */
-struct edible{
-        bool (*eat)(struct actor *actor, struct actor *food);
-};
-
-/* 
  * Capacity is currently counted by the number of items and *not* by
  * weight or other quality of the items.
  */
@@ -140,6 +132,7 @@ bool inventory_add(struct container *container, struct actor *actor);
 void inventory_remove(struct container *container, struct actor *actor);
 bool pick(struct engine *engine, struct actor *actor, struct actor *item);
 bool drop(struct engine *engine, struct actor *actor, struct actor *item);
+bool drop_last(struct engine *engine, struct actor *actor);
 
 /*
  * Calculate the amount by which to increase hunger upon using an
@@ -200,13 +193,19 @@ struct actor *make_lightning_wand(int x, int y);
 struct actor *make_fireball_wand(int x, int y);
 struct actor *make_confusion_wand(int x, int y);
 
+struct actor *make_player(int x, int y);
 struct actor *make_orc(int x, int y);
 struct actor *make_troll(int x, int y);
 struct actor *make_goblin(int x, int y);
-struct actor *make_player(int x, int y);
+
 void render_actor(struct actor *actor);
 void player_update(struct engine *engine, struct actor *actor);
 void monster_update(struct engine *engine, struct actor *actor);
+/* 
+ * Temporary AI for actors that are confused. They move to random
+ * directions attacking everything in their way. 
+ */
+void confused_update(struct engine *engine, struct actor *actor);
 bool player_move_or_attack(struct engine *engine, struct actor *actor, int x, int y);
 bool monster_move_or_attack(struct engine *engine, struct actor *actor, int x, int y);
 void attack(struct engine *engine, struct actor *dealer, struct actor *target);
@@ -214,16 +213,10 @@ bool is_dead(struct actor *actor);
 float take_damage(struct engine *engine, struct actor *target, float damage);
 
 /* 
- * Temporary AI for actors that are confused. They move to random
- * directions attacking everything in their way. 
- */
-void confused_update(struct engine *engine, struct actor *actor);
-
-/* 
    A common function that is called when ANY actor dies. NOTE: Do not
    use this function directly. Use functions associated with specific
-   actor types instead, like monster_die, player_die. They call this
-   function.
+   actor types instead which are pointer to by monster structures,
+   like monster_die, player_die. They call this function.
 */
 void die(struct engine *engine, struct actor *actor);
 

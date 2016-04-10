@@ -436,6 +436,14 @@ void handle_action_key(struct engine *engine, struct actor *actor)
                         }
                 }
                 break;
+        case 'D':
+                /* Drop last item */
+                {
+                        drop_last(engine, actor);
+                        engine->game_status = NEW_TURN;
+                        
+                }
+                break;
         case 'e':
                 /* Eat */
                 {
@@ -641,7 +649,7 @@ struct actor *make_item(int x, int y, float power, float range, const char ch,
 struct actor *make_lightning_wand(int x, int y)
 {
         struct actor *item = 
-                make_item(x, y, 30, 10, '/', "a lightning wand", TCOD_yellow, lightning_wand_use);
+                make_item(x, y, 30, 10, '/', "a lightning wand", TCOD_white, lightning_wand_use);
         item->pickable->default_food_cost = 13;
         return item;
 }
@@ -711,6 +719,13 @@ bool drop(struct engine *engine, struct actor *actor, struct actor *item)
                 return true;
         }
         return false;
+}
+
+bool drop_last(struct engine *engine, struct actor *actor)
+{
+        struct actor **last_item = (struct actor **)TCOD_list_end(actor->inventory->inventory);
+        last_item--;
+        return  drop(engine, actor, *last_item);
 }
 
 bool lightning_wand_use(struct engine *engine, struct actor *actor, struct actor *item)
