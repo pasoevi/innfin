@@ -1,6 +1,6 @@
 ---
 layout: page
-title: Innere Finsternis
+title: Innere Finsternis - Manual
 description: A Roguelike Game
 ads: false
 permalink: /innfin/
@@ -9,7 +9,7 @@ published: false
 
 *Innfin - Innere Finsternis* is a horror-themed fantasy role-playing
 game set in the underworld of dungeons carved into stone and earth. It
-is a roguelike game in the tradition of classics of the genre, like
+is a roguelike game in the tradition of classics of the genre like
 ADOM, Nethack, Angband and others. As you play the game, you discover
 various creatures in the halls and dungeons hidden from the world
 above. Your goal is to choose a deity to worship and attempt to do his
@@ -25,10 +25,23 @@ reigned. Not even rudimentary civilization was yet conceived by most
 races. Writing wasn't invented and songs were known but to the
 cleverest of race.
 
+In the age of Third Sailing, the brinks of the world saw tempests and
+havoc that, devastating the surface, uncovered the depths that nobody
+saw before. Common folk called it Inner Darkness, the realm from which
+nothingness radiated. It was dreaded by all but some of the bravest
+races. They believed that the Lower Dominion resembled the World Above
+in many ways and was a foreboding to what was to become of the
+world. Thus they called it Shadow of Tomorrow.
+
 ## Main Dungeon
 
 You start your adventure on the highest, level 1 of the dungeon. On
-each floor 
+each floor you find several staircases leading to higher or lower
+levels of the game. The exiting staircases on the highest (Level 1,
+staircase leading upward) and lowest levels (Level 16, staircase
+leading downward) serve as *Portals of Random Blackness* and *Portals
+of Deathly Chasms* respectively. So yes, the main dungeon consists of
+16 floors.
 
 ## Portals and Dungeons of Fate
 
@@ -44,10 +57,10 @@ progression; such portals are very few and easy to identify. You
 should know when to enter them and in what order.
 
 Dungeons of Fate are dungeons that do not follow the pattern of
-increasing difficulty typical for main dungeons. You know that you are
-in a Dungeon of Fate when you have made some god angry or extremely
-pleased. This also happens when you have done something of importance
-on the large scale.
+increasing difficulty typical for main 16-level dungeon stack. You
+know that you are in a Dungeon of Fate when you have made some god
+angry or extremely pleased. This also happens when you have done
+something of importance on the large scale.
 
 Portals and Dungeons of Fate are often the places to seek the
 artifacts and creatures that are crucial for winning the game. Some
@@ -55,7 +68,7 @@ portals permanently leave you away from the main dungeon which makes
 it impossible to complete the quests given by some gods, thus you
 lose.
 
-# Character race
+# Character races
 
 ## Dark Elf
 
@@ -118,7 +131,7 @@ well-defended and only the strong fighters can venture to.
 
 This section covers more basic forms of combat, i.e. barehanded or
 weapon-based fighting. For magic spell casting and divine help, see
-the Religion section.
+the _Religion_ section.
 
 ## Weapons
 
@@ -138,11 +151,32 @@ simplest weapons are easily available.
 
 ### Aronkhar
 
+Aronkhar is the god of tribal warfare and barbarism. Until the most
+recent ages, his grip on the world was undisputed. It favors bravery
+and honor, and his reign over the world is remembered as The Golden
+Age of Heroes where the honourable thrived.
+
+The untainted domain of Aronkhar has known little of darkness and
+corruption that is brewing in the farthest rims of the world and fast
+approaching with advancing civilization. His calls for his faithful
+warriors is at its strongest, defending the integrity of the blissful
+world which is 
+
 ### Marmrhak
 
-### Sazanah
+### Sazanas
 
-### Miorharl
+Even in its merriest days, the world remembered of the shadows told by
+Lost Generations, when Sazanas first tried to bring domestication,
+servitude and contempt.
+
+Sazanas is said to be generous in granting brilliance and knowledge of
+different machinery to his followers. His first coming showed the
+world primitive form of town settlements that were centered around
+High Temples. Such areas indulged inhabitants with powers unheard of
+in the older, Aronkhar domain.
+
+### Thiorharl
 
 ## Magic
 
@@ -152,7 +186,12 @@ indeed, is the basis of all spell casting. There aren't wands of many
 different kinds, they uniformly differ by size - which determines
 spells of what order they can cast. Casting difficult spells with
 mediocre wands can either succeed, break the wand or miscast, which
-can be dangerous in with certain spells.
+can be dangerous with certain spells.
+
+You don't do magic by reading scrolls. You *remember* spells and there
+is a limit to how many of them you can remember. Certain conditions
+affect your memory. Every time you grow agony, you forget a random
+spell (some spells can be exceptions).
 
 # Monsters
 
@@ -259,6 +298,11 @@ happens in a critical situation.
 ## Mutation
 
 # Pickable Items
+
+The game offers several kinds of items that can be found in different
+parts of the dungeon and other areas. The most basic items are food,
+weapons, clothes, shields/armor, jewelry, wands and some thematic
+artifacts. 
 
 # Developer's Guide
 
