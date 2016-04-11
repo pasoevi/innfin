@@ -268,8 +268,8 @@ bool pick_tile(struct engine *engine, int *x, int *y, float max_range){
 
 void map_render(struct map *map)
 {
-        const TCOD_color_t dark_wall = {20, 20, 10};
-        const TCOD_color_t dark_ground = {0, 0, 0};
+        const TCOD_color_t dark_wall = {0, 0, 0};
+        const TCOD_color_t dark_ground = {20, 20, 10};
 
         const TCOD_color_t light_wall = {130, 110, 50};
         const TCOD_color_t light_ground = {200, 180, 50};
@@ -277,14 +277,16 @@ void map_render(struct map *map)
         int x, y;
         for(x = 0; x < map->w; x++) {
                 for(y = 0; y < map->h; y++) {
-                        if(is_in_fov(map, x, y))
-                                TCOD_console_set_char_background(NULL, x, y,
-                                                                 is_wall(map, x, y) ? light_wall : light_ground,
-                                                                 TCOD_BKGND_SET);
+                        if (is_in_fov(map, x, y))
+                                if (is_wall(map, x, y))
+                                        TCOD_console_put_char_ex(NULL, x, y, '#', TCOD_white, light_wall);
+                                else
+                                        TCOD_console_put_char_ex(NULL, x, y, '.', TCOD_white, light_ground);
                         else
-                                TCOD_console_set_char_background(NULL, x, y,
-                                                                 is_wall(map, x, y) ? dark_wall : dark_ground,
-                                                                 TCOD_BKGND_SET);
+                                if (is_wall(map, x, y))
+                                        TCOD_console_put_char_ex(NULL, x, y, '#', TCOD_white, dark_wall);
+                                else
+                                        TCOD_console_put_char_ex(NULL, x, y, '.', TCOD_white, dark_ground);
                 }
         }
 }
