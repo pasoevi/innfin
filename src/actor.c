@@ -687,16 +687,6 @@ struct pickable *init_pickable(float power, float range,
         return tmp;
 }
 
-struct ai *make_confused_ai(struct actor *actor, int num_turns)
-{
-        struct ai *tmp = malloc(sizeof *tmp);
-        tmp->update = confused_update;
-        tmp->move_or_attack = actor->ai->move_or_attack;
-        tmp->num_turns = num_turns;
-        tmp->old_ai = actor->ai;
-        return tmp;
-}
-
 struct actor *make_item(int x, int y, float power, float range, const char ch,
                         const char *name, TCOD_color_t col,
                         bool (*use)(struct engine *engine, struct actor *actor, struct actor *item))
@@ -716,6 +706,17 @@ struct actor *make_lightning_wand(int x, int y)
         item->pickable->default_food_cost = 13;
         return item;
 }
+
+struct ai *make_confused_ai(struct actor *actor, int num_turns)
+{
+        struct ai *tmp = malloc(sizeof *tmp);
+        tmp->update = confused_update;
+        tmp->move_or_attack = actor->ai->move_or_attack;
+        tmp->num_turns = num_turns;
+        tmp->old_ai = actor->ai;
+        return tmp;
+}
+
 
 struct actor *make_fireball_wand(int x, int y){
         struct actor *item = 
