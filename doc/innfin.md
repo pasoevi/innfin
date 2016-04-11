@@ -102,9 +102,9 @@ that you are comfortable with your god.
 
 ### God-King Palace ###
 
-# Character races
+# Character races #
 
-## Dark Elf
+## Dark Elf ##
 
 Dark elves are the most mysterious of the lot. Seeing their innate
 stats, it is difficult to foresee where they would thrive and where
@@ -112,7 +112,7 @@ they would perish. They can be outstanding ranged combatants with
 their mastery of archery and spells singing. They are, however, hated
 by many creatures and feared by yet more.
 
-## Dwarf
+## Dwarf ##
 
 Dwarves are the most typical melee fighters with high health points,
 good defence and high damage. This doesn't mean that they have much
@@ -122,7 +122,7 @@ this skill and therefore neglecting some other skills. This makes them
 stand out in early to mid game but facing significant unforeseen
 challenges in late game if overly specialized.
 
-## Human
+## Human ##
 
 In many games humans are typically the most *generic* species with
 stats closest to averages. In this game, however, human species are
@@ -134,7 +134,7 @@ prone to *corruption* and most vulnerable to *mutation*. This can be
 both, helpful or hindering based on playing style, situation or
 strategy.
 
-## Huttler
+## Huttler ##
 
 Huttlers are distant relatives of humans, possessing similar
 intelligence, person and susceptibility toward mutation and corruption
@@ -148,13 +148,24 @@ they indeed live in holes or *huts*, they are more inclined to
 barbarism and wilderness than to farming and agriculture. Neither are
 they oblivious to the tidings from the larger world.
 
-# Skills
+# Skills #
 
 If some areas of this game have relatively more limited choices, like
 weapons, shields, clothing, the skill set and religion systems is
 where abundance can be enjoyed.
 
-## Strength
+Some skills are general and basic, like Strength, Intelligence,
+Dexterity. Others are more specific, like Spell Casting or
+Flying. They are technically the same. If some specific skill overlaps
+with one of the aspects of the more general skill, you can think that
+the more general one is used as a basis from which the other, more
+specific one is calculated.
+
+Some skills are passive, i.e. they are permanently activated. Others
+are *active*, which means you use them by invoking in just as you
+evoke spells. Most skills are passive. Active ones are marked as such.
+
+## Strength ##
 
 In the most primitive sense, Strength is the skill that determines
 your constitution and standing. The aspects of play that depend on
@@ -163,10 +174,10 @@ Strength attribute:
 - Max health points
 - Health point regeneration
 - How big weapons you can carry
-- How how much damage you deal if you hit the target. Weapon-related
+- How much damage you deal if you hit the target. Weapon-related
   skills use this skill to calculate the final damage value.
 
-## Intelligence
+## Intelligence ##
 
 Primarily, intelligence is memory and learning. Intelligence
 determines:
@@ -177,9 +188,9 @@ determines:
 - Monster memory (This skill only determines the number of monsters
   you can remember, not how you use this memory.)
 
-## Dexterity
+## Dexterity ##
 
-Dexterity another basic skills in that it determines your agility and
+Another basic skills in that it determines your agility and
 performance in everything requiring movement, speed, and
 accuracy. Many other skills take this skill into account. More
 precisely, dexterity is:
@@ -192,7 +203,12 @@ precisely, dexterity is:
 - Number of turns it takes to perform basic actions like wear/take
   off, wield/unwield, quaff, drop, etc.
 
-## Fighting
+## Evasion ##
+
+Evasion is the ability to evade, dodge attacks. When highly developed,
+it makes you *very* hard to hit.
+
+## Fighting ##
 
 Strength and Dexterity alone determine much in how you perform in the
 most basic fighting situations. The Fighting attribute itself speaks
@@ -204,25 +220,68 @@ of the following:
   stunning attacks (largely depends on character race and weapon use).
 - Your defence skill.
 
-## Spell Casting
+## Spell Casting ##
 
-## Divination
+Spell Casting is an extension of intelligence.
+
+- Hunger cost of casting.
+- Increases range of some spells.
+- The time it takes to cast spells.
+
+## Divination ##
+
+Divination is an unusual skill in that most of its effects are seen
+when you have developed it to very high levels.
+
+- You might sense some danger when you enter some area.
+- Your monster memory has new sensing.
 
 ## Apprehension
+
+_Obsolete_
 
 ## Climbing
 
 ## Flying
 
+Flying is perhaps the hardest skill to master. When reached full
+mastery in it, though, you are practically invincible when facing
+monsters that can't make ranged attacks. The early stages of flying
+allow you high degree of Dodging and Evasion
+
 ## Swimming
+
+- Fight monsters in water.
+- Cover large distances in shallow or deep water.
+- Hide in water.
+- Dive in and pick items from the water ground.
 
 ## Dodging
 
-## {Cold, Fire, Poison, Mutation} Resistance
+Dodging is your ability to slip out of sight of monsters. It also
+depends on Dexterity. It is both, passive and active - when invoked,
+if there are more than 5 monsters in the field of view, they all stop
+tracking you.
+
+## Resistance
+
+Resistance is a family of technically similar but unrelated skills of
+resistances to various threats. Please note, that there is no single
+Resistance skill, but the following, independent skills:
+
+### Cold  Resistance
+
+### Fire Resistance
+
+### Poison Resistance
+
+### Mutation Resistance
 
 ## Throwing
 
-## Frightening
+## Petrification
+
+It is an active skill. It is a skill of looking scarier than you are.
 
 ## Foresting
 
@@ -257,7 +316,7 @@ even more important as the world is in its early days and magic-less
 races haven't yet learned enough technology, and but the crudest and
 simplest weapons are easily available.
 
-## Gods
+## Deities
 
 ### Aronkhar
 
@@ -307,6 +366,10 @@ You don't do magic by reading scrolls. You *remember* spells and there
 is a limit to how many of them you can remember. Certain conditions
 affect your memory. Every time you grow agony, you forget a random
 spell (some spells are exception to this).
+
+## Totemism
+
+
 
 # Monsters
 
