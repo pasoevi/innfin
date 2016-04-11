@@ -29,12 +29,14 @@ static const int TRACKING_TURNS = 3;
 struct engine;
 struct actor;
 
-struct ai{
-	int move_count; /* allow monsters to track the player */
-        void (*update)(struct engine *engine, struct actor *actor);
-        bool (*move_or_attack)(struct engine *engine, struct actor *actor, int targetx, int targety);
-        struct ai *old_ai; /* confused actors have their previous minds saved here. */
-        int num_turns;
+struct ai {
+	int move_count;		/* allow monsters to track the player */
+	void (*update) (struct engine * engine, struct actor * actor);
+	 bool(*move_or_attack) (struct engine * engine,
+				struct actor * actor, int targetx,
+				int targety);
+	struct ai *old_ai;	/* confused actors have their previous minds saved here. */
+	int num_turns;
 };
 
 /*
@@ -45,10 +47,11 @@ struct ai{
  * - attack - the function that calculates and deals the damage considering
  * the power parameter as a seed.
  */
-struct attacker{
-        struct actor *weapon; /* */
-        float power;
-        void (*attack)(struct engine *engine, struct actor *dealer, struct actor *target);
+struct attacker {
+	struct actor *weapon;	/* */
+	float power;
+	void (*attack) (struct engine * engine, struct actor * dealer,
+			struct actor * target);
 };
 
 /*
@@ -56,57 +59,60 @@ struct attacker{
  * attacks. As an added effect, this actor will require food and rest
  * to sustain himself.
  */
-struct destructible{
-        float stomach; /* number of food units eaten */
-        float max_stomach; /* max number of units the actor can eat */
-        float max_hp; /* maximum health points */
-        float hp; /* current health points */
-        float defence; /* hit points deflected */
-        const char *corpse_name; /* the actor's name once dead/destroyed */
-        float (*take_damage)(struct engine *engine, struct actor *target, float damage);
-        void (*die)(struct engine *engine, struct actor *actor);
+struct destructible {
+	float stomach;		/* number of food units eaten */
+	float max_stomach;	/* max number of units the actor can eat */
+	float max_hp;		/* maximum health points */
+	float hp;		/* current health points */
+	float defence;		/* hit points deflected */
+	const char *corpse_name;	/* the actor's name once dead/destroyed */
+	float (*take_damage) (struct engine * engine,
+			      struct actor * target, float damage);
+	void (*die) (struct engine * engine, struct actor * actor);
 };
 
 /*
  * A structure used to represent wands, potions and all other usable
  * items.
  */
-struct pickable{
-        bool auto_pickup; /* desired by every actor, they pick it without pressing 'g'*/
-        float targetting_range; /* range at which the target can be selected */
-        float (*calculate_food_cost)(struct actor *actor, struct actor *item);
-        float default_food_cost; /* the amount by which hunger
-                                    increases. *DO NOT* access this
-                                    directly, use the
-                                    calculate_food_cost function */
-        float range; /* range the item has effect starting from the target tile */
-        float power; /* damage dealt if an attacker item, hit_points restored if a healer */
-        bool (*use)(struct engine *engine, struct actor *actor, struct actor *item);
+struct pickable {
+	bool auto_pickup;	/* desired by every actor, they pick it without pressing 'g' */
+	float targetting_range;	/* range at which the target can be selected */
+	float (*calculate_food_cost) (struct actor * actor,
+				      struct actor * item);
+	float default_food_cost;	/* the amount by which hunger
+					   increases. *DO NOT* access this
+					   directly, use the
+					   calculate_food_cost function */
+	float range;		/* range the item has effect starting from the target tile */
+	float power;		/* damage dealt if an attacker item, hit_points restored if a healer */
+	 bool(*use) (struct engine * engine, struct actor * actor,
+		     struct actor * item);
 };
 
 /* 
  * Capacity is currently counted by the number of items and *not* by
  * weight or other quality of the items.
  */
-struct container{
-        int capacity; /* The maximum number of items (actors) in it. */
-        TCOD_list_t inventory; /* */
+struct container {
+	int capacity;		/* The maximum number of items (actors) in it. */
+	TCOD_list_t inventory;	/* */
 };
 
-struct actor{
-        int x;
-        int y;
-        char ch;
-        bool blocks; /* can we walk on this actor? */
-        struct attacker *attacker;
+struct actor {
+	int x;
+	int y;
+	char ch;
+	bool blocks;		/* can we walk on this actor? */
+	struct attacker *attacker;
 	struct destructible *destructible;
 	struct ai *ai;
-        struct pickable *pickable;
-        struct container *inventory;
-        const char *name;
-        TCOD_color_t col;
-        void (*update)(struct engine *engine, struct actor *actor);
-        void (*render)(struct actor *actor); /* Draw an actor to the screen */
+	struct pickable *pickable;
+	struct container *inventory;
+	const char *name;
+	TCOD_color_t col;
+	void (*update) (struct engine * engine, struct actor * actor);
+	void (*render) (struct actor * actor);	/* Draw an actor to the screen */
 };
 
 /* 
@@ -116,7 +122,9 @@ struct actor{
    NOTE: this is a low level function, intended to be used ONLY by
    wrapper functions e.g. make_orc, make_player, etc.
 */
-struct actor * init_actor(int w, int h, int ch, const char *name, TCOD_color_t col, void (*render)(struct actor *));
+struct actor *init_actor(int w, int h, int ch, const char *name,
+			 TCOD_color_t col,
+			 void (*render) (struct actor *));
 void free_actor(struct actor *actor);
 void free_actors(TCOD_list_t actors);
 
@@ -126,12 +134,17 @@ float get_distance(struct actor *actor, int x, int y);
 struct actor *get_actor(struct engine *engine, int x, int y);
 /*** Two related functions. ***/
 /* Get monster closest to the (x, y) point within range. Excluding player. */
-struct actor *get_closest_monster(struct engine *engine, int x, int y, float range);
+struct actor *get_closest_monster(struct engine *engine, int x, int y,
+				  float range);
 /* Get actor closest to the *actor* within range, including player. */
-struct actor *get_closest_actor(struct engine *engine, struct actor *actor, float range);
+struct actor *get_closest_actor(struct engine *engine, struct actor *actor,
+				float range);
 
 struct container *init_container(int capacity);
-struct pickable *init_pickable(float power, float range, bool (*use)(struct engine *engine, struct actor *actor, struct actor *item));
+struct pickable *init_pickable(float power, float range,
+			       bool(*use) (struct engine * engine,
+					   struct actor * actor,
+					   struct actor * item));
 bool inventory_add(struct container *container, struct actor *actor);
 void inventory_remove(struct container *container, struct actor *actor);
 bool pick(struct engine *engine, struct actor *actor, struct actor *item);
@@ -162,36 +175,43 @@ bool use(struct actor *actor, struct actor *item);
 /*
  * Deals huge damage to the nearest monster. 
  */
-bool lightning_wand_use(struct engine *engine, struct actor *actor, struct actor *item);
+bool lightning_wand_use(struct engine *engine, struct actor *actor,
+			struct actor *item);
 /*
  * Confuses a target for a few turns, making him walki into and attack
  * anything in random directions.
  */
-bool confusion_wand_use(struct engine *engine, struct actor *actor, struct actor *item);
+bool confusion_wand_use(struct engine *engine, struct actor *actor,
+			struct actor *item);
 /*
  * Transforms the target into a random animal.
  */
-bool transfiguration_wand_use(struct engine *engine, struct actor *actor, struct actor *item);
+bool transfiguration_wand_use(struct engine *engine, struct actor *actor,
+			      struct actor *item);
 /*
  * Deals huge damage to monsters within certain range.
  */
-bool fireball_wand_use(struct engine *engine, struct actor *actor, struct actor *item);
+bool fireball_wand_use(struct engine *engine, struct actor *actor,
+		       struct actor *item);
 
 /* 
  * Heals with a fixed amount of hit points.
  */
-bool healer_use(struct engine *engine, struct actor *actor, struct actor *item);
+bool healer_use(struct engine *engine, struct actor *actor,
+		struct actor *item);
 /* 
  * Cures poisoning and similar effects of ill health and then heals by
  * a random number of hit points. Usually heals by less number than
  * the health potion.
  */
-bool curing_use(struct engine *engine, struct actor *actor, struct actor *item);
+bool curing_use(struct engine *engine, struct actor *actor,
+		struct actor *item);
 /*
  * Poisons the target for a good number of turns. Deals damage over
  * each turn until cured.
  */
-bool potion_of_poison_use(struct engine *engine, struct actor *actor, struct actor *item);
+bool potion_of_poison_use(struct engine *engine, struct actor *actor,
+			  struct actor *item);
 /* 
  * A generic eating function. Units eaten will be equal to the 50% of
  * the max_hp of the corpse, *not* of the actor eating it.
@@ -228,17 +248,21 @@ void confused_update(struct engine *engine, struct actor *actor);
  * start behaving as typical attacker intelligences once attacked.
  */
 void wandering_update(struct engine *engine, struct actor *actor);
-bool player_move_or_attack(struct engine *engine, struct actor *actor, int x, int y);
-bool monster_move_or_attack(struct engine *engine, struct actor *actor, int x, int y);
+bool player_move_or_attack(struct engine *engine, struct actor *actor,
+			   int x, int y);
+bool monster_move_or_attack(struct engine *engine, struct actor *actor,
+			    int x, int y);
 /* 
  * Ally update function, behaves like typical monsters except that it
  * attacks and tracks everybody except you. When no monsters are
  * around, it follows you.
  */
 void ally_update(struct engine *engine, struct actor *actor);
-void attack(struct engine *engine, struct actor *dealer, struct actor *target);
+void attack(struct engine *engine, struct actor *dealer,
+	    struct actor *target);
 bool is_dead(struct actor *actor);
-float take_damage(struct engine *engine, struct actor *target, float damage);
+float take_damage(struct engine *engine, struct actor *target,
+		  float damage);
 
 /* 
    A common function that is called when ANY actor dies. NOTE: Do not

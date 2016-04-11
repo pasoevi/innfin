@@ -30,23 +30,23 @@ static const int ROOM_MIN_SIZE = 6;
 
 struct engine;
 
-struct tile{
-        bool explored;
+struct tile {
+	bool explored;
 };
 
-struct bsp_traverse{
+struct bsp_traverse {
 	int room_num;
 	int lastx;
 	int lasty;
 };
 
-struct map{
-        int w;
-        int h;
-        void (*render)(struct map *);
-        struct tile tiles[80 * 45];
-        TCOD_bsp_t *bsp;
-        TCOD_map_t map;
+struct map {
+	int w;
+	int h;
+	void (*render) (struct map *);
+	struct tile tiles[80 * 45];
+	TCOD_bsp_t *bsp;
+	TCOD_map_t map;
 	struct bsp_traverse bsp_traverse;
 };
 
@@ -57,8 +57,8 @@ void free_map(struct map *map);
 /* Draw the map on the screen */
 void map_render(struct map *map);
 
-void add_monster(struct engine* engine, int x, int y);
-void add_item(struct engine* engine, int x, int y);
+void add_monster(struct engine *engine, int x, int y);
+void add_item(struct engine *engine, int x, int y);
 bool is_wall(struct map *map, int x, int y);
 
 /* Check whether the point (x, y) is in the field of view on map. */
