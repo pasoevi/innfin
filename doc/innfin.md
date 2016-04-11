@@ -97,7 +97,7 @@ religion and choose what you want to do in it.
 
 ### Dwarf Caverns ###
 
-### Barbarian Plains ###
+### Barbarian Temples ###
 
 ### God-King Palace ###
 
@@ -154,6 +154,10 @@ weapons, shields, clothing, the skill set and religion systems is
 where abundance can be enjoyed.
 
 # Combat
+
+*NOTE:*_This is a general overview of the combat system. For
+information on skills in various aspects of fighting and weapon usage,
+see the skills section_
 
 Winning the game isn't primarily about killing monsters and becoming
 as strong as possible. Nevertheless, the dungeons present the player
