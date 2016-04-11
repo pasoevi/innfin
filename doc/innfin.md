@@ -7,8 +7,8 @@ permalink: /innfin/
 published: false
 ---
 
-NOTE: This is a detailed game manual. For _Downloads_, visit the game
-website. 
+NOTE: This is a detailed game manual. For _Downloads_, or the _Quick
+Starting Guide_, please visit the game website.
 
 *Innfin - Innere Finsternis* is a horror-themed fantasy role-playing
 game set in the underworld of dungeons carved into stone and earth. It
@@ -89,9 +89,10 @@ lose.
 
 When you have been in the game for long enough, you will have probably
 cleared around ten levels of the main dungeon and most of special
-areas. It is then time to start exploring the branches. It is the time
-when you have learned enough about the world to start following
-religion and choose what you want to do in it.
+areas. It is then time to start exploring the branches. Before doing
+so, you should you have learned enough about the world to have some
+feeling of what to expect of different monsters and most importantly,
+that you are comfortable with your god.
 
 ### Mythic Menagerie ###
 
@@ -153,6 +154,78 @@ If some areas of this game have relatively more limited choices, like
 weapons, shields, clothing, the skill set and religion systems is
 where abundance can be enjoyed.
 
+## Strength
+
+In the most primitive sense, Strength is the skill that determines
+your constitution and standing. The aspects of play that depend on
+Strength attribute:
+
+- Max health points
+- Health point regeneration
+- How big weapons you can carry
+- How how much damage you deal if you hit the target. Weapon-related
+  skills use this skill to calculate the final damage value.
+
+## Intelligence
+
+Primarily, intelligence is memory and learning. Intelligence
+determines:
+
+- How many spells you can learn (Remember).
+- The limit of spell difficulty that you can learn.
+- Spell casting accuracy.
+- Monster memory (This skill only determines the number of monsters
+  you can remember, not how you use this memory.)
+
+## Dexterity
+
+Dexterity another basic skills in that it determines your agility and
+performance in everything requiring movement, speed, and
+accuracy. Many other skills take this skill into account. More
+precisely, dexterity is:
+
+- Speed. More specific skills use this attribute to calculate the
+  final speed of the action.
+- Your chance to deal critical attacks.
+- Your chance to blink in critical fights. The chance decreases as
+  your health points lower.
+- Number of turns it takes to perform basic actions like wear/take
+  off, wield/unwield, quaff, drop, etc.
+
+## Fighting
+
+Strength and Dexterity alone determine much in how you perform in the
+most basic fighting situations. The Fighting attribute itself speaks
+of the following:
+
+- How effectively you use monster memory.
+- The base value of attack dice.
+- Certain fighting skill threshold uncover cleaving, piercing and
+  stunning attacks (largely depends on character race and weapon use).
+- Your defence skill.
+
+## Spell Casting
+
+## Divination
+
+## Apprehension
+
+## Climbing
+
+## Flying
+
+## Swimming
+
+## Dodging
+
+## {Cold, Fire, Poison, Mutation} Resistance
+
+## Throwing
+
+## Frightening
+
+## Foresting
+
 # Combat
 
 *NOTE:*_This is a general overview of the combat system. For
@@ -201,6 +274,10 @@ world.
 
 ### Marmrhak
 
+### Utor
+
+### Searna
+
 ### Sazanas
 
 Even in its merriest days, the world remembered of the shadows told by
@@ -237,7 +314,7 @@ Unlike many other roguelikes where most monsters are immediately your
 enemies, in this game your playing style determines what other
 characters see you as. There are, however, some monsters that are
 inherently aggressive toward your race or to anything at all. Such
-monsters are often *cursed*. 
+monsters are often *cursed*.
 
 ## Wizards
 
