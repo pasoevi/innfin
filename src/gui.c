@@ -34,7 +34,7 @@ static void init_message(struct message **message, const char *text, TCOD_color_
 
 void free_message(struct message *message)
 {
-        if(message != NULL){
+        if (message != NULL) {
                 free(message->text);                     
                 free(message);
         }
@@ -81,7 +81,7 @@ static void render_bar(struct engine *engine, int x, int y, int w,
         TCOD_console_rect(engine->gui->con, x, y, w, 1, false, TCOD_BKGND_SET);
         
         int bar_w = (int)(value / max_value * w);
-        if(bar_w > 0){
+        if (bar_w > 0) {
                 /* Draw the bar */
                 TCOD_console_set_default_background(engine->gui->con, TCOD_white);
                 TCOD_console_rect(engine->gui->con, x, y, bar_w, 1, false, TCOD_BKGND_SET);
@@ -102,7 +102,7 @@ static void render_fixed_text(TCOD_console_t *con, int x, int y, TCOD_color_t co
 
 static void render_status(TCOD_console_t *con, int x, int y, struct actor *actor){
         struct message status = get_hunger_status(actor);
-        if(strlen(status.text) > 0)
+        if (strlen(status.text) > 0)
                 render_fixed_text(con, x, y, status.col, status.text);
 }
 
@@ -118,7 +118,7 @@ static void render_log(struct engine *engine, int startx , int starty)
                 TCOD_console_set_default_foreground(engine->gui->con, TCOD_color_multiply_scalar((*iter)->col, color_coef));
                 TCOD_console_print(engine->gui->con, startx, y, (*iter)->text);
                 y++;
-                if(color_coef < 1.0f)
+                if (color_coef < 1.0f)
                         color_coef += 0.3f;
         }
 }

@@ -32,9 +32,9 @@ float take_damage(struct engine *engine, struct actor *target, float damage)
 {
         /* Reduce the damage by the fraction that the target can deflect */
 	damage -= target->destructible->defence;
-	if(damage > 0){
+	if (damage > 0) {
 		target->destructible->hp -= damage;
-		if(target->destructible->hp <= 0){
+		if (target->destructible->hp <= 0) {
                         target->destructible->hp = 0; /* prevent hp from goint below zero */
 			target->destructible->die(engine, target);
                 }
@@ -54,14 +54,14 @@ void common_update(struct engine *engine, struct actor *actor)
            Do things that are common to all actors.  nothing at the
            moment.
         */
-        if(actor->ai)
+        if (actor->ai)
                 actor->ai->update(engine, actor);
 }
 
 void confused_update(struct engine *engine, struct actor *actor)
 {
         /* Check if the actor is alive */
-        if(actor->destructible && is_dead(actor)){
+        if (actor->destructible && is_dead(actor)) {
                 return;
         }
         
@@ -146,7 +146,6 @@ struct destructible *init_destructible(float max_hp,
                                        void (*die)(struct engine *engine, struct actor *actor))
 {
         struct destructible *tmp = malloc(sizeof *tmp);
-        
         tmp->die = die;
         tmp->defence = defence;
         tmp->corpse_name = corpse_name;
@@ -167,8 +166,8 @@ void attack(struct engine *engine, struct actor *dealer, struct actor *target)
         float power = dealer->attacker->power;
         float defence = target->destructible->defence;
         
-        if(target->destructible && !is_dead(target)){
-                if(power - defence > 0){
+        if (target->destructible && !is_dead(target)) {
+                if (power - defence > 0) {
                         bool is_player = dealer == engine->player;
                         engine->gui->message(engine,
                                              is_player ? TCOD_light_grey : TCOD_red,
@@ -176,7 +175,7 @@ void attack(struct engine *engine, struct actor *dealer, struct actor *target)
                                              dealer->name,
                                              is_player ? "attack" : "attacks",
                                              target->name, power - defence);
-                }else{
+                } else {
                         engine->gui->message(engine,
                                              TCOD_light_grey,
                                              "%s attacks %s but it has no effect!\n",
@@ -190,7 +189,7 @@ void attack(struct engine *engine, struct actor *dealer, struct actor *target)
 
 bool is_dead(struct actor *actor)
 {
-	if(actor->destructible != NULL)
+	if (actor->destructible != NULL )
 		return actor->destructible->hp <= 0;
 	return false;
 }
@@ -209,7 +208,7 @@ void die(struct engine *engine, struct actor *actor)
 float heal(struct actor *actor, float amount)
 {
         actor->destructible->hp += amount;
-        if(actor->destructible->hp > actor->destructible->max_hp){
+        if (actor->destructible->hp > actor->destructible->max_hp) {
                 amount -= actor->destructible->hp - actor->destructible->max_hp;
                 actor->destructible->hp = actor->destructible->max_hp;                
         }
@@ -222,6 +221,27 @@ float get_distance(struct actor *actor, int x, int y)
         return get_distance_btwn_points(actor->x, actor->y, x, y);
 }
 
+struct actor *get_closest_actor(struct engine *engine, struct actor *actor, float range)
+{
+        struct actor *closest = NULL;
+        float best_distance = 1E6f;
+
+        struct actor **iter;
+        for (iter = (struct actor **)TCOD_list_begin(engine->actors);
+            iter != (struct actor **)TCOD_list_end(engine->actors);
+            iter++) {
+                struct actor *tmp = *iter;
+                if (tmp != actor && tmp->destructible && !is_dead(tmp)) {
+                        float distance = get_distance(tmp, actor->x, actor->y);
+                        if (distance < best_distance && (distance <= range || range == 0.0f)) {
+                                best_distance = distance;
+                                closest = tmp;
+                        }
+                }
+        }
+        return closest;
+}
+
 /* Get the closest monster to the point (x, y) within range */
 struct actor *get_closest_monster(struct engine *engine, int x, int y, float range)
 {
@@ -229,13 +249,13 @@ struct actor *get_closest_monster(struct engine *engine, int x, int y, float ran
         float best_distance = 1E6f;
 
         struct actor **iter;
-        for(iter = (struct actor **)TCOD_list_begin(engine->actors);
+        for (iter = (struct actor **)TCOD_list_begin(engine->actors);
             iter != (struct actor **)TCOD_list_end(engine->actors);
-            iter++){
+            iter++) {
                 struct actor *actor = *iter;
-                if(actor != engine->player && actor->destructible && !is_dead(actor)){
+                if (actor != engine->player && actor->destructible && !is_dead(actor)) {
                         float distance = get_distance(actor, x, y);
-                        if(distance < best_distance && (distance <= range || range == 0.0f)){
+                        if (distance < best_distance && (distance <= range || range == 0.0f)) {
                                 best_distance = distance;
                                 closest = actor;
                         }
@@ -284,22 +304,22 @@ bool player_move_or_attack(struct engine *engine, struct actor *actor, int targe
         /* Consume energy from stomach and kill the player if beyond
          * starvation.
          */
-        if(!make_hungry(actor, 1)){
+        if (!make_hungry(actor, 1)) {
                 engine->gui->message(engine, TCOD_light_grey, "You starve to death.\n");
                 actor->destructible->die(engine, actor);
                 return false;
         }
 
-        if(is_wall(engine->map, targetx, targety))
+        if (is_wall(engine->map, targetx, targety) )
                 return false;
        
         /* Look for actors to attack */
         struct actor **iter;
-        for(iter = (struct actor **)TCOD_list_begin(engine->actors);
+        for (iter = (struct actor **)TCOD_list_begin(engine->actors);
             iter != (struct actor **)TCOD_list_end(engine->actors);
-            iter++){
-                if((*iter)->destructible && !is_dead(*iter) &&
-                   (*iter)->x == targetx && (*iter)->y == targety){
+            iter++) {
+                if ((*iter)->destructible && !is_dead(*iter) &&
+                   (*iter)->x == targetx && (*iter)->y == targety) {
                         /* There is an actor there, cat't walk */
                         actor->attacker->attack(engine, actor, *iter);
                         return false;
@@ -307,13 +327,13 @@ bool player_move_or_attack(struct engine *engine, struct actor *actor, int targe
         }
 
         /* Look for corpses or pickable items */
-        for(iter = (struct actor **)TCOD_list_begin(engine->actors);
+        for (iter = (struct actor **)TCOD_list_begin(engine->actors);
             iter != (struct actor **)TCOD_list_end(engine->actors);
-            iter++){
+            iter++) {
                 struct actor *actor = *iter;
                 bool corpse_or_item = (actor->destructible && is_dead(actor))
                         || actor->pickable;
-                if(corpse_or_item && actor->x == targetx && actor->y == targety)
+                if (corpse_or_item && actor->x == targetx && actor->y == targety)
                         engine->gui->message(engine, TCOD_light_gray, "There's %s here\n", (*iter)->name);
         }
 
@@ -326,9 +346,17 @@ bool player_move_or_attack(struct engine *engine, struct actor *actor, int targe
 bool is_edible(struct actor *actor)
 {
         bool is_edible = false;
-        if(actor->destructible && is_dead(actor))
+        if (actor->destructible && is_dead(actor))
                 is_edible = true;
         return is_edible;
+}
+
+bool is_drinkable(struct actor *actor)
+{
+        bool is_drinkable = false;
+        if (actor->pickable && !actor->destructible && actor->ch == '!')
+                is_drinkable = true;
+        return is_drinkable;
 }
 
 /* A dummy function to return true for all actors */
@@ -356,11 +384,11 @@ struct actor *choose_from_inventory(struct engine *engine, struct actor *actor, 
         int shortcut = 'a';
         int y = 1;
         struct actor **iter;
-        for(iter = (struct actor **)TCOD_list_begin(actor->inventory->inventory);
+        for (iter = (struct actor **)TCOD_list_begin(actor->inventory->inventory);
             iter != (struct actor **)TCOD_list_end(actor->inventory->inventory);
-            iter++){
+            iter++) {
                 struct actor *item = *iter;
-                if(predicate(item)){
+                if (predicate(item)) {
                         TCOD_console_print(con, 2, y, "(%c) %s", shortcut, item->name);
                         y++;
                         num_items++;
@@ -380,12 +408,12 @@ struct actor *choose_from_inventory(struct engine *engine, struct actor *actor, 
         TCOD_sys_wait_for_event(TCOD_EVENT_KEY_PRESS, &key, NULL, true);
         if (key.vk == TCODK_CHAR ) {
                 int actor_index = key.c - 'a';
-                if(actor_index >= 0 && actor_index < TCOD_list_size(actor->inventory->inventory)){
+                if (actor_index >= 0 && actor_index < TCOD_list_size(actor->inventory->inventory)) {
                         struct actor *tmp = TCOD_list_get(actor->inventory->inventory, actor_index);
-                        if(predicate(tmp))
+                        if (predicate(tmp))
                                 return tmp;
                         else
-                                engine->gui->message(engine, TCOD_light_grey, "You can't do that.\n");
+                                engine->gui->message(engine, TCOD_light_grey, "You can't %s that.\n", window_title);
                 }
         }
         return NULL;
@@ -401,17 +429,17 @@ void handle_action_key(struct engine *engine, struct actor *actor)
                         bool found = false;
                         /* Check for existing items on this loction */
                         struct actor **iter;
-                        for(iter = (struct actor **)TCOD_list_begin(engine->actors);
+                        for (iter = (struct actor **)TCOD_list_begin(engine->actors);
                             iter != (struct actor **)TCOD_list_end(engine->actors);
-                            iter++){
+                            iter++) {
                                 struct actor *actor = *iter;
-                                if(actor->pickable && actor->x == engine->player->x && actor->y == engine->player->y){
+                                if (actor->pickable && actor->x == engine->player->x && actor->y == engine->player->y) {
                                         /* Try picking up the item */
-                                        if(pick(engine, engine->player, actor)){
+                                        if (pick(engine, engine->player, actor)) {
                                                 found = true;
                                                 engine->gui->message(engine, TCOD_green, "You pick up %s.\n", actor->name);
                                                 break;
-                                        }else if(!found){
+                                        } else if(!found){
                                                 found = true;
                                                 engine->gui->message(engine, TCOD_green, "You tried to pick up %s. Inventory is full.\n", actor->name);
                                         
@@ -420,7 +448,7 @@ void handle_action_key(struct engine *engine, struct actor *actor)
                                 }
                         }
                 
-                        if(!found)
+                        if (!found)
                                 engine->gui->message(engine, TCOD_grey, "There is nothing to pick up here here.\n");                        
                         engine->game_status = NEW_TURN;
 
@@ -430,7 +458,7 @@ void handle_action_key(struct engine *engine, struct actor *actor)
                 /* Drop item */
                 {
                         struct actor *item = choose_from_inventory(engine, actor, "drop", is_usable);
-                        if(item){
+                        if (item) {
                                 drop(engine, actor, item);
                                 engine->game_status = NEW_TURN;
                         }
@@ -448,7 +476,17 @@ void handle_action_key(struct engine *engine, struct actor *actor)
                 /* Eat */
                 {
                         struct actor *item = choose_from_inventory(engine, actor, "eat", is_edible);
-                        if(item){
+                        if (item) {
+                                item->pickable->use(engine, actor, item);
+                                engine->game_status = NEW_TURN;
+                        }
+                }
+                break;
+        case 'q':
+                /* Quaff */
+                {
+                        struct actor *item = choose_from_inventory(engine, actor, "quaff", is_drinkable);
+                        if (item) {
                                 item->pickable->use(engine, actor, item);
                                 engine->game_status = NEW_TURN;
                         }
@@ -472,12 +510,12 @@ void handle_action_key(struct engine *engine, struct actor *actor)
 
 void player_update(struct engine *engine, struct actor *actor)
 {
-        if(actor->destructible && is_dead(actor)){
+        if (actor->destructible && is_dead(actor)) {
                 return;
         }
 
         int dx = 0, dy = 0;
-        if(engine->key.pressed){
+        if (engine->key.pressed) {
                 switch(engine->key.vk) {
                 case TCODK_UP : dy = -1; break;
                 case TCODK_DOWN : dy = 1; break;
@@ -490,7 +528,7 @@ void player_update(struct engine *engine, struct actor *actor)
 
         if (dx != 0 || dy != 0) {
                 engine->game_status = NEW_TURN;
-                if(actor->ai->move_or_attack(engine, actor, actor->x + dx, actor->y + dy)) {
+                if (actor->ai->move_or_attack(engine, actor, actor->x + dx, actor->y + dy)) {
                         compute_fov(engine);
                 }
         }
@@ -515,12 +553,13 @@ void player_die(struct engine *engine, struct actor *actor){
 
 /*** Monster functions ***/
 struct actor *make_monster(int x, int y, const char ch, const char *name, TCOD_color_t col,
-                           float power, float max_hp, float hp, float defence, const char *corpse_name)
+                           float power, float max_hp, float hp, float defence, const char *corpse_name,
+                           void (*update)(struct engine *engine, struct actor *actor))
 {
         struct actor *tmp = init_actor(x, y, ch, name, col, render_actor);
 
         /* Artificial intelligence */
-        tmp->ai = init_ai(monster_update, monster_move_or_attack);
+        tmp->ai = init_ai(update, monster_move_or_attack);
 
         /* Init attacker */
         tmp->attacker = init_attacker(power, attack);
@@ -533,17 +572,22 @@ struct actor *make_monster(int x, int y, const char ch, const char *name, TCOD_c
 
 struct actor *make_orc(int x, int y)
 {
-        return make_monster(x, y, 'o', "an orc", TCOD_desaturated_green, 8, 15, 15, 2, "a dead orc");
+        return make_monster(x, y, 'o', "an orc", TCOD_desaturated_green, 8, 15, 15, 2, "a dead orc", monster_update);
 }
 
 struct actor *make_goblin(int x, int y)
 {
-        return make_monster(x, y, 'g', "a goblin", TCOD_green, 5, 14, 14, 3, "a dead goblin");
+        return make_monster(x, y, 'g', "a goblin", TCOD_green, 5, 14, 14, 3, "a dead goblin", monster_update);
 }
 
 struct actor *make_troll(int x, int y)
 {
-        return make_monster(x, y, 'T', "a troll", TCOD_darker_green, 10, 20, 20, 3, "a troll carcass");
+        return make_monster(x, y, 'T', "a troll", TCOD_darker_green, 10, 20, 20, 3, "a troll carcass", monster_update);
+}
+
+struct actor *make_dragon(int x, int y)
+{
+        return make_monster(x, y, 'D', "a dragon", TCOD_darkest_green, 10, 25, 25, 7, "dragon scales and flesh", dragon_update);
 }
 
 bool monster_move_or_attack(struct engine *engine, struct actor *actor, int targetx, int targety)
@@ -554,20 +598,21 @@ bool monster_move_or_attack(struct engine *engine, struct actor *actor, int targ
         int stepdy = (dy > 0 ? 1 : -1);
         float distance = sqrtf(dx * dx + dy * dy);
 
-        if(distance >= 2){
+        if (distance >= 2) {
                 dx = (int)(round(dx / distance));
                 dy = (int)(round(dy / distance));
 
-                if(can_walk(engine, actor->x + dx, actor->y + dy)){
+                if (can_walk(engine, actor->x + dx, actor->y + dy)) {
                         actor->x += dx;
                         actor->y += dy;
-                }else if(can_walk(engine, actor->x + stepdx, actor->y)){
+                } else if(can_walk(engine, actor->x + stepdx, actor->y)) {
                         actor->x += stepdx;
-                }else if(can_walk(engine, actor->x, actor->y + stepdy)){
+                } else if(can_walk(engine, actor->x, actor->y + stepdy)) {
                         actor->y += stepdy;
                 }
-        }else if(actor->attacker){
-                actor->attacker->attack(engine, actor, engine->player);
+        }else if (actor->attacker) {
+                struct actor *target = get_actor(engine, targetx, targety);
+                actor->attacker->attack(engine, actor, target);
                 return false;
         }
 
@@ -576,20 +621,38 @@ bool monster_move_or_attack(struct engine *engine, struct actor *actor, int targ
 
 void monster_update(struct engine *engine, struct actor *actor)
 {
-        /* Check if the agent is alive */
-        if(actor->destructible && is_dead(actor)){
+        if (actor->destructible && is_dead(actor)) {
                 return;
         }
 	
-        if(is_in_fov(engine->map, actor->x, actor->y)){
+        if (is_in_fov(engine->map, actor->x, actor->y)) {
                 /* We can see the player, start tracking him */
                 actor->ai->move_count = TRACKING_TURNS;
-        }else{
+        } else {
                 (actor->ai->move_count)--;
         }
 	
-        if(actor->ai->move_count > 0){
+        if (actor->ai->move_count > 0) {
                 actor->ai->move_or_attack(engine, actor, engine->player->x, engine->player->y);
+        }
+}
+
+void dragon_update(struct engine *engine, struct actor *actor)
+{
+        if (actor->destructible && is_dead(actor)) {
+                return;
+        }
+        
+        if (!is_in_fov(engine->map, actor->x, actor->y))
+                return;
+        
+        struct actor *target = get_closest_actor(engine, actor, 0);
+        if (target)
+                actor->ai->move_count = TRACKING_TURNS;
+        else
+                actor->ai->move_count--;
+        if (actor->ai->move_count > 0 && target) {
+                actor->ai->move_or_attack(engine, actor, target->x, target->y);
         }
 }
 
@@ -680,18 +743,19 @@ struct actor *make_healer_potion(int x, int y)
         return make_item(x, y, 10, 0, '!', "a health potion", TCOD_violet, healer_use);
 }
 
+struct actor *make_curing_potion(int x, int y)
+{
+        float amount = 5; /* TODO: this needs to be made random. */
+        return make_item(x, y, amount, 0, '!', "a curing potion", TCOD_violet, curing_use);
+}
+
 struct actor *make_food(int x, int y)
 {
-        struct actor *food = make_monster(x, y, '%', "food", TCOD_orange, 8, 50, 0, 2, "food");
+        struct actor *food = make_monster(x, y, '%', "food", TCOD_orange, 8, 50, 0, 2, "food", monster_update);
         food->pickable = init_pickable(0, 0, eat);
         return food;
 }
 
-struct actor *make_curing_potion(int x, int y)
-{
-        float amount = 5; /* TODO: this needs to be made random. */
-        return make_item(x, y, amount, 0, '~', "a curing potion", TCOD_light_green, curing_use);
-}
 
 void free_container(struct container *container)
 {
@@ -701,7 +765,7 @@ void free_container(struct container *container)
 
 bool pick(struct engine *engine, struct actor *actor, struct actor *item)
 {
-        if(actor->inventory && inventory_add(actor->inventory, item)){
+        if (actor->inventory && inventory_add(actor->inventory, item)) {
                 TCOD_list_remove(engine->actors, item);
                 return true;
         }
@@ -710,7 +774,7 @@ bool pick(struct engine *engine, struct actor *actor, struct actor *item)
 
 bool drop(struct engine *engine, struct actor *actor, struct actor *item)
 {
-        if(actor->inventory){
+        if (actor->inventory) {
                 inventory_remove(actor->inventory, item);
                 TCOD_list_push(engine->actors, item);
                 item->x = actor->x;
@@ -725,19 +789,19 @@ bool drop_last(struct engine *engine, struct actor *actor)
 {
         struct actor **last_item = (struct actor **)TCOD_list_end(actor->inventory->inventory);
         last_item--;
-        return  drop(engine, actor, *last_item);
+        return drop(engine, actor, *last_item);
 }
 
 bool lightning_wand_use(struct engine *engine, struct actor *actor, struct actor *item)
 {
         struct actor *closest = get_closest_monster(engine, actor->x, actor->y, item->pickable->range);
-        if(!closest){
+        if (!closest) {
                 engine->gui->message(engine, TCOD_light_grey, "No monsters in range to strike.\n");
                 return false;
         }
 
         /* Make sure you aren't too hungry to invoke that wand. */
-        if(make_hungry(actor, item->pickable->calculate_food_cost(actor, item))){
+        if (make_hungry(actor, item->pickable->calculate_food_cost(actor, item))) {
                 /* 
                  * Store the target monster name as it will be changed to the
                  * corpse name upon fatal impact.
@@ -747,7 +811,7 @@ bool lightning_wand_use(struct engine *engine, struct actor *actor, struct actor
                 engine->gui->message(engine, TCOD_light_yellow, "A lightning bolt strikes %s with the damage of %g.\n",
                                      name, dmg_dealt);
                 return use(actor, item);
-        }else{
+        } else {
                 engine->gui->message(engine, TCOD_light_grey, "You are too hungry to invoke that wand.\n");
                 return false;
         }
@@ -760,7 +824,7 @@ bool fireball_wand_use(struct engine *engine, struct actor *actor, struct actor 
         if (!pick_tile(engine, &x, &y, item->pickable->targetting_range))
                 return false;
 
-        if(make_hungry(actor, item->pickable->calculate_food_cost(actor, item))){
+        if (make_hungry(actor, item->pickable->calculate_food_cost(actor, item))) {
                 engine->gui->message(engine, TCOD_orange, "the fireball explodes, burning everything within %g tiles."
                                      ,item->pickable->range);
                 struct actor **iter;
@@ -776,7 +840,7 @@ bool fireball_wand_use(struct engine *engine, struct actor *actor, struct actor 
                         }
                 }
                 return use(actor, item);
-        }else{
+        } else {
                 engine->gui->message(engine, TCOD_light_grey, "You are too hungry to invoke that wand.\n");
                 return false;
         }
@@ -791,7 +855,7 @@ bool confusion_wand_use(struct engine *engine, struct actor *actor, struct actor
         if (!pick_tile(engine, &x, &y, item->pickable->targetting_range))
                 return false;
 
-        if(make_hungry(actor, item->pickable->calculate_food_cost(actor, item))){
+        if (make_hungry(actor, item->pickable->calculate_food_cost(actor, item))) {
                 struct actor *target = get_actor(engine, x, y);
                 if (!target)
                         return false;
@@ -801,7 +865,7 @@ bool confusion_wand_use(struct engine *engine, struct actor *actor, struct actor
                 engine->gui->message(engine, TCOD_light_green, "The eyes of %s look vacant,\nas he starts to stumble around!",
                                      target->name);
                 return use(actor, item);
-        }else{
+        } else {
                 engine->gui->message(engine, TCOD_light_grey, "You are too hungry to invoke that wand.\n");
                 return false;
         }
@@ -811,9 +875,9 @@ bool confusion_wand_use(struct engine *engine, struct actor *actor, struct actor
 bool potion_of_poison_use(struct engine *engine, struct actor *actor, struct actor *item)
 {
         /* heal the actor */
-        if(actor->destructible){
+        if (actor->destructible) {
                 float amount_healed = heal(actor, item->pickable->power);
-                if(amount_healed > 0)
+                if (amount_healed > 0)
                         /* Call the common use function */
                         return use(actor, item);
         }
@@ -821,7 +885,7 @@ bool potion_of_poison_use(struct engine *engine, struct actor *actor, struct act
 }
 
 bool is_hungry(struct actor *actor){
-        if(actor->destructible && actor->destructible->stomach < actor->destructible->max_stomach - 10)
+        if (actor->destructible && actor->destructible->stomach < actor->destructible->max_stomach - 10)
                 return true;
         return false;
 }
@@ -831,19 +895,19 @@ struct message get_hunger_status(struct actor *actor)
         struct message status;
         status.text = "";
         
-        if(actor->destructible->stomach < 10){
+        if (actor->destructible->stomach < 10) {
                 status.col = TCOD_lightest_red;
                 status.text = "fainting";
-        }else if(actor->destructible->stomach < 40){
+        } else if (actor->destructible->stomach < 40) {
                 status.col = TCOD_light_red;
                 status.text = "starving";
-        }else if(actor->destructible->stomach < 80){
+        } else if (actor->destructible->stomach < 80) {
                 status.col = TCOD_red;
                 status.text = "very hungry";
-        }else if(actor->destructible->stomach < 100){
+        } else if (actor->destructible->stomach < 100) {
                 status.col = TCOD_dark_red;
                 status.text = "hungry";
-        }else if(actor->destructible->stomach > actor->destructible->max_stomach - 10){
+        } else if (actor->destructible->stomach > actor->destructible->max_stomach - 10) {
                 status.col = TCOD_green;
                 status.text = "full";
         }
@@ -854,7 +918,7 @@ struct message get_hunger_status(struct actor *actor)
 float calculate_food_value(struct actor *food)
 {
         float value = 0;
-        if(!food->destructible)
+        if (!food->destructible)
                 value =  -1;
         else
                 value = food->destructible->max_hp;
@@ -867,7 +931,7 @@ float calculate_food_value(struct actor *food)
  */
 bool make_hungry(struct actor *actor, float amount)
 {
-        if(actor->destructible && actor->destructible->stomach - amount >= 0){
+        if (actor->destructible && actor->destructible->stomach - amount >= 0) {
                 actor->destructible->stomach -= amount;
                 return true;
         }
@@ -877,7 +941,7 @@ bool make_hungry(struct actor *actor, float amount)
 
 bool use(struct actor *actor, struct actor *item)
 {
-        if(actor->inventory){
+        if (actor->inventory) {
                 inventory_remove(actor->inventory, item);
                 free_actor(item);
                 return true;
@@ -888,18 +952,18 @@ bool use(struct actor *actor, struct actor *item)
 bool eat(struct engine *engine, struct actor *actor, struct actor *food)
 {
         bool used = false;
-        if(food->destructible && is_dead(food)){
+        if (food->destructible && is_dead(food)) {
                 float can_eat = actor->destructible->max_stomach - actor->destructible->stomach;
                 float food_value = calculate_food_value(food);
 
-                if(food_value <= can_eat){
+                if (food_value <= can_eat) {
                         actor->destructible->stomach += food_value;
                         engine->gui->message(engine, TCOD_green, "You finish eating %s.\n", food->destructible->corpse_name);
                         used = use(actor, food);
                 }
         }
 
-        if(!used)
+        if (!used)
                 engine->gui->message(engine, TCOD_green, "You aren't hungry enough to eat.\n");
                 
         return used;
@@ -908,9 +972,9 @@ bool eat(struct engine *engine, struct actor *actor, struct actor *food)
 bool healer_use(struct engine *engine, struct actor *actor, struct actor *item)
 {
         /* heal the actor */
-        if(actor->destructible){
+        if (actor->destructible) {
                 float amount_healed = heal(actor, item->pickable->power);
-                if(amount_healed > 0){
+                if (amount_healed > 0) {
                         /* Call the common use function */
                         engine->gui->message(engine, TCOD_green, "You finish drinking %s.\n",
                                              item->name);
@@ -945,7 +1009,7 @@ void free_pickable(struct pickable *pickable)
 
 bool inventory_add(struct container *container, struct actor *actor)
 {
-        if(container->capacity > 0 && TCOD_list_size(container->inventory) > container->capacity)
+        if (container->capacity > 0 && TCOD_list_size(container->inventory) > container->capacity)
                 return false;
 
         TCOD_list_push(container->inventory, actor);

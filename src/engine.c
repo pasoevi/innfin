@@ -71,20 +71,20 @@ void engine_update(struct engine *engine)
 {
         struct actor *player = engine->player;
         
-        if(engine->game_status == STARTUP )
+        if (engine->game_status == STARTUP)
                 compute_fov(engine);
         
         engine->game_status = IDLE ;
         
         TCOD_sys_check_for_event(TCOD_EVENT_ANY, &(engine->key), &(engine->mouse));
         player->update(engine, player);
-        if(engine->game_status == NEW_TURN){
+        if (engine->game_status == NEW_TURN) {
                 struct actor **iterator;
                 for (iterator = (struct actor **)TCOD_list_begin(engine->actors);
                      iterator != (struct actor **)TCOD_list_end(engine->actors);
                      iterator++) {
                         struct actor *actor = *iterator;
-                        if(actor != player )
+                        if (actor != player)
                                 actor->update(engine, actor);                
                 }
         }
@@ -100,10 +100,10 @@ void engine_render(struct engine *engine)
         /* draw the actors */
         struct actor **iter;
 
-        for(iter = (struct actor **)TCOD_list_begin(engine->actors);
+        for (iter = (struct actor **)TCOD_list_begin(engine->actors);
             iter != (struct actor **)TCOD_list_end(engine->actors);
             iter++)
-                if(is_in_fov(engine->map, (*iter)->x, (*iter)->y))
+                if (is_in_fov(engine->map, (*iter)->x, (*iter)->y))
                         (*iter)->render(*iter);
         
         engine->player->render(engine->player);

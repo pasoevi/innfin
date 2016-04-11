@@ -27,41 +27,42 @@ static const int MAX_ROOM_ITEMS = 2;
 
 void dig(struct map *map, int x1, int y1, int x2, int y2)
 {
-        if(x2 < x1){
+        if (x2 < x1) {
                 int tmp = x2;
                 x2 = x1;
                 x1 = tmp;
         }
 
-        if(y2 < y1){
+        if (y2 < y1) {
                 int tmp = y2;
                 y2 = y1;
                 y1 = tmp;
         }
 
         int tilex, tiley;
-        for(tilex = x1; tilex <= x2; tilex++)
-                for(tiley = y1; tiley <= y2; tiley++)
+        for (tilex = x1; tilex <= x2; tilex++)
+                for (tiley = y1; tiley <= y2; tiley++)
                         TCOD_map_set_properties(map->map, tilex, tiley, true, true);
 }
 
 void create_room(struct engine *engine, bool first, int x1, int y1, int x2, int y2)
 {
         dig(engine->map, x1, y1, x2, y2);
-        if(first){
+        if (first) {
                 /* put the player in the first room */
                 engine->player->x = (x1 + x2) / 2;
                 engine->player->y = (y1 + y2) / 2;
-        }else{
+        } else {
                 TCOD_random_t *rng = TCOD_random_get_instance();
                 int num_monsters = TCOD_random_get_int(rng, 0, MAX_ROOM_MONSTERS);
                 while(num_monsters > 0) {
                         int x = TCOD_random_get_int(rng, x1, x2);
                         int y = TCOD_random_get_int(rng, y1, y2);
-                        if(can_walk(engine, x, y)){
+                        if (can_walk(engine, x, y)) {
                                 add_monster(engine, x, y);
+                                num_monsters--;
                         }
-                        num_monsters--;
+               
                 }
 
                 /* Add items */
@@ -70,7 +71,7 @@ void create_room(struct engine *engine, bool first, int x1, int y1, int x2, int 
                         int x = TCOD_random_get_int(rng, x1, x2);
                         int y = TCOD_random_get_int(rng, y1, y2);
                         
-                        if(can_walk(engine, x, y))
+                        if (can_walk(engine, x, y))
                                 add_item(engine, x, y);
                         
                         num_items--;
@@ -88,7 +89,7 @@ bool visit_node(TCOD_bsp_t *node, void *user_data)
         static int lasty;
         static int room_num;
 
-        if(TCOD_bsp_is_leaf(node)) {
+        if (TCOD_bsp_is_leaf(node)) {
                 int x, y, w, h;
                 /* dig a room */
                 TCOD_random_t *rng = TCOD_random_get_instance();
@@ -98,7 +99,7 @@ bool visit_node(TCOD_bsp_t *node, void *user_data)
                 y = TCOD_random_get_int(rng, node->y+1, node->y+node->h-h-1);
                 create_room(engine, room_num == 0, x, y, x + w - 1, y + h - 1);
 
-                if(room_num != 0){
+                if (room_num != 0) {
                         /* dig a corridor from last room */
                         dig(engine->map, lastx,lasty,x+w/2,lasty);
                         dig(engine->map, x + w / 2,lasty, x + w / 2, y + h / 2);
@@ -118,10 +119,9 @@ void init_map(struct engine *engine, int w, int h)
         engine->map->h = h;
 
         int i;
-	for(i = 0; i < w * h ; i++){
+	for (i = 0; i < w * h ; i++)
                 engine->map->tiles[i].explored = false;
-        }
-        
+
         engine->map->map = TCOD_map_new(w, h);
                 
         engine->map->render = map_render;
@@ -146,14 +146,14 @@ bool is_wall(struct map *map, int x, int y)
 
 bool can_walk(struct engine *engine, int x, int y)
 {
-        if(is_wall(engine->map, x, y))
+        if (is_wall(engine->map, x, y))
                 return false;
 
         struct actor **actor;
-        for(actor = (struct actor **)TCOD_list_begin(engine->actors);
+        for (actor = (struct actor **)TCOD_list_begin(engine->actors);
             actor != (struct actor **)TCOD_list_end(engine->actors);
             actor++)
-                if((*actor)->blocks && (*actor)->x == x && (*actor)->y == y)
+                if ((*actor)->blocks && (*actor)->x == x && (*actor)->y == y)
                         /* There is a blocking actor there, cat't
 			   walk */
                         return false;
@@ -165,7 +165,7 @@ bool is_in_fov(struct map *map, int x, int y)
         if ( x < 0 || x >= map->w || y < 0 || y >= map->h)
                 return false;
         
-        if(TCOD_map_is_in_fov(map->map, x, y)){
+        if (TCOD_map_is_in_fov(map->map, x, y)) {
                 map->tiles[x+y*(map->w)].explored = true;
                 return true;
         }
@@ -193,13 +193,12 @@ void add_monster(struct engine* engine, int x, int y)
         struct actor *actor;
         int dice = TCOD_random_get_int(rng, 0, 100);
         if (dice < 50)
-                /* Create an orc */
                 actor = make_orc(x, y);
-        else if (dice < 80)
-                /* Create a goblin */
+        else if (dice < 60)
                 actor = make_goblin(x, y);
+        else if (dice < 85)
+                actor = make_dragon(x, y);
         else
-                /* Create an orc */
                 actor = make_troll(x, y);
         
         TCOD_list_push(engine->actors, actor);
@@ -211,16 +210,14 @@ void add_item(struct engine* engine, int x, int y)
         struct actor *item;
         int dice = TCOD_random_get_int(rng, 0, 100);
         if (dice < 30)
-                /* Create a health potion */
                 item = make_healer_potion(x, y);
-        else if(dice < 40)
-                /* Create a poison potion */
+        else if (dice < 40)
                 item = make_curing_potion(x, y);
-        else if(dice < 50)
+        else if (dice < 60)
                 item = make_lightning_wand(x, y);
-        else if(dice < 60)
+        else if (dice < 70)
                 item = make_fireball_wand(x, y);
-        else if(dice < 90)
+        else if (dice < 80)
                 item = make_confusion_wand(x, y);
         else
                 item = make_food(x, y);
@@ -246,7 +243,7 @@ bool pick_tile(struct engine *engine, int *x, int *y, float max_range){
                 }
 
                 TCOD_sys_check_for_event(TCOD_EVENT_KEY_PRESS | TCOD_EVENT_MOUSE, &(engine->key), &(engine->mouse));
-                if(is_in_fov(engine->map, engine->mouse.cx, engine->mouse.cy)
+                if (is_in_fov(engine->map, engine->mouse.cx, engine->mouse.cy)
                    && (max_range == 0 || get_distance(engine->player, engine->mouse.cx, engine->mouse.cy) <= max_range)) {
                         TCOD_console_set_char_background(NULL, engine->mouse.cx, engine->mouse.cy, TCOD_white, TCOD_BKGND_SET);
                         if ( engine->mouse.lbutton_pressed ) {
@@ -268,14 +265,8 @@ bool pick_tile(struct engine *engine, int *x, int *y, float max_range){
 
 void map_render(struct map *map)
 {
-        const TCOD_color_t dark_wall = {0, 0, 0};
-        const TCOD_color_t dark_ground = {20, 20, 10};
-
-        const TCOD_color_t light_wall = {130, 110, 50};
-        const TCOD_color_t light_ground = {200, 180, 50};
-
         int x, y;
-        for(x = 0; x < map->w; x++) {
+        for (x = 0; x < map->w; x++) {
                 for(y = 0; y < map->h; y++) {
                         if (is_in_fov(map, x, y))
                                 TCOD_console_set_default_foreground(NULL, TCOD_white);
@@ -284,8 +275,10 @@ void map_render(struct map *map)
                         
                         if (is_wall(map, x, y))
                                 TCOD_console_put_char(NULL, x, y, '#', TCOD_BKGND_SET);
+                        /*
                         else
                                 TCOD_console_put_char(NULL, x, y, '.',  TCOD_BKGND_SET);
+                        */
                 }
         }
 }
