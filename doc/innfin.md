@@ -7,6 +7,9 @@ permalink: /innfin/
 published: false
 ---
 
+NOTE: This is a detailed game manual. For _Downloads_, visit the game
+website. 
+
 *Innfin - Innere Finsternis* is a horror-themed fantasy role-playing
 game set in the underworld of dungeons carved into stone and earth. It
 is a roguelike game in the tradition of classics of the genre like
@@ -33,6 +36,9 @@ races. They believed that the Lower Dominion resembled the World Above
 in many ways and was a foreboding to what was to become of the
 world. Thus they called it Shadow of Tomorrow.
 
+Little was know of the structure of the dark realm but some speculated
+that it consisted of 16 layered dungeons.
+
 ## Main Dungeon
 
 You start your adventure on the highest, level 1 of the dungeon. On
@@ -40,10 +46,9 @@ each floor you find several staircases leading to higher or lower
 levels of the game. The exiting staircases on the highest (Level 1,
 staircase leading upward) and lowest levels (Level 16, staircase
 leading downward) serve as *Portals of Random Blackness* and *Portals
-of Deathly Chasms* respectively. So yes, the main dungeon consists of
-16 floors.
+of Deathly Chasms* respectively.
 
-## Portals and Dungeons of Fate
+## Portals and Special Dungeons
 
 The world consists of dungeons of various levels and portals that are
 accessible from them. There are many rules by which portals appear and
@@ -56,17 +61,45 @@ have more important role in character development and game
 progression; such portals are very few and easy to identify. You
 should know when to enter them and in what order.
 
-Dungeons of Fate are dungeons that do not follow the pattern of
-increasing difficulty typical for main 16-level dungeon stack. You
-know that you are in a Dungeon of Fate when you have made some god
-angry or extremely pleased. This also happens when you have done
-something of importance on the large scale.
+### Chamber of Sorrow ###
+
+One special dungeon is accessible from one of the main dungeons
+between the levels 3 - 5. It is the first thematic dungeon that you
+will encounter. It is devoid of pickable items and monsters in it die
+most unnatural deaths, as they do not leave you edible corpses. The
+place, though, is guaranteed to train your magic and fighting skills,
+as it will be much more challenging than anything you saw that early
+in the game.
+
+### Dungeons of Fate ###
+
+Some dungeons that do not follow the pattern of increasing difficulty
+typical for main 16-level dungeon stack. You know that you are in a
+Dungeon of Fate when you have made some god angry or extremely
+pleased. This also happens when you have done something of importance
+on the large scale.
 
 Portals and Dungeons of Fate are often the places to seek the
 artifacts and creatures that are crucial for winning the game. Some
 portals permanently leave you away from the main dungeon which makes
 it impossible to complete the quests given by some gods, thus you
 lose.
+
+## Branches ##
+
+When you have been in the game for long enough, you will have probably
+cleared around ten levels of the main dungeon and most of special
+areas. It is then time to start exploring the branches. It is the time
+when you have learned enough about the world to start following
+religion and choose what you want to do in it.
+
+### Mythic Menagerie ###
+
+### Dwarf Caverns ###
+
+### Barbarian Plains ###
+
+### God-King Palace ###
 
 # Character races
 
@@ -180,18 +213,19 @@ in the older, Aronkhar domain.
 
 ## Magic
 
-Most of the magic spells are learned by divine help, save for some
-more basic forms of magic which require nothing but a wand. A wand,
-indeed, is the basis of all spell casting. There aren't wands of many
-different kinds, they uniformly differ by size - which determines
+Most of the magic spells are learned by divine help (Divine Magic),
+save for some more basic forms of magic which require nothing but a
+wand (Arcane Magic). A wand, indeed, is the basis of all spell
+casting, be it divine calling or arcane magic.. There aren't wands of
+many different kind, they uniformly differ by size - which determines
 spells of what order they can cast. Casting difficult spells with
-mediocre wands can either succeed, break the wand or miscast, which
-can be dangerous with certain spells.
+mediocre wands can either succeed, break the wand or even miscast,
+which can be dangerous with certain spells.
 
 You don't do magic by reading scrolls. You *remember* spells and there
 is a limit to how many of them you can remember. Certain conditions
 affect your memory. Every time you grow agony, you forget a random
-spell (some spells can be exceptions).
+spell (some spells are exception to this).
 
 # Monsters
 
@@ -219,6 +253,8 @@ quests. They are often of very intelligent races.
 ## Goblins
 
 ## Trolls
+
+## Dragons
 
 ## Animals
 
