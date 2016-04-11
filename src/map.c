@@ -279,14 +279,14 @@ void map_render(struct map *map)
                 for(y = 0; y < map->h; y++) {
                         if (is_in_fov(map, x, y))
                                 if (is_wall(map, x, y))
-                                        TCOD_console_put_char_ex(NULL, x, y, '#', TCOD_white, light_wall);
+                                        TCOD_console_put_char_ex(NULL, x, y, '#', TCOD_white, TCOD_black);
                                 else
-                                        TCOD_console_put_char_ex(NULL, x, y, '.', TCOD_white, light_ground);
+                                        TCOD_console_put_char_ex(NULL, x, y, '.', TCOD_white, TCOD_black);
                         else
                                 if (is_wall(map, x, y))
-                                        TCOD_console_put_char_ex(NULL, x, y, '#', TCOD_white, dark_wall);
+                                        TCOD_console_put_char_ex(NULL, x, y, '#', TCOD_gray, TCOD_black);
                                 else
-                                        TCOD_console_put_char_ex(NULL, x, y, '.', TCOD_white, dark_ground);
+                                        TCOD_console_put_char_ex(NULL, x, y, '.', TCOD_gray, TCOD_black);
                 }
         }
 }
