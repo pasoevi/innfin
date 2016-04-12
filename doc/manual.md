@@ -228,6 +228,8 @@ Spell Casting is an extension of intelligence.
 - Increases range of some spells.
 - The time it takes to cast spells.
 
+## Providence
+
 ## Divination ##
 
 Divination is an unusual skill in that most of its effects are seen

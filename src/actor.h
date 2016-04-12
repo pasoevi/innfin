@@ -32,9 +32,9 @@ struct actor;
 struct ai {
 	int move_count;		/* allow monsters to track the player */
 	void (*update) (struct engine * engine, struct actor * actor);
-	 bool(*move_or_attack) (struct engine * engine,
-				struct actor * actor, int targetx,
-				int targety);
+        bool(*move_or_attack) (struct engine * engine,
+                               struct actor * actor, int targetx,
+                               int targety);
 	struct ai *old_ai;	/* confused actors have their previous minds saved here. */
 	int num_turns;
 };
@@ -86,8 +86,8 @@ struct pickable {
 					   calculate_food_cost function */
 	float range;		/* range the item has effect starting from the target tile */
 	float power;		/* damage dealt if an attacker item, hit_points restored if a healer */
-	 bool(*use) (struct engine * engine, struct actor * actor,
-		     struct actor * item);
+        bool(*use) (struct engine * engine, struct actor * actor,
+                    struct actor * item);
 };
 
 /* 
