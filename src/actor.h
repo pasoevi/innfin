@@ -29,8 +29,16 @@ static const int TRACKING_TURNS = 3;
 struct engine;
 struct actor;
 
+struct skill {
+        
+};
+
 struct ai {
 	int move_count;		/* allow monsters to track the player */
+        float xp_level;
+        float xp;
+        float xp_level_up; /* */
+        bool (*level_up) (struct engine * engine, struct actor * actor);
 	void (*update) (struct engine * engine, struct actor * actor);
         bool(*move_or_attack) (struct engine * engine,
                                struct actor * actor, int targetx,
