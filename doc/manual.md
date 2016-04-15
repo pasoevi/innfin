@@ -102,6 +102,8 @@ that you are comfortable with your god.
 
 ### God-King Palace ###
 
+### Searna Cave ###
+
 # Character races #
 
 ## Dark Elf ##
@@ -162,8 +164,9 @@ the more general one is used as a basis from which the other, more
 specific one is calculated.
 
 Some skills are passive, i.e. they are permanently activated. Others
-are *active*, which means you use them by invoking in just as you
-evoke spells. Most skills are passive. Active ones are marked as such.
+are *active*, which means you use them by invoking in just the same
+way you evoke spells. Most skills are passive. Active ones are marked
+as such.
 
 ## Strength ##
 
@@ -171,10 +174,10 @@ In the most primitive sense, Strength is the skill that determines
 your constitution and standing. The aspects of play that depend on
 Strength attribute:
 
-- Max health points
-- Health point regeneration
-- How big weapons you can carry
-- How much damage you deal if you hit the target. Weapon-related
+- Max health points.
+- Health point regeneration.
+- How big weapons you can carry.
+- How much damage you deal if you hit the target. Weapon-related.
   skills use this skill to calculate the final damage value.
 
 ## Intelligence ##
@@ -216,7 +219,7 @@ of the following:
 
 - How effectively you use monster memory.
 - The base value of attack dice.
-- Certain fighting skill threshold uncover cleaving, piercing and
+- Certain fighting skill thresholds uncover cleaving, piercing and
   stunning attacks (largely depends on character race and weapon use).
 - Your defence skill.
 
@@ -249,7 +252,8 @@ _Obsolete_
 Flying is perhaps the hardest skill to master. When reached full
 mastery in it, though, you are practically invincible when facing
 monsters that can't make ranged attacks. The early stages of flying
-allow you high degree of Dodging and Evasion
+allow you high degree of Dodging and Evasion but are also ridiculously
+heavy in nutrition.
 
 ## Swimming
 
@@ -262,8 +266,8 @@ allow you high degree of Dodging and Evasion
 
 Dodging is your ability to slip out of sight of monsters. It also
 depends on Dexterity. It is both, passive and active - when invoked,
-if there are more than 5 monsters in the field of view, they all stop
-tracking you.
+if there are more than 5 (4, 3 on high skill levels) monsters in the
+field of view, they all stop tracking you.
 
 ## Resistance
 
@@ -298,7 +302,7 @@ as strong as possible. Nevertheless, the dungeons present the player
 with various kinds of danger. It is crucial to be able to defend
 yourself as you do not always have a chance to escape. There is also
 much that can be gained by visiting some places that are particularly
-well-defended and only the strong fighters can venture to.
+well-defended and only the strong fighters can venture into.
 
 This section covers more basic forms of combat, i.e. barehanded or
 weapon-based fighting. For magic spell casting and divine help, see
@@ -339,11 +343,15 @@ world.
 
 ### Searna
 
+Searna is the god of wisdom and providence. The arcane knowledge he
+offers to his followers is the last sure link to the Old World. Searna
+is the only deity in Innfin that you can meet in the dungeons. 
+
 ### Sazanas
 
 Even in its merriest days, the world remembered of the shadows told by
 Lost Generations, when Sazanas first tried to bring domestication,
-servitude and contempt.
+servitude and contempt to the world.
 
 Sazanas is said to be generous in granting brilliance and knowledge of
 different machinery to his followers. His first coming showed the
@@ -395,6 +403,11 @@ magic. Specials have more personality to them, like names, stories or
 quests. They are often of very intelligent races.
 
 ## Orcs
+
+Orcs are by far the most dominant species in most parts of the
+dungeons. They seem to have been in there longer than most races. They
+have developed rudimentary society and have several Orc Heroes and
+Wizards. They worship Sazanas. 
 
 ## Goblins
 
