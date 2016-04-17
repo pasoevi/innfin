@@ -28,7 +28,7 @@
 extern void compute_fov(struct engine *engine);
 
 /*** Common functions ***/
-float take_damage(struct engine *engine, struct actor *target,
+float take_damage(struct engine *engine, struct actor *dealer, struct actor *target,
 		  float damage)
 {
 	/* Reduce the damage by the fraction that the target can deflect */
@@ -38,6 +38,7 @@ float take_damage(struct engine *engine, struct actor *target,
 		if (target->destructible->hp <= 0) {
 			target->destructible->hp = 0;	/* prevent hp from goint below zero */
 			target->destructible->die(engine, target);
+			reward_kill(engine, dealer, target);
 		}
 	} else {
 		damage = 0;
@@ -125,21 +126,24 @@ struct actor *init_actor(int x, int y, int ch, const char *name,
 }
 
 struct ai
-*init_ai(void (*update) (struct engine * engine, struct actor * actor),
-	 bool(*move_or_attack) (struct engine * engine,
-				struct actor * actor, int targetx,
+*init_ai(void (*update) (struct engine *engine, struct actor *actor),
+	 bool(*move_or_attack) (struct engine *engine,
+				struct actor *actor, int targetx,
 				int targety))
 {
 	struct ai *tmp = malloc(sizeof *tmp);
 	tmp->update = update;
 	tmp->move_or_attack = move_or_attack;
+	tmp->level_up = level_up;
+	tmp->xp_level = 1;
+	tmp->xp = 0.f;
 	return tmp;
 }
 
 struct attacker *init_attacker(float power,
-			       void (*attack) (struct engine * engine,
-					       struct actor * dealer,
-					       struct actor * target))
+			       void (*attack) (struct engine *engine,
+					       struct actor *dealer,
+					       struct actor *target))
 {
 	struct attacker *tmp = malloc(sizeof *tmp);
 	tmp->attack = attack;
@@ -150,11 +154,8 @@ struct attacker *init_attacker(float power,
 struct destructible *init_destructible(float max_hp,
 				       float hp, float defence,
 				       const char *corpse_name,
-				       float (*take_damage) (struct engine
-							     * engine,
-							     struct actor *
-							     target,
-							     float damage),
+				       float (*take_damage) (struct engine *engine, struct actor *dealer,
+							     struct actor *target, float damage),
 				       void (*die) (struct engine * engine,
 						    struct actor * actor))
 {
@@ -198,7 +199,7 @@ void attack(struct engine *engine, struct actor *dealer,
 					     "%s attacks %s but it has no effect!\n",
 					     dealer->name, target->name);
 		}
-		target->destructible->take_damage(engine, target, power);
+		target->destructible->take_damage(engine, dealer, target, power);
 	} else {
 		engine->gui->message(engine, TCOD_light_grey,
 				     "%s attacks %s in vain.\n",
@@ -304,6 +305,50 @@ struct actor *get_actor(struct engine *engine, int x, int y)
 	return NULL;
 }
 
+float calc_kill_reward(struct engine *engine, struct actor *actor, struct actor *target)
+{
+	return 10 + target->destructible->hp;
+}
+
+float reward_kill(struct engine *engine, struct actor *actor, struct actor *target)
+{
+	if (!actor->ai)
+		return -1;
+
+	float reward = calc_kill_reward(engine, actor, target);
+	actor->ai->xp += reward;
+	return reward;
+}
+
+bool should_level_up(struct engine *engine, struct actor *actor)
+{
+	if (!actor->ai || actor->ai->xp_level == MAX_XP_LEVEL)
+		return false;
+
+	float required_xp = 30 + actor->ai->xp_level * 30;
+	
+	if (actor->ai->xp > required_xp)
+		return true;
+
+	return false;
+}
+
+bool level_up(struct engine *engine, struct actor *actor)
+{
+	if (!actor->ai)
+		return false;
+
+	if (actor->ai->xp_level < MAX_XP_LEVEL) {
+		actor->ai->xp_level++;
+		actor->ai->xp = 0;
+		engine->gui->message(engine, TCOD_light_grey,
+				     "You advance to level %d!", actor->ai->xp_level);
+		return true;
+	}
+
+	return false;
+}
+
 /*** Player functions ***/
 struct actor *make_player(int x, int y)
 {
@@ -379,7 +424,7 @@ bool player_move_or_attack(struct engine * engine, struct actor * actor,
 	return true;
 }
 
-bool is_edible(struct actor * actor)
+bool is_edible(struct actor *actor)
 {
 	bool is_edible = false;
 	if (actor->destructible && is_dead(actor))
@@ -387,7 +432,7 @@ bool is_edible(struct actor * actor)
 	return is_edible;
 }
 
-bool is_drinkable(struct actor * actor)
+bool is_drinkable(struct actor *actor)
 {
 	bool is_drinkable = false;
 	if (actor->pickable && !actor->destructible && actor->ch == '!')
@@ -593,7 +638,12 @@ void player_update(struct engine *engine, struct actor *actor)
 	if (actor->destructible && is_dead(actor)) {
 		return;
 	}
+	
+	if(should_level_up(engine, actor))
+		actor->ai->level_up(engine, actor);	   
 
+	printf("plyer level: %d, player xp: %f\n", actor->ai->xp_level, actor->ai->xp);
+	
 	int dx = 0, dy = 0;
 	if (engine->key.pressed) {
 		switch (engine->key.vk) {
@@ -805,7 +855,7 @@ struct actor *make_item(int x, int y, float power, float range,
 {
 	struct actor *tmp = init_actor(x, y, ch, name, col, render_actor);
 	tmp->pickable = init_pickable(power, range, use);
-	tmp->pickable->calculate_food_cost = calculate_food_cost;
+	tmp->pickable->calc_food_cost = calc_food_cost;
 	tmp->blocks = false;
 
 	return tmp;
@@ -933,16 +983,15 @@ bool lightning_wand_use(struct engine * engine, struct actor * actor,
 
 	/* Make sure you aren't too hungry to invoke that wand. */
 	if (make_hungry
-	    (actor, item->pickable->calculate_food_cost(actor, item))) {
+	    (actor, item->pickable->calc_food_cost(actor, item))) {
 		/* 
 		 * Store the target monster name as it will be changed to the
 		 * corpse name upon fatal impact.
 		 */
 		const char *name = closest->name;
 		float dmg_dealt =
-		    closest->destructible->take_damage(engine, closest,
-						       item->
-						       pickable->power);
+			closest->destructible->take_damage(engine, actor, closest,
+						       item->pickable->power);
 		engine->gui->message(engine, TCOD_light_yellow,
 				     "A lightning bolt strikes %s with the damage of %g.\n",
 				     name, dmg_dealt);
@@ -954,7 +1003,7 @@ bool lightning_wand_use(struct engine * engine, struct actor * actor,
 	}
 }
 
-bool fireball_wand_use(struct engine * engine, struct actor * actor,
+bool fireball_wand_use(struct engine * engine, struct actor * dealer,
 		       struct actor * item)
 {
 	engine->gui->message(engine, TCOD_cyan,
@@ -964,7 +1013,7 @@ bool fireball_wand_use(struct engine * engine, struct actor * actor,
 		return false;
 
 	if (make_hungry
-	    (actor, item->pickable->calculate_food_cost(actor, item))) {
+	    (dealer, item->pickable->calc_food_cost(dealer, item))) {
 		engine->gui->message(engine, TCOD_orange,
 				     "the fireball explodes, burning everything within %g tiles.",
 				     item->pickable->range);
@@ -981,14 +1030,14 @@ bool fireball_wand_use(struct engine * engine, struct actor * actor,
 				engine->gui->message(engine, TCOD_orange,
 						     "%s gets burned for %g hit points.",
 						     actor->name,
-						     item->
-						     pickable->power);
+						     item->pickable->power);
 				actor->destructible->take_damage(engine,
+								 dealer,
 								 actor,
 								 item->pickable->power);
 			}
 		}
-		return use(actor, item);
+		return use(dealer, item);
 	} else {
 		engine->gui->message(engine, TCOD_light_grey,
 				     "You are too hungry to invoke that wand.\n");
@@ -1008,7 +1057,7 @@ bool confusion_wand_use(struct engine * engine, struct actor * actor,
 		return false;
 
 	if (make_hungry
-	    (actor, item->pickable->calculate_food_cost(actor, item))) {
+	    (actor, item->pickable->calc_food_cost(actor, item))) {
 		struct actor *target = get_actor(engine, x, y);
 		if (!target)
 			return false;
@@ -1075,7 +1124,7 @@ struct message get_hunger_status(struct actor *actor)
 }
 
 /* Returns -1 if inedible */
-float calculate_food_value(struct actor *food)
+float calc_food_value(struct actor *food)
 {
 	float value = 0;
 	if (!food->destructible)
@@ -1117,7 +1166,7 @@ bool eat(struct engine * engine, struct actor * actor, struct actor * food)
 		float can_eat =
 		    actor->destructible->max_stomach -
 		    actor->destructible->stomach;
-		float food_value = calculate_food_value(food);
+		float food_value = calc_food_value(food);
 
 		if (food_value <= can_eat) {
 			actor->destructible->stomach += food_value;
@@ -1168,7 +1217,7 @@ bool curing_use(struct engine * engine, struct actor * actor,
 	return healer_use(engine, actor, item);
 }
 
-float calculate_food_cost(struct actor *actor, struct actor *item)
+float calc_food_cost(struct actor *actor, struct actor *item)
 {
 	return item->pickable->default_food_cost;
 }

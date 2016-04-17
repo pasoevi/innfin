@@ -24,7 +24,10 @@
 #include "libtcod.h"
 #include "engine.h"
 
-static const int TRACKING_TURNS = 3;
+enum {
+	TRACKING_TURNS = 3,
+	MAX_XP_LEVEL = 25
+};
 
 struct engine;
 struct actor;
@@ -35,9 +38,8 @@ struct skill {
 
 struct ai {
 	int move_count;		/* allow monsters to track the player */
-        float xp_level;
+        int xp_level;
         float xp;
-        float xp_level_up; /* */
         bool (*level_up) (struct engine * engine, struct actor * actor);
 	void (*update) (struct engine * engine, struct actor * actor);
         bool(*move_or_attack) (struct engine * engine,
@@ -74,8 +76,8 @@ struct destructible {
 	float hp;		/* current health points */
 	float defence;		/* hit points deflected */
 	const char *corpse_name;	/* the actor's name once dead/destroyed */
-	float (*take_damage) (struct engine * engine,
-			      struct actor * target, float damage);
+	float (*take_damage) (struct engine *engine, struct actor *dealer,
+			      struct actor *target, float damage);
 	void (*die) (struct engine * engine, struct actor * actor);
 };
 
@@ -86,7 +88,7 @@ struct destructible {
 struct pickable {
 	bool auto_pickup;	/* desired by every actor, they pick it without pressing 'g' */
 	float targetting_range;	/* range at which the target can be selected */
-	float (*calculate_food_cost) (struct actor * actor,
+	float (*calc_food_cost) (struct actor * actor,
 				      struct actor * item);
 	float default_food_cost;	/* the amount by which hunger
 					   increases. *DO NOT* access this
@@ -174,7 +176,7 @@ struct actor *make_transfiguration_wand(int x, int y);
  * an item pickable will have a pointer to his own calculating
  * function. Call that function instead of this.
  */
-float calculate_food_cost(struct actor *actor, struct actor *item);
+float calc_food_cost(struct actor *actor, struct actor *item);
 /* 
  * A common function to all usable items. All item-specific *_use
  * functions should call this as the last statemunt.
@@ -232,6 +234,12 @@ bool eat(struct engine *engine, struct actor *actor, struct actor *food);
 struct message get_hunger_status(struct actor *actor);
 bool make_hungry(struct actor *actor, float amount);
 
+/* */
+float calc_kill_reward(struct engine *engine, struct actor *actor, struct actor *target);
+float reward_kill(struct engine *engine, struct actor *actor, struct actor *target);
+bool should_level_up(struct engine *engine, struct actor *actor);
+bool level_up(struct engine *engine, struct actor *actor);
+
 struct actor *make_player(int x, int y);
 struct actor *make_orc(int x, int y);
 struct actor *make_goblin(int x, int y);
@@ -269,7 +277,7 @@ void ally_update(struct engine *engine, struct actor *actor);
 void attack(struct engine *engine, struct actor *dealer,
 	    struct actor *target);
 bool is_dead(struct actor *actor);
-float take_damage(struct engine *engine, struct actor *target,
+float take_damage(struct engine *engine, struct actor *dealer, struct actor *target,
 		  float damage);
 
 /* 
