@@ -639,11 +639,9 @@ void player_update(struct engine *engine, struct actor *actor)
 		return;
 	}
 	
-	if(should_level_up(engine, actor))
+	if (should_level_up(engine, actor))
 		actor->ai->level_up(engine, actor);	   
 
-	printf("plyer level: %d, player xp: %f\n", actor->ai->xp_level, actor->ai->xp);
-	
 	int dx = 0, dy = 0;
 	if (engine->key.pressed) {
 		switch (engine->key.vk) {
@@ -680,8 +678,7 @@ void player_update(struct engine *engine, struct actor *actor)
 /* Writes a memorial file */
 static void make_memorial(struct actor *actor)
 {
-	printf
-	    ("The program should have written a memorial file in the user's home directory. NOT IMPLEMENTED\n");
+	
 }
 
 /* Transform the actor into a decaying corpse */
@@ -744,7 +741,7 @@ struct actor *make_dragon(int x, int y)
 			    dragon_update);
 }
 
-bool monster_move_or_attack(struct engine * engine, struct actor * actor,
+bool monster_move_or_attack(struct engine *engine, struct actor *actor,
 			    int targetx, int targety)
 {
 	int dx = targetx - actor->x;
@@ -767,8 +764,10 @@ bool monster_move_or_attack(struct engine * engine, struct actor * actor,
 		}
 	} else if (actor->attacker) {
 		struct actor *target = get_actor(engine, targetx, targety);
-		actor->attacker->attack(engine, actor, target);
-		return false;
+		if (target) {
+			actor->attacker->attack(engine, actor, target);
+			return false;
+		}
 	}
 
 	return true;

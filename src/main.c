@@ -26,11 +26,6 @@
 
 struct engine *engine;
 
-void init(void)
-{
-	engine = engine_init(WINDOW_W, WINDOW_H, PROGRAM_NAME);
-}
-
 void clean()
 {
 	free_engine(engine);
@@ -39,7 +34,7 @@ void clean()
 
 int main()
 {
-	init();
+	engine = engine_init(WINDOW_W, WINDOW_H, PROGRAM_NAME);
 
 	while (!TCOD_console_is_window_closed()) {
 		engine->update(engine);

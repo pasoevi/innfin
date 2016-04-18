@@ -40,10 +40,10 @@ struct ai {
 	int move_count;		/* allow monsters to track the player */
         int xp_level;
         float xp;
-        bool (*level_up) (struct engine * engine, struct actor * actor);
-	void (*update) (struct engine * engine, struct actor * actor);
-        bool(*move_or_attack) (struct engine * engine,
-                               struct actor * actor, int targetx,
+        bool (*level_up) (struct engine *engine, struct actor *actor);
+	void (*update) (struct engine *engine, struct actor *actor);
+        bool(*move_or_attack) (struct engine *engine,
+                               struct actor *actor, int targetx,
                                int targety);
 	struct ai *old_ai;	/* confused actors have their previous minds saved here. */
 	int num_turns;
@@ -96,8 +96,8 @@ struct pickable {
 					   calculate_food_cost function */
 	float range;		/* range the item has effect starting from the target tile */
 	float power;		/* damage dealt if an attacker item, hit_points restored if a healer */
-        bool(*use) (struct engine * engine, struct actor * actor,
-                    struct actor * item);
+        bool(*use) (struct engine *engine, struct actor *actor,
+                    struct actor *item);
 };
 
 /* 
@@ -121,7 +121,7 @@ struct actor {
 	struct container *inventory;
 	const char *name;
 	TCOD_color_t col;
-	void (*update) (struct engine * engine, struct actor * actor);
+	void (*update) (struct engine *engine, struct actor *actor);
 	void (*render) (struct actor * actor);	/* Draw an actor to the screen */
 };
 
