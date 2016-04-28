@@ -32,12 +32,14 @@ enum {
 struct engine;
 struct actor;
 
-struct skill {
-        
+struct skills {
+        int strength;
+	int intelligence;
 };
 
 struct ai {
 	int move_count;		/* allow monsters to track the player */
+	struct skills *skills;
         int xp_level;
         float xp;
         bool (*level_up) (struct engine *engine, struct actor *actor);

@@ -125,8 +125,7 @@ struct actor *init_actor(int x, int y, int ch, const char *name,
 	return tmp;
 }
 
-struct ai
-*init_ai(void (*update) (struct engine *engine, struct actor *actor),
+struct ai *init_ai(void (*update) (struct engine *engine, struct actor *actor),
 	 bool(*move_or_attack) (struct engine *engine,
 				struct actor *actor, int targetx,
 				int targety))
@@ -137,6 +136,7 @@ struct ai
 	tmp->level_up = level_up;
 	tmp->xp_level = 1;
 	tmp->xp = 0.f;
+	tmp->skills = malloc(sizeof *tmp->skills);
 	return tmp;
 }
 
@@ -341,6 +341,9 @@ bool level_up(struct engine *engine, struct actor *actor)
 	if (actor->ai->xp_level < MAX_XP_LEVEL) {
 		actor->ai->xp_level++;
 		actor->ai->xp = 0;
+
+		/* increase strength stat */
+		actor->ai->skills->strength += 1;
 		engine->gui->message(engine, TCOD_light_grey,
 				     "You advance to level %d!", actor->ai->xp_level);
 		return true;
@@ -357,7 +360,9 @@ struct actor *make_player(int x, int y)
 
 	/* Artificial intelligence */
 	tmp->ai = init_ai(player_update, player_move_or_attack);
-
+	tmp->ai->skills->strength = 15;
+	tmp->ai->skills->intelligence = 9;
+	
 	/* Init attacker */
 	tmp->attacker = init_attacker(10, attack);
 
