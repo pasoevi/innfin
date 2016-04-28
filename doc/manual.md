@@ -36,8 +36,8 @@ races. They believed that the Lower Dominion resembled the World Above
 in many ways and was a foreboding to what was to become of the
 world. Thus they called it Shadow of Tomorrow.
 
-Little was know of the structure of the dark realm but some speculated
-that it consisted of 16 layered dungeons.
+Little was known of the structure of the dark realm but some
+speculated that it consisted of 16 layered dungeons.
 
 ## Main Dungeon
 
@@ -73,14 +73,14 @@ in the game.
 
 ### Dungeons of Fate ###
 
-Some dungeons that do not follow the pattern of increasing difficulty
+Some dungeons do not follow the pattern of increasing difficulty
 typical for main 16-level dungeon stack. You know that you are in a
 Dungeon of Fate when you have made some god angry or extremely
 pleased. This also happens when you have done something of importance
 on the large scale.
 
 Portals and Dungeons of Fate are often the places to seek the
-artifacts and creatures that are crucial for winning the game. Some
+artefacts and creatures that are crucial for winning the game. Some
 portals permanently leave you away from the main dungeon which makes
 it impossible to complete the quests given by some gods, thus you
 lose.
@@ -94,13 +94,36 @@ so, you should you have learned enough about the world to have some
 feeling of what to expect of different monsters and most importantly,
 that you are comfortable with your god.
 
+Advancing far enough in the game to be able to choose among branches,
+you face the choice of biggest strategic importance. Unlike some
+games, branches aren't primarily different based on difficulty. Only
+two branches, Dwarf Caverns and Searna Cave are decisively more
+difficult than the rest and should probably be saved for later. All
+other branches appear different to each race and religion in terms of
+difficulty. It is important to see branches not as different levels in
+the game, but as different paths to your victory or peril.
+
 ### Mythic Menagerie ###
 
+If the Underworld itself is a shadow of the World Above, the Mythic
+Menagerie is a mirage of the oldest world in which gods, goddesses,
+demigods and other heavenly creatures walked among men. This branch
+presents extremity in both, fatality of your mistakes and reward.
+
 ### Dwarf Caverns ###
+
+This branch is the most obvious side-quest in this game. You enter
+this branch for earning the greatest loot, to strengthen your place
+under your providence and vigorously train your skills. It is the
+dominion of the dwarfs, dungeons and caves filled with innumerable
+treasure, artefacts of ancient magic and matchless weapons.
 
 ### Barbarian Temples ###
 
 ### God-King Palace ###
+
+Realm of the Immortal King. Human beings in this domain are broken and
+bent. 
 
 ### Searna Cave ###
 
