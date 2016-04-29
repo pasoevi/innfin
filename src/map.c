@@ -306,11 +306,7 @@ void map_render(struct map *map)
 
 			if (is_wall(map, x, y))
 				TCOD_console_put_char(NULL, x, y, '#',
-						      TCOD_BKGND_SET);
-			/*
-			   else
-			   TCOD_console_put_char(NULL, x, y, '.',  TCOD_BKGND_SET);
-			 */
+						      TCOD_BKGND_SET);			
 		}
 	}
 }
