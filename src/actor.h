@@ -161,6 +161,7 @@ bool inventory_add(struct container *container, struct actor *actor);
 void inventory_remove(struct container *container, struct actor *actor);
 bool pick(struct engine *engine, struct actor *actor, struct actor *item);
 bool drop(struct engine *engine, struct actor *actor, struct actor *item);
+/* Drop the last picked item. */
 bool drop_last(struct engine *engine, struct actor *actor);
 
 /*** Monster factory functions ***/
