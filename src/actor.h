@@ -159,9 +159,12 @@ struct pickable *init_pickable(float power, float range,
 					   struct actor * item));
 bool inventory_add(struct container *container, struct actor *actor);
 void inventory_remove(struct container *container, struct actor *actor);
+/*
+ * Examine the location of the player and try picking the items.
+ */
+bool try_pick(struct engine *engine);
 bool pick(struct engine *engine, struct actor *actor, struct actor *item);
 bool drop(struct engine *engine, struct actor *actor, struct actor *item);
-/* Drop the last picked item. */
 bool drop_last(struct engine *engine, struct actor *actor);
 
 /*** Monster factory functions ***/

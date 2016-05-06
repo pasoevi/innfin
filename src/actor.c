@@ -534,7 +534,7 @@ struct actor *choose_from_inventory(struct engine *engine,
  * function. The command to be invoked is specified as the *command*
  * argument or if passed NULL, it is implied to be the
  * item->pickable->use function.
-*/
+ */
 void invoke_command(struct engine *engine,
 		    bool command(struct engine *engine, struct actor *actor, struct actor *item),
 		    bool (*item_chooser)(struct actor *actor),
@@ -559,52 +559,8 @@ void handle_action_key(struct engine *engine, struct actor *actor)
 	switch (engine->key.c) {
 	case ',':
 	case 'g':
-		{
-			bool found = false;
-			/* Check for existing items on this loction */
-			struct actor **iter;
-			for (iter =
-				     (struct actor **)
-				     TCOD_list_begin(engine->actors);
-			     iter !=
-				     (struct actor **)
-				     TCOD_list_end(engine->actors); iter++) {
-				struct actor *actor = *iter;
-				if (actor->pickable
-				    && actor->x == engine->player->x
-				    && actor->y == engine->player->y) {
-					/* Try picking up the item */
-					if (pick
-					    (engine, engine->player,
-					     actor)) {
-						found = true;
-						engine->
-							gui->message(engine,
-								     TCOD_green,
-								     "You pick up %s.\n",
-								     actor->
-								     name);
-						break;
-					} else if (!found) {
-						found = true;
-						engine->
-							gui->message(engine,
-								     TCOD_green,
-								     "You tried to pick up %s. Inventory is full.\n",
-								     actor->
-								     name);
-
-					}
-
-				}
-			}
-
-			if (!found)
-				engine->gui->message(engine, TCOD_grey,
-						     "There is nothing to pick up here here.\n");
-			engine->game_status = NEW_TURN;
-
-		}
+		try_pick(engine);
+		
 		break;
 	case 'd':
 		/* Drop item */
@@ -939,6 +895,33 @@ void free_container(struct container *container)
 {
 	TCOD_list_clear_and_delete(container->inventory);
 	free(container);
+}
+
+bool try_pick(struct engine *engine)
+{
+	bool found = false;
+	/* Check for existing items on this loction */
+	struct actor **iter;
+	for (iter = (struct actor **)TCOD_list_begin(engine->actors);
+	     iter != (struct actor **)TCOD_list_end(engine->actors); iter++) {
+		struct actor *actor = *iter;
+		if (actor->pickable && actor->x == engine->player->x && actor->y == engine->player->y) {
+			/* Try picking up the item */
+			if (pick(engine, engine->player, actor)) {
+				found = true;
+				engine->gui->message(engine, TCOD_green, "You pick up %s.\n", actor->name);
+				break;
+			} else if (!found) {
+				found = true;
+				engine->gui->message(engine, TCOD_green, "You tried to pick up %s. Inventory is full.\n", actor->name);
+			}
+		}
+	}
+
+	if (!found)
+		engine->gui->message(engine, TCOD_grey, "There is nothing to pick up here here.\n");
+	engine->game_status = NEW_TURN;
+	return found;
 }
 
 bool pick(struct engine *engine, struct actor *actor, struct actor *item)
