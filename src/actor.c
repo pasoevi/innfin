@@ -636,7 +636,6 @@ void player_update(struct engine *engine, struct actor *actor)
 	}
 }
 
-
 /* Writes a memorial file */
 static void make_memorial(struct actor *actor)
 {
@@ -655,6 +654,8 @@ void player_die(struct engine *engine, struct actor *actor)
 }
 
 /*** Monster functions ***/
+
+/** Factory functions **/
 struct actor *make_monster(int x, int y, const char ch, const char *name,
 			   TCOD_color_t col, float power, float max_hp,
 			   float hp, float defence,
@@ -786,7 +787,9 @@ void monster_die(struct engine *engine, struct actor *actor)
 	die(engine, actor);
 }
 
-/** Inventory functions **/
+/*** Inventory functions ***/
+
+/** Factory functions **/
 struct container *init_container(int capacity)
 {
 	struct container *tmp = malloc(sizeof *tmp);
@@ -797,9 +800,9 @@ struct container *init_container(int capacity)
 }
 
 struct pickable *init_pickable(float power, float range,
-			       bool(*use) (struct engine * engine,
-					   struct actor * actor,
-					   struct actor * item))
+			       bool(*use) (struct engine *engine,
+					   struct actor *actor,
+					   struct actor *item))
 {
 	struct pickable *tmp = malloc(sizeof(*tmp));
 	tmp->power = power;
@@ -808,6 +811,20 @@ struct pickable *init_pickable(float power, float range,
 	return tmp;
 }
 
+struct ai *make_confused_ai(struct actor *actor, int num_turns)
+{
+	struct ai *tmp = malloc(sizeof *tmp);
+	tmp->update = confused_update;
+	tmp->move_or_attack = actor->ai->move_or_attack;
+	tmp->num_turns = num_turns;
+	tmp->old_ai = actor->ai;
+	return tmp;
+}
+
+/* 
+ * Generic item-maker function. Weapon items are made by a different
+ * function 
+*/
 struct actor *make_item(int x, int y, float power, float range,
 			const char ch, const char *name, TCOD_color_t col,
 			bool(*use) (struct engine * engine,
@@ -822,6 +839,8 @@ struct actor *make_item(int x, int y, float power, float range,
 	return tmp;
 }
 
+/* Wands */
+
 struct actor *make_lightning_wand(int x, int y)
 {
 	struct actor *item =
@@ -830,17 +849,6 @@ struct actor *make_lightning_wand(int x, int y)
 	item->pickable->default_food_cost = 13;
 	return item;
 }
-
-struct ai *make_confused_ai(struct actor *actor, int num_turns)
-{
-	struct ai *tmp = malloc(sizeof *tmp);
-	tmp->update = confused_update;
-	tmp->move_or_attack = actor->ai->move_or_attack;
-	tmp->num_turns = num_turns;
-	tmp->old_ai = actor->ai;
-	return tmp;
-}
-
 
 struct actor *make_fireball_wand(int x, int y)
 {
@@ -862,6 +870,8 @@ struct actor *make_confusion_wand(int x, int y)
 	return item;
 }
 
+/** Potions **/
+
 struct actor *make_potion_of_posion(int x, int y)
 {
 	return make_item(x, y, 10, 0, '6', "a potion of poisoning",
@@ -881,6 +891,8 @@ struct actor *make_curing_potion(int x, int y)
 			 TCOD_violet, curing_use);
 }
 
+/** Food **/
+
 struct actor *make_food(int x, int y)
 {
 	struct actor *food =
@@ -890,6 +902,23 @@ struct actor *make_food(int x, int y)
 	return food;
 }
 
+/** Weapons **/
+
+struct actor *make_weapon(int x, int y, float power,
+			  const char ch, const char *name, TCOD_color_t col,
+			  bool(*wield) (struct engine *engine, struct actor *actor, struct actor *item),
+			  bool(*blow) (struct engine *engine, struct actor *actor, struct actor *item, struct actor *target))	
+{
+	struct actor *tmp = make_item(x, y, power, 0, ch, name, col, weapon_wield);
+	tmp->pickable->blow = kindzal_blow;
+	return tmp;
+	
+}
+
+struct actor *make_kindzal(int x, int y)
+{
+	return make_weapon(x, y, 10, '|', "a Kindzal", TCOD_silver, weapon_wield, kindzal_blow);
+}
 
 void free_container(struct container *container)
 {
@@ -957,6 +986,8 @@ bool drop_last(struct engine *engine, struct actor *actor)
 	engine->game_status = NEW_TURN;
 	return drop(engine, actor, *last_item);
 }
+
+/** Item use functions **/
 
 bool lightning_wand_use(struct engine * engine, struct actor * actor,
 			struct actor * item)
@@ -1078,7 +1109,102 @@ bool potion_of_poison_use(struct engine * engine, struct actor * actor,
 	return false;
 }
 
-bool is_hungry(struct actor * actor)
+bool use(struct actor * actor, struct actor * item)
+{
+	if (actor->inventory) {
+		inventory_remove(actor->inventory, item);
+		free_actor(item);
+		return true;
+	}
+	return false;
+}
+
+bool eat(struct engine *engine, struct actor *actor, struct actor *food)
+{
+	bool used = false;
+	if (food->destructible && is_dead(food)) {
+		float can_eat =
+			actor->destructible->max_stomach -
+			actor->destructible->stomach;
+		float food_value = calc_food_value(food);
+
+		if (food_value <= can_eat) {
+			actor->destructible->stomach += food_value;
+			engine->gui->message(engine, TCOD_green,
+					     "You finish eating %s.\n",
+					     food->
+					     destructible->corpse_name);
+			used = use(actor, food);
+		}
+	}
+
+	if (!used)
+		engine->gui->message(engine, TCOD_green,
+				     "You aren't hungry enough to eat.\n");
+
+	return used;
+}
+
+bool healer_use(struct engine *engine, struct actor *actor,
+		struct actor *item)
+{
+	/* heal the actor */
+	if (actor->destructible) {
+		float amount_healed = heal(actor, item->pickable->power);
+		if (amount_healed > 0) {
+			/* Call the common use function */
+			engine->gui->message(engine, TCOD_green,
+					     "You finish drinking %s.\n",
+					     item->name);
+			engine->gui->message(engine, TCOD_green,
+					     "You feel somewhat better.\n");
+			return use(actor, item);
+		}
+	}
+	return false;
+}
+
+/* TODO: At the moment does the same as the HEALTH POTION (See above) */
+bool curing_use(struct engine *engine, struct actor *actor,
+		struct actor *item)
+{
+	/* Cure the poisoning. NOT YET IMPLEMENTED */
+
+	/* 
+	 * Then heal the actor. Same as health potion but restores hp
+	 * by a random, usually lower amount.
+	 */
+	return healer_use(engine, actor, item);
+}
+
+bool weapon_wield(struct engine *engine, struct actor *actor, struct actor *weapon)
+{
+	return true;
+}
+
+/*
+ * Unlike potion_use functions, the weapon_blow functions are called
+ * every time you hit the enemy with them.
+ */
+bool kindzal_blow(struct engine *engine, struct actor *actor,
+		  struct actor *weapon, struct actor *target)
+{
+	if (target->destructible) {
+		float damage_dealt = heal(actor, weapon->pickable->power);
+		if (damage_dealt > 0) {
+			/* Call the common use function */
+			engine->gui->message(engine, TCOD_green,
+					     "You finish drinking %s.\n",
+					     weapon->name);
+			engine->gui->message(engine, TCOD_green,
+					     "You feel somewhat better.\n");
+			return use(actor, weapon);
+		}
+	}
+	return false;
+}
+
+bool is_hungry(struct actor *actor)
 {
 	if (actor->destructible
 	    && actor->destructible->stomach <
@@ -1112,7 +1238,6 @@ struct message get_hunger_status(struct actor *actor)
 	return status;
 }
 
-/* Returns -1 if inedible */
 float calc_food_value(struct actor *food)
 {
 	float value = 0;
@@ -1127,7 +1252,7 @@ float calc_food_value(struct actor *food)
  * Actions that require energy make the actor hungry by amount. Return
  * -1 if the user will starve to death.
  */
-bool make_hungry(struct actor * actor, float amount)
+bool make_hungry(struct actor *actor, float amount)
 {
 	if (actor->destructible
 	    && actor->destructible->stomach - amount >= 0) {
@@ -1136,74 +1261,6 @@ bool make_hungry(struct actor * actor, float amount)
 	}
 	return false;
 
-}
-
-bool use(struct actor * actor, struct actor * item)
-{
-	if (actor->inventory) {
-		inventory_remove(actor->inventory, item);
-		free_actor(item);
-		return true;
-	}
-	return false;
-}
-
-bool eat(struct engine * engine, struct actor * actor, struct actor * food)
-{
-	bool used = false;
-	if (food->destructible && is_dead(food)) {
-		float can_eat =
-			actor->destructible->max_stomach -
-			actor->destructible->stomach;
-		float food_value = calc_food_value(food);
-
-		if (food_value <= can_eat) {
-			actor->destructible->stomach += food_value;
-			engine->gui->message(engine, TCOD_green,
-					     "You finish eating %s.\n",
-					     food->
-					     destructible->corpse_name);
-			used = use(actor, food);
-		}
-	}
-
-	if (!used)
-		engine->gui->message(engine, TCOD_green,
-				     "You aren't hungry enough to eat.\n");
-
-	return used;
-}
-
-bool healer_use(struct engine * engine, struct actor * actor,
-		struct actor * item)
-{
-	/* heal the actor */
-	if (actor->destructible) {
-		float amount_healed = heal(actor, item->pickable->power);
-		if (amount_healed > 0) {
-			/* Call the common use function */
-			engine->gui->message(engine, TCOD_green,
-					     "You finish drinking %s.\n",
-					     item->name);
-			engine->gui->message(engine, TCOD_green,
-					     "You feel somewhat better.\n");
-			return use(actor, item);
-		}
-	}
-	return false;
-}
-
-/* TODO: At the moment does the same as the HEALTH POTION (See above) */
-bool curing_use(struct engine * engine, struct actor * actor,
-		struct actor * item)
-{
-	/* Cure the poisoning. NOT YET IMPLEMENTED */
-
-	/* 
-	 * Then heal the actor. Same as health potion but restores hp
-	 * by a random, usually lower amount.
-	 */
-	return healer_use(engine, actor, item);
 }
 
 float calc_food_cost(struct actor *actor, struct actor *item)

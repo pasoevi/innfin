@@ -100,6 +100,8 @@ struct pickable {
 	float power;		/* damage dealt if an attacker item, hit_points restored if a healer */
         bool(*use) (struct engine *engine, struct actor *actor,
                     struct actor *item);
+	bool(*blow) (struct engine *engine, struct actor *actor,
+		     struct actor *weapon, struct actor *target);
 };
 
 /* 
@@ -167,14 +169,31 @@ bool pick(struct engine *engine, struct actor *actor, struct actor *item);
 bool drop(struct engine *engine, struct actor *actor, struct actor *item);
 bool drop_last(struct engine *engine, struct actor *actor);
 
-/*** Monster factory functions ***/
+/*** Item factory functions ***/
+
+struct actor *make_item(int x, int y, float power, float range,
+			const char ch, const char *name, TCOD_color_t col,
+			bool(*use) (struct engine * engine,
+				    struct actor * actor,
+				    struct actor * item));
+
+/* Food */
 struct actor *make_food(int x, int y);
+
+/* Potions */
 struct actor *make_healer_potion(int x, int y);
 struct actor *make_curing_potion(int x, int y);
+
+/* Wands */
 struct actor *make_lightning_wand(int x, int y);
 struct actor *make_fireball_wand(int x, int y);
 struct actor *make_confusion_wand(int x, int y);
 struct actor *make_transfiguration_wand(int x, int y);
+
+/* Weapons */
+struct actor *make_kindzal(int x, int y);
+
+/* Other tools */
 
 /*
  * Calculate the amount by which to increase hunger upon using an
@@ -183,6 +202,8 @@ struct actor *make_transfiguration_wand(int x, int y);
  * function. Call that function instead of this.
  */
 float calc_food_cost(struct actor *actor, struct actor *item);
+/* Returns -1 if inedible */
+float calc_food_value(struct actor *food);
 /* 
  * A common function to all usable items. All item-specific *_use
  * functions should call this as the last statemunt.
@@ -228,6 +249,11 @@ bool curing_use(struct engine *engine, struct actor *actor,
  */
 bool potion_of_poison_use(struct engine *engine, struct actor *actor,
 			  struct actor *item);
+
+/* Weapons */
+bool weapon_wield(struct engine *engine, struct actor *actor, struct actor *weapon);
+bool kindzal_blow(struct engine *engine, struct actor *actor,
+		  struct actor *item, struct actor *target);
 /* 
  * A generic eating function. Units eaten will be equal to the 50% of
  * the max_hp of the corpse, *not* of the actor eating it.
@@ -246,6 +272,7 @@ float reward_kill(struct engine *engine, struct actor *actor, struct actor *targ
 bool should_level_up(struct engine *engine, struct actor *actor);
 bool level_up(struct engine *engine, struct actor *actor);
 
+/*** Monster factory functions ***/
 struct actor *make_player(int x, int y);
 struct actor *make_orc(int x, int y);
 struct actor *make_goblin(int x, int y);
