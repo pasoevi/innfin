@@ -699,9 +699,11 @@ struct actor *make_troll(int x, int y)
 
 struct actor *make_dragon(int x, int y)
 {
-	return make_monster(x, y, 'D', "a dragon", TCOD_darkest_green, 10,
+	struct actor *tmp = make_monster(x, y, 'D', "a dragon", TCOD_darkest_green, 10,
 			    25, 25, 7, "dragon scales and flesh",
 			    dragon_update);
+	tmp->fov_only = false;
+	return tmp;
 }
 
 bool monster_move_or_attack(struct engine *engine, struct actor *actor,

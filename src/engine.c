@@ -79,6 +79,9 @@ void engine_update(struct engine *engine)
 	TCOD_sys_check_for_event(TCOD_EVENT_ANY, &(engine->key),
 				 &(engine->mouse));
 	player->update(engine, player);
+
+	map_update(engine->map);
+
 	if (engine->game_status == NEW_TURN) {
 		struct actor **iterator;
 		for (iterator =
@@ -106,7 +109,8 @@ void engine_render(struct engine *engine)
 	for (iter = (struct actor **) TCOD_list_begin(engine->actors);
 	     iter != (struct actor **) TCOD_list_end(engine->actors);
 	     iter++)
-		if (is_in_fov(engine->map, (*iter)->x, (*iter)->y))
+		if (!(*iter)->fov_only && is_explored(engine->map, (*iter)->x, (*iter)->y)
+		     || is_in_fov(engine->map, (*iter)->x, (*iter)->y))
 			(*iter)->render(*iter);
 
 	engine->player->render(engine->player);

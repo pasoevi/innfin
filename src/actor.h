@@ -118,6 +118,7 @@ struct actor {
 	int y;
 	char ch;
 	bool blocks;		/* can we walk on this actor? */
+	bool fov_only; /* display only when in field of view */
 	struct attacker *attacker;
 	struct destructible *destructible;
 	struct ai *ai;
@@ -285,7 +286,6 @@ void monster_update(struct engine *engine, struct actor *actor);
 /*
  * Attacks player and other monsters as well.
  */
-
 void dragon_update(struct engine *engine, struct actor *actor);
 /* 
  * Temporary AI for actors that are confused. They move to random

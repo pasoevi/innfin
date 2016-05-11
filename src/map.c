@@ -57,7 +57,7 @@ void create_room(struct engine *engine, bool first, int x1, int y1, int x2,
 	} else {
 		TCOD_random_t *rng = TCOD_random_get_instance();
 		int num_monsters =
-		    TCOD_random_get_int(rng, 0, MAX_ROOM_MONSTERS);
+			TCOD_random_get_int(rng, 0, MAX_ROOM_MONSTERS);
 		while (num_monsters > 0) {
 			int x = TCOD_random_get_int(rng, x1, x2);
 			int y = TCOD_random_get_int(rng, y1, y2);
@@ -70,7 +70,7 @@ void create_room(struct engine *engine, bool first, int x1, int y1, int x2,
 
 		/* Add items */
 		int num_items =
-		    TCOD_random_get_int(rng, 0, MAX_ROOM_ITEMS);
+			TCOD_random_get_int(rng, 0, MAX_ROOM_ITEMS);
 		while (num_items > 0) {
 			int x = TCOD_random_get_int(rng, x1, x2);
 			int y = TCOD_random_get_int(rng, y1, y2);
@@ -171,7 +171,7 @@ bool can_walk(struct engine * engine, int x, int y)
 	return true;
 }
 
-bool is_in_fov(struct map * map, int x, int y)
+bool is_in_fov(struct map *map, int x, int y)
 {
 	if (x < 0 || x >= map->w || y < 0 || y >= map->h)
 		return false;
@@ -183,7 +183,7 @@ bool is_in_fov(struct map * map, int x, int y)
 	return false;
 }
 
-bool is_explored(struct map * map, int x, int y)
+bool is_explored(struct map *map, int x, int y)
 {
 	return map->tiles[x + y * (map->w)].explored;
 }
@@ -249,14 +249,14 @@ bool pick_tile(struct engine *engine, int *x, int *y, float max_range)
 							cy) <=
 					max_range)) {
 					TCOD_color_t col =
-					    TCOD_console_get_char_background
-					    (NULL, cx, cy);
+						TCOD_console_get_char_background
+						(NULL, cx, cy);
 					col =
-					    TCOD_color_multiply_scalar(col,
-								       1.4f);
+						TCOD_color_multiply_scalar(col,
+									   1.4f);
 					TCOD_console_set_char_background
-					    (NULL, cx, cy, col,
-					     TCOD_BKGND_SET);
+						(NULL, cx, cy, col,
+						 TCOD_BKGND_SET);
 				}
 			}
 		}
@@ -292,21 +292,36 @@ bool pick_tile(struct engine *engine, int *x, int *y, float max_range)
 	return false;
 }
 
+void explore_viewed_tiles(struct map *map)
+{
+	int x, y;
+	for (x = 0, y = 0; x < map->w && y < map->h; x++, y++) 
+		if (is_in_fov(map, x, y))
+			map->tiles[x + y * (map->w)].explored = true;
+}
+
+void map_update(struct map *map)
+{
+	explore_viewed_tiles(map);
+}
+
 void map_render(struct map *map)
 {
 	int x, y;
 	for (x = 0; x < map->w; x++) {
 		for (y = 0; y < map->h; y++) {
-			if (is_in_fov(map, x, y))
-				TCOD_console_set_default_foreground(NULL,
-								    TCOD_white);
-			else
-				TCOD_console_set_default_foreground(NULL,
-								    TCOD_gray);
-
-			if (is_wall(map, x, y))
-				TCOD_console_put_char(NULL, x, y, '#',
-						      TCOD_BKGND_SET);			
+			if (is_explored(map, x, y)) {
+				if (is_in_fov(map, x, y))
+					TCOD_console_set_default_foreground(NULL,
+									    TCOD_white);
+				else
+					TCOD_console_set_default_foreground(NULL,
+									    TCOD_gray);
+			    
+				if (is_wall(map, x, y))
+					TCOD_console_put_char(NULL, x, y, '#',
+							      TCOD_BKGND_SET);
+			}
 		}
 	}
 }
