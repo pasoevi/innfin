@@ -310,18 +310,15 @@ void map_render(struct map *map)
 	int x, y;
 	for (x = 0; x < map->w; x++) {
 		for (y = 0; y < map->h; y++) {
-			if (is_explored(map, x, y)) {
-				if (is_in_fov(map, x, y))
-					TCOD_console_set_default_foreground(NULL,
-									    TCOD_white);
-				else
-					TCOD_console_set_default_foreground(NULL,
-									    TCOD_gray);
-			    
-				if (is_wall(map, x, y))
-					TCOD_console_put_char(NULL, x, y, '#',
-							      TCOD_BKGND_SET);
-			}
+			if (is_in_fov(map, x, y))
+				TCOD_console_set_default_foreground(NULL,
+								    TCOD_white);
+			else
+				TCOD_console_set_default_foreground(NULL,
+								    TCOD_gray);
+			if (is_wall(map, x, y))
+				TCOD_console_put_char(NULL, x, y, '#',
+						      TCOD_BKGND_SET);
 		}
 	}
 }
