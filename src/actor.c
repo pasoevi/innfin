@@ -185,18 +185,10 @@ void attack(struct engine *engine, struct actor *dealer,
 	if (target->destructible && !is_dead(target)) {
 		if (power - defence > 0) {
 			bool is_player = dealer == engine->player;
-			engine->gui->message(engine,
-					     is_player ? TCOD_light_grey :
-					     TCOD_red,
-					     "%s %s %s for %g hit points.\n",
-					     dealer->name,
-					     is_player ? "attack" :
-					     "attacks", target->name,
-					     power - defence);
+			engine->gui->message(engine, is_player ? TCOD_light_grey : TCOD_red, "%s %s %s for %g hit points.\n",
+					     dealer->name, is_player ? "attack" : "attacks", target->name, power - defence);
 		} else {
-			engine->gui->message(engine,
-					     TCOD_light_grey,
-					     "%s attacks %s but it has no effect!\n",
+			engine->gui->message(engine, TCOD_light_grey, "%s attacks %s but it has no effect!\n",
 					     dealer->name, target->name);
 		}
 		target->destructible->take_damage(engine, dealer, target, power);
