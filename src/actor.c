@@ -148,6 +148,7 @@ struct attacker *init_attacker(float power,
 	struct attacker *tmp = malloc(sizeof *tmp);
 	tmp->attack = attack;
 	tmp->power = power;
+	tmp->weapon = NULL;
 	return tmp;
 }
 
@@ -176,8 +177,7 @@ void render_actor(struct actor *actor)
 					 actor->col);
 }
 
-void attack(struct engine *engine, struct actor *dealer,
-	    struct actor *target)
+void common_attack(struct engine *engine, struct actor *dealer, struct actor *target)
 {
 	float power = dealer->attacker->power;
 	float defence = target->destructible->defence;
@@ -196,6 +196,20 @@ void attack(struct engine *engine, struct actor *dealer,
 		engine->gui->message(engine, TCOD_light_grey,
 				     "%s attacks %s in vain.\n",
 				     dealer->name, target->name);
+	}
+}
+
+void attack(struct engine *engine, struct actor *dealer,
+	    struct actor *target)
+{
+	/* Determine the attack type */
+	if (dealer->attacker->weapon) {
+		/* Attack using a weapon */
+		struct actor *weapon = dealer->attacker->weapon;
+		weapon->pickable->blow(engine, dealer, weapon, target);
+	} else {
+		/* Make a barehanded attack */
+		common_attack(engine, dealer, target);
 	}
 }
 
