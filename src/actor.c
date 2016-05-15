@@ -1210,11 +1210,11 @@ bool kindzal_blow(struct engine *engine, struct actor *actor,
 	return false;
 }
 
+/* DEPRECATED: Use the get_hunger_status function instead! */
 bool is_hungry(struct actor *actor)
 {
 	if (actor->destructible
-	    && actor->destructible->stomach <
-	    actor->destructible->max_stomach - 10)
+	    && actor->destructible->stomach < actor->destructible->max_stomach - 10)
 		return true;
 	return false;
 }
