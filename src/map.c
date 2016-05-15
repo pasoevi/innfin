@@ -219,7 +219,7 @@ void add_item(struct engine *engine, int x, int y)
 	struct actor *item;
 	int dice = TCOD_random_get_int(rng, 0, 100);
 	if (dice < 30)
-		item = make_healer_potion(x, y);
+		item = make_kindzal(x, y);
 	else if (dice < 40)
 		item = make_curing_potion(x, y);
 	else if (dice < 60)
@@ -228,6 +228,8 @@ void add_item(struct engine *engine, int x, int y)
 		item = make_fireball_wand(x, y);
 	else if (dice < 80)
 		item = make_confusion_wand(x, y);
+	else if (dice < 90)
+		item = make_healer_potion(x, y);
 	else
 		item = make_food(x, y);
 

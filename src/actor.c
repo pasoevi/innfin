@@ -1185,9 +1185,17 @@ bool curing_use(struct engine *engine, struct actor *actor,
 	return healer_use(engine, actor, item);
 }
 
+/* TODO: Add log messages */
 bool weapon_wield(struct engine *engine, struct actor *actor, struct actor *weapon)
 {
-	return true;
+	bool did_replace;
+	/* Unwield the previous weapon and put it back into the inventory */
+	if (actor->attacker->weapon)
+		did_replace = inventory_add(actor->inventory, actor->attacker->weapon);
+
+	/* Wield the new weapon */
+	actor->attacker->weapon = weapon;
+	return did_replace;
 }
 
 /*
@@ -1197,18 +1205,8 @@ bool weapon_wield(struct engine *engine, struct actor *actor, struct actor *weap
 bool kindzal_blow(struct engine *engine, struct actor *actor,
 		  struct actor *weapon, struct actor *target)
 {
-	if (target->destructible) {
-		float damage_dealt = heal(actor, weapon->pickable->power);
-		if (damage_dealt > 0) {
-			/* Call the common use function */
-			engine->gui->message(engine, TCOD_green,
-					     "You finish drinking %s.\n",
-					     weapon->name);
-			engine->gui->message(engine, TCOD_green,
-					     "You feel somewhat better.\n");
-			return use(actor, weapon);
-		}
-	}
+	if (target->destructible)
+		common_attack(engine, actor, target);
 	return false;
 }
 
