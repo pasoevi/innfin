@@ -27,15 +27,15 @@
 extern void compute_fov(struct engine *engine);
 
 /*** Common functions ***/
-float take_damage(struct engine *engine, struct actor *dealer, struct actor *target,
-                  float damage)
+float take_damage(struct engine *engine, struct actor *dealer,
+                  struct actor *target, float damage)
 {
     /* Reduce the damage by the fraction that the target can deflect */
     damage -= target->destructible->defence;
     if (damage > 0) {
         target->destructible->hp -= damage;
         if (target->destructible->hp <= 0) {
-            target->destructible->hp = 0;    /* prevent hp from goint below zero */
+            target->destructible->hp = 0; /* prevent hp from goint below zero */
             target->destructible->die(engine, target);
             reward_kill(engine, dealer, target);
         }
@@ -151,13 +151,14 @@ struct attacker *init_attacker(float power,
     return tmp;
 }
 
-struct life *init_destructible(float max_hp,
-                                       float hp, float defence,
-                                       const char *corpse_name,
-                                       float (*take_damage)(struct engine *engine, struct actor *dealer,
-                                                            struct actor *target, float damage),
-                                       void (*die)(struct engine *engine,
-                                                   struct actor *actor))
+struct life *init_destructible(
+        float max_hp,
+        float hp, float defence,
+        const char *corpse_name,
+        float (*take_damage)(struct engine *engine, struct actor *dealer,
+                             struct actor *target, float damage),
+        void (*die)(struct engine *engine,
+                    struct actor *actor))
 {
     struct life *tmp = malloc(sizeof *tmp);
     tmp->die = die;
@@ -176,7 +177,8 @@ void render_actor(struct actor *actor)
                                      actor->col);
 }
 
-void common_attack(struct engine *engine, struct actor *dealer, struct actor *target)
+void common_attack(struct engine *engine, struct actor *dealer,
+                   struct actor *target)
 {
     float power = dealer->attacker->power;
     float defence = target->destructible->defence;
@@ -184,10 +186,13 @@ void common_attack(struct engine *engine, struct actor *dealer, struct actor *ta
     if (target->destructible && !is_dead(target)) {
         if (power - defence > 0) {
             bool is_player = dealer == engine->player;
-            engine->gui->message(engine, is_player ? TCOD_light_grey : TCOD_red, "%s %s %s for %g hit points.\n",
+            engine->gui->message(
+                    engine,
+                    is_player ?TCOD_light_grey : TCOD_red, "%s %s %s for %g hit points.\n",
                                  dealer->name, is_player ? "attack" : "attacks", target->name, power - defence);
         } else {
-            engine->gui->message(engine, TCOD_light_grey, "%s attacks %s but it has no effect!\n",
+            engine->gui->message(
+                    engine, TCOD_light_grey, "%s attacks %s but it has no effect!\n",
                                  dealer->name, target->name);
         }
         target->destructible->take_damage(engine, dealer, target, power);
@@ -310,7 +315,8 @@ struct actor *get_actor(struct engine *engine, int x, int y)
     return NULL;
 }
 
-float calc_kill_reward(struct engine *engine, struct actor *actor, struct actor *target)
+float calc_kill_reward(struct engine *engine, struct actor *actor,
+                       struct actor *target)
 {
     return 10 + target->destructible->hp;
 }
@@ -541,7 +547,8 @@ struct actor *choose_from_inventory(struct engine *engine,
  * item->pickable->use function.
  */
 void invoke_command(struct engine *engine,
-                    bool command(struct engine *engine, struct actor *actor, struct actor *item),
+                    bool command(struct engine *engine, struct actor *actor,
+                                 struct actor *item),
                     bool (*item_chooser)(struct actor *actor),
                     const char *window_title)
 {
@@ -913,8 +920,10 @@ struct actor *make_food(int x, int y)
 
 struct actor *make_weapon(int x, int y, float power,
                           const char ch, const char *name, TCOD_color_t col,
-                          bool(*wield)(struct engine *engine, struct actor *actor, struct actor *item),
-                          bool(*blow)(struct engine *engine, struct actor *actor, struct actor *item,
+                          bool(*wield)(struct engine *engine, struct actor *actor,
+                                       struct actor *item),
+                          bool(*blow)(struct engine *engine, struct actor *actor,
+                                      struct actor *item,
                                       struct actor *target))
 {
     struct actor *tmp = make_item(x, y, power, 0, ch, name, col, weapon_wield);
@@ -946,17 +955,22 @@ bool try_pick(struct engine *engine)
             /* Try picking up the item */
             if (pick(engine, engine->player, actor)) {
                 found = true;
-                engine->gui->message(engine, TCOD_green, "You pick up %s.\n", actor->name);
+                engine->gui->message(engine, TCOD_green, "You pick up %s.\n",
+                                     actor->name);
                 break;
             } else if (!found) {
                 found = true;
-                engine->gui->message(engine, TCOD_green, "You tried to pick up %s. Inventory is full.\n", actor->name);
+                engine->gui->message(
+                        engine, TCOD_green,
+                        "You tried to pick up %s. Inventory is full.\n",
+                        actor->name);
             }
         }
     }
 
     if (!found)
-        engine->gui->message(engine, TCOD_grey, "There is nothing to pick up here here.\n");
+        engine->gui->message(engine, TCOD_grey,
+                             "There is nothing to pick up here here.\n");
     engine->game_status = NEW_TURN;
     return found;
 }

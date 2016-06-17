@@ -66,6 +66,7 @@ void add_item(struct engine *engine, int x, int y);
 
 bool is_wall(struct map *map, int x, int y);
 
+bool is_explored(struct map *map, int x, int y);
 /* Check whether the point (x, y) is in the field of view on map. */
 bool is_in_fov(struct map *map, int x, int y);
 

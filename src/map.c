@@ -287,7 +287,7 @@ bool pick_tile(struct engine *engine, int *x, int *y, float max_range)
             return false;
         }
 
-        TCOD_console_flush(NULL);
+        TCOD_console_flush();
     }
 
     return false;

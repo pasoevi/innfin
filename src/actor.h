@@ -117,9 +117,10 @@ struct pickable {
                        increases. *DO NOT* access this
                        directly, use the
                        calculate_food_cost function */
-    float range;
     /* range the item has effect starting from the target tile */
-    float power;        /* damage dealt if an attacker item, hit_points restored if a healer */
+    float range;
+    /* damage dealt if an attacker item, hit_points restored if a healer */
+    float power;
     bool(*use)(struct engine *engine, struct actor *actor,
                struct actor *item);
 
@@ -294,7 +295,8 @@ bool potion_of_poison_use(struct engine *engine, struct actor *actor,
                           struct actor *item);
 
 /* Weapons */
-bool weapon_wield(struct engine *engine, struct actor *actor, struct actor *weapon);
+bool weapon_wield(struct engine *engine, struct actor *actor,
+                  struct actor *weapon);
 
 bool kindzal_blow(struct engine *engine, struct actor *actor,
                   struct actor *item, struct actor *target);
@@ -313,9 +315,11 @@ struct message get_hunger_status(struct actor *actor);
 bool make_hungry(struct actor *actor, float amount);
 
 /* */
-float calc_kill_reward(struct engine *engine, struct actor *actor, struct actor *target);
+float calc_kill_reward(struct engine *engine, struct actor *actor,
+                       struct actor *target);
 
-float reward_kill(struct engine *engine, struct actor *actor, struct actor *target);
+float reward_kill(struct engine *engine, struct actor *actor,
+                  struct actor *target);
 
 bool should_level_up(struct engine *engine, struct actor *actor);
 
@@ -373,8 +377,8 @@ void attack(struct engine *engine, struct actor *dealer,
 
 bool is_dead(struct actor *actor);
 
-float take_damage(struct engine *engine, struct actor *dealer, struct actor *target,
-                  float damage);
+float take_damage(struct engine *engine, struct actor *dealer,
+                  struct actor *target, float damage);
 
 /* 
    A common function that is called when ANY actor dies. NOTE: Do not
