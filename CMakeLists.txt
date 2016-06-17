@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.5)
-project(innfin_windows)
+project(innfin)
 
 include_directories(include)
 link_directories(lib)
@@ -17,5 +17,5 @@ set(SOURCE_FILES
         src/util.c
         src/util.h)
 
-add_executable(innfin_windows ${SOURCE_FILES})
-target_link_libraries(innfin_windows libtcod-mingw)
+add_executable(innfin ${SOURCE_FILES})
+target_link_libraries(innfin libtcod-mingw)
