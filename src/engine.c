@@ -42,29 +42,29 @@ void send_to_back(struct engine *engine, struct actor *actor)
 struct engine *engine_init(int w, int h, const char *title)
 {
 	TCOD_console_init_root(w, h, title, false, TCOD_RENDERER_OPENGL);
-	struct engine *tmp = malloc(sizeof *tmp);
+	struct engine *engine = malloc(sizeof *engine);
 
-	tmp->gui = init_gui(WINDOW_W, PANEL_H);
-	tmp->window_w = WINDOW_W;
-	tmp->window_h = WINDOW_H;
-	tmp->update = engine_update;
-	tmp->render = engine_render;
+	engine->gui = init_gui(WINDOW_W, PANEL_H);
+	engine->window_w = WINDOW_W;
+	engine->window_h = WINDOW_H;
+	engine->update = engine_update;
+	engine->render = engine_render;
 
-	tmp->fov_radius = 10;
-	tmp->compute_fov = true;
-	tmp->game_status = STARTUP;
+	engine->fov_radius = 10;
+	engine->compute_fov = true;
+	engine->game_status = STARTUP;
 
-	tmp->actors = TCOD_list_new();
+	engine->actors = TCOD_list_new();
 	/* Create a player */
-	tmp->player = make_player(40, 25);
-	tmp->player->update = player_update;
-	TCOD_list_push(tmp->actors, (const void *) tmp->player);
+	engine->player = make_player(40, 25);
+	engine->player->update = player_update;
+	TCOD_list_push(engine->actors, (const void *) engine->player);
 
 
 	/* Add a map to the engine */
-	init_map(tmp, 80, 43);
-	tmp->gui->message(tmp, TCOD_red, WELCOME_MESSAGE);
-	return tmp;
+	init_map(engine, 80, 43);
+	engine->gui->message(engine, TCOD_red, WELCOME_MESSAGE);
+	return engine;
 }
 
 void engine_update(struct engine *engine)
