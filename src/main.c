@@ -28,20 +28,20 @@ struct engine *engine;
 
 void clean()
 {
-	free_engine(engine);
-	exit(EXIT_SUCCESS);
+    free_engine(engine);
+    exit(EXIT_SUCCESS);
 }
 
 int main()
 {
-	engine = engine_init(WINDOW_W, WINDOW_H, PROGRAM_NAME);
+    engine = engine_init(WINDOW_W, WINDOW_H, PROGRAM_NAME);
 
-	while (!TCOD_console_is_window_closed()) {
-		engine->update(engine);
-		engine->render(engine);
-		TCOD_console_flush(NULL);
-	}
+    while (!TCOD_console_is_window_closed()) {
+        engine->update(engine);
+        engine->render(engine);
+        TCOD_console_flush(NULL);
+    }
 
-	clean();
-	return 0;
+    clean();
+    return 0;
 }
