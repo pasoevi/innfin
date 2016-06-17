@@ -151,7 +151,7 @@ struct attacker *init_attacker(float power,
     return tmp;
 }
 
-struct destructible *init_destructible(float max_hp,
+struct life *init_destructible(float max_hp,
                                        float hp, float defence,
                                        const char *corpse_name,
                                        float (*take_damage)(struct engine *engine, struct actor *dealer,
@@ -159,7 +159,7 @@ struct destructible *init_destructible(float max_hp,
                                        void (*die)(struct engine *engine,
                                                    struct actor *actor))
 {
-    struct destructible *tmp = malloc(sizeof *tmp);
+    struct life *tmp = malloc(sizeof *tmp);
     tmp->die = die;
     tmp->defence = defence;
     tmp->corpse_name = corpse_name;
@@ -371,7 +371,7 @@ struct actor *make_player(int x, int y)
     /* Init attacker */
     tmp->attacker = init_attacker(10, attack);
 
-    /* Init destructible */
+    /* Init life */
     tmp->destructible =
             init_destructible(100, 100, 6, "your dead body", take_damage,
                               player_die);
@@ -676,7 +676,7 @@ struct actor *make_monster(int x, int y, const char ch, const char *name,
     /* Init attacker */
     tmp->attacker = init_attacker(power, attack);
 
-    /* Init destructible */
+    /* Init life */
     tmp->destructible =
             init_destructible(max_hp, hp, defence, corpse_name,
                               take_damage, monster_die);

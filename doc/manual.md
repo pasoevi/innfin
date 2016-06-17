@@ -533,7 +533,7 @@ This header file contains all the functions related to the actors,
 including NPC and items (potions, scrolls, books, etc). All of this is
 implemented as a single actor structure (struct actor) which contains
 pointers to various helper structures, such as \`pickable\` (an item
-that can be picked and used, \`destructible\` (an actor that can be
+that can be picked and used, \`life\` (an actor that can be
 harmed when attacked, \`attacker\`, (an actor that can
 attack. Intelligently or with random motives). There is also an
 important \`ai\` helper structure, which, if the actor possesses it,

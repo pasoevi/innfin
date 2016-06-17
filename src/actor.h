@@ -79,7 +79,7 @@ struct attacker {
  * attacks. As an added effect, this actor will require food and rest
  * to sustain himself.
  */
-struct destructible {
+struct life {
     float stomach;
     /* number of food units eaten */
     float max_stomach;
@@ -145,7 +145,7 @@ struct actor {
     bool fov_only;
     /* display only when in field of view */
     struct attacker *attacker;
-    struct destructible *destructible;
+    struct life *destructible;
     struct ai *ai;
     struct pickable *pickable;
     struct container *inventory;
