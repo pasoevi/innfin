@@ -20,7 +20,6 @@
 
 #include "map.h"
 #include <stdlib.h>
-#include <stdio.h>
 
 static const int MAX_ROOM_MONSTERS = 3;
 static const int MAX_ROOM_ITEMS = 2;

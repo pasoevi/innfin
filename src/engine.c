@@ -19,10 +19,7 @@
 */
 
 #include <stdlib.h>
-#include <stdio.h>
 #include "engine.h"
-#include "map.h"
-#include "util.h"
 
 extern void clean(void);
 
