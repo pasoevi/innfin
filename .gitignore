@@ -38,3 +38,5 @@ innfin
 build
 .sconstruct.dblite
 .sconsign.dblite
+
+.idea
