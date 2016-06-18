@@ -10,8 +10,6 @@ above. Your goal is to choose a deity to worship and attempt to do his
 or her bidding. You can abandon your god and convert to other religion
 later in the game and have the objective of the game changed, as well.
 
-{:toc}
-
 # The World
 
 The game is set in the world deep in the past in which magic
