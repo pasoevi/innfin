@@ -31,12 +31,12 @@ float take_damage(struct engine *engine, struct actor *dealer,
                   struct actor *target, float damage)
 {
     /* Reduce the damage by the fraction that the target can deflect */
-    damage -= target->destructible->defence;
+    damage -= target->life->defence;
     if (damage > 0) {
-        target->destructible->hp -= damage;
-        if (target->destructible->hp <= 0) {
-            target->destructible->hp = 0; /* prevent hp from goint below zero */
-            target->destructible->die(engine, target);
+        target->life->hp -= damage;
+        if (target->life->hp <= 0) {
+            target->life->hp = 0; /* prevent hp from goint below zero */
+            target->life->die(engine, target);
             reward_kill(engine, dealer, target);
         }
     } else {
@@ -62,7 +62,7 @@ void common_update(struct engine *engine, struct actor *actor)
 void confused_update(struct engine *engine, struct actor *actor)
 {
     /* Check if the actor is alive */
-    if (actor->destructible && is_dead(actor)) {
+    if (actor->life && is_dead(actor)) {
         return;
     }
 
@@ -116,7 +116,7 @@ struct actor *init_actor(int x, int y, int ch, const char *name,
     tmp->update = common_update;
 
     tmp->ai = NULL;
-    tmp->destructible = NULL;
+    tmp->life = NULL;
     tmp->attacker = NULL;
     tmp->pickable = NULL;
     tmp->inventory = NULL;
@@ -147,11 +147,12 @@ struct attacker *init_attacker(float power,
     struct attacker *tmp = malloc(sizeof *tmp);
     tmp->attack = attack;
     tmp->power = power;
+    tmp->calc_hit_power = calc_hit_power;
     tmp->weapon = NULL;
     return tmp;
 }
 
-struct life *init_destructible(
+struct life *init_life(
         float max_hp,
         float hp, float defence,
         const char *corpse_name,
@@ -177,25 +178,33 @@ void render_actor(struct actor *actor)
                                      actor->col);
 }
 
+/*
+ *
+ *
+ */
 void common_attack(struct engine *engine, struct actor *dealer,
                    struct actor *target)
 {
-    float power = dealer->attacker->power;
-    float defence = target->destructible->defence;
+    float power = 0.f, defence = 0.f;
+    power = dealer->attacker->calc_hit_power(engine, dealer, target);
+    defence = target->life->defence;
 
-    if (target->destructible && !is_dead(target)) {
+    if (target->life && !is_dead(target)) {
         if (power - defence > 0) {
             bool is_player = dealer == engine->player;
             engine->gui->message(
                     engine,
-                    is_player ?TCOD_light_grey : TCOD_red, "%s %s %s for %g hit points.\n",
-                                 dealer->name, is_player ? "attack" : "attacks", target->name, power - defence);
+                    is_player ? TCOD_light_grey : TCOD_red,
+                    "%s %s %s for %g hit points.\n",
+                    dealer->name, is_player ? "attack" : "attacks",
+                    target->name, power - defence);
         } else {
             engine->gui->message(
-                    engine, TCOD_light_grey, "%s attacks %s but it has no effect!\n",
-                                 dealer->name, target->name);
+                    engine, TCOD_light_grey,
+                    "%s attacks %s but it has no effect!\n",
+                    dealer->name, target->name);
         }
-        target->destructible->take_damage(engine, dealer, target, power);
+        target->life->take_damage(engine, dealer, target, power);
     } else {
         engine->gui->message(engine, TCOD_light_grey,
                              "%s attacks %s in vain.\n",
@@ -219,8 +228,8 @@ void attack(struct engine *engine, struct actor *dealer,
 
 bool is_dead(struct actor *actor)
 {
-    if (actor->destructible != NULL)
-        return actor->destructible->hp <= 0;
+    if (actor->life != NULL)
+        return actor->life->hp <= 0;
     return false;
 }
 
@@ -229,7 +238,7 @@ void die(struct engine *engine, struct actor *actor)
 {
     actor->ch = '%';
     actor->col = TCOD_dark_red;
-    actor->name = actor->destructible->corpse_name;
+    actor->name = actor->life->corpse_name;
     actor->blocks = false;
     /* make sure corpses are drawn before living actors */
     send_to_back(engine, actor);
@@ -237,11 +246,11 @@ void die(struct engine *engine, struct actor *actor)
 
 float heal(struct actor *actor, float amount)
 {
-    actor->destructible->hp += amount;
-    if (actor->destructible->hp > actor->destructible->max_hp) {
+    actor->life->hp += amount;
+    if (actor->life->hp > actor->life->max_hp) {
         amount -=
-                actor->destructible->hp - actor->destructible->max_hp;
-        actor->destructible->hp = actor->destructible->max_hp;
+                actor->life->hp - actor->life->max_hp;
+        actor->life->hp = actor->life->max_hp;
     }
     return amount;
 }
@@ -263,7 +272,7 @@ struct actor *get_closest_actor(struct engine *engine, struct actor *actor,
          iter != (struct actor **) TCOD_list_end(engine->actors);
          iter++) {
         struct actor *tmp = *iter;
-        if (tmp != actor && tmp->destructible && !is_dead(tmp)) {
+        if (tmp != actor && tmp->life && !is_dead(tmp)) {
             float distance =
                     get_distance(tmp, actor->x, actor->y);
             if (distance < best_distance
@@ -288,7 +297,7 @@ struct actor *get_closest_monster(struct engine *engine, int x, int y,
          iter != (struct actor **) TCOD_list_end(engine->actors);
          iter++) {
         struct actor *actor = *iter;
-        if (actor != engine->player && actor->destructible
+        if (actor != engine->player && actor->life
             && !is_dead(actor)) {
             float distance = get_distance(actor, x, y);
             if (distance < best_distance
@@ -308,20 +317,32 @@ struct actor *get_actor(struct engine *engine, int x, int y)
          iter != (struct actor **) TCOD_list_end(engine->actors);
          iter++) {
         struct actor *actor = *iter;
-        if (actor->x == x && actor->y == y && actor->destructible
+        if (actor->x == x && actor->y == y && actor->life
             && !is_dead(actor))
             return actor;
     }
     return NULL;
 }
 
+float calc_hit_power(struct engine *engine, struct actor *dealer, struct
+        actor *target)
+{
+    float power = 0.f;
+    if (dealer->attacker->weapon)
+        power = dealer->attacker->weapon->pickable->power;
+    else
+        power = dealer->attacker->power;
+    return power;
+}
+
 float calc_kill_reward(struct engine *engine, struct actor *actor,
                        struct actor *target)
 {
-    return 10 + target->destructible->hp;
+    return 10 + target->life->hp;
 }
 
-float reward_kill(struct engine *engine, struct actor *actor, struct actor *target)
+float reward_kill(struct engine *engine, struct actor *actor,
+                  struct actor *target)
 {
     if (!actor->ai)
         return -1;
@@ -378,11 +399,11 @@ struct actor *make_player(int x, int y)
     tmp->attacker = init_attacker(10, attack);
 
     /* Init life */
-    tmp->destructible =
-            init_destructible(100, 100, 6, "your dead body", take_damage,
-                              player_die);
-    tmp->destructible->max_stomach = 500;
-    tmp->destructible->stomach = tmp->destructible->max_stomach;
+    tmp->life =
+            init_life(100, 100, 6, "your dead body", take_damage,
+                      player_die);
+    tmp->life->max_stomach = 500;
+    tmp->life->stomach = tmp->life->max_stomach;
 
     /* Init inventory */
     tmp->inventory = init_container(26);
@@ -399,7 +420,7 @@ bool player_move_or_attack(struct engine *engine, struct actor *actor,
     if (!make_hungry(actor, 1)) {
         engine->gui->message(engine, TCOD_light_grey,
                              "You starve to death.\n");
-        actor->destructible->die(engine, actor);
+        actor->life->die(engine, actor);
         return false;
     }
 
@@ -411,7 +432,7 @@ bool player_move_or_attack(struct engine *engine, struct actor *actor,
     for (iter = (struct actor **) TCOD_list_begin(engine->actors);
          iter != (struct actor **) TCOD_list_end(engine->actors);
          iter++) {
-        if ((*iter)->destructible && !is_dead(*iter) &&
+        if ((*iter)->life && !is_dead(*iter) &&
             (*iter)->x == targetx && (*iter)->y == targety) {
             /* There is an actor there, cat't walk */
             actor->attacker->attack(engine, actor, *iter);
@@ -424,7 +445,7 @@ bool player_move_or_attack(struct engine *engine, struct actor *actor,
          iter != (struct actor **) TCOD_list_end(engine->actors);
          iter++) {
         struct actor *actor = *iter;
-        bool corpse_or_item = (actor->destructible
+        bool corpse_or_item = (actor->life
                                && is_dead(actor))
                               || actor->pickable;
         if (corpse_or_item && actor->x == targetx
@@ -443,7 +464,7 @@ bool player_move_or_attack(struct engine *engine, struct actor *actor,
 bool is_edible(struct actor *actor)
 {
     bool is_edible = false;
-    if (actor->destructible && is_dead(actor))
+    if (actor->life && is_dead(actor))
         is_edible = true;
     return is_edible;
 }
@@ -451,7 +472,7 @@ bool is_edible(struct actor *actor)
 bool is_drinkable(struct actor *actor)
 {
     bool is_drinkable = false;
-    if (actor->pickable && !actor->destructible && actor->ch == '!')
+    if (actor->pickable && !actor->life && actor->ch == '!')
         is_drinkable = true;
     return is_drinkable;
 }
@@ -459,7 +480,7 @@ bool is_drinkable(struct actor *actor)
 bool is_wieldable(struct actor *actor)
 {
     bool is_wieldable = false;
-    if (actor->pickable && !actor->destructible && actor->ch == '|')
+    if (actor->pickable && !actor->life && actor->ch == '|')
         is_wieldable = true;
     return is_wieldable;
 }
@@ -609,7 +630,7 @@ void handle_action_key(struct engine *engine, struct actor *actor)
 
 void player_update(struct engine *engine, struct actor *actor)
 {
-    if (actor->destructible && is_dead(actor)) {
+    if (actor->life && is_dead(actor)) {
         return;
     }
 
@@ -684,9 +705,9 @@ struct actor *make_monster(int x, int y, const char ch, const char *name,
     tmp->attacker = init_attacker(power, attack);
 
     /* Init life */
-    tmp->destructible =
-            init_destructible(max_hp, hp, defence, corpse_name,
-                              take_damage, monster_die);
+    tmp->life =
+            init_life(max_hp, hp, defence, corpse_name,
+                      take_damage, monster_die);
 
     return tmp;
 }
@@ -711,7 +732,8 @@ struct actor *make_troll(int x, int y)
 
 struct actor *make_dragon(int x, int y)
 {
-    struct actor *tmp = make_monster(x, y, 'D', "a dragon", TCOD_darkest_green, 10,
+    struct actor *tmp = make_monster(x, y, 'D', "a dragon", TCOD_darkest_green,
+                                     10,
                                      25, 25, 7, "dragon scales and flesh",
                                      dragon_update);
     tmp->fov_only = false;
@@ -752,7 +774,7 @@ bool monster_move_or_attack(struct engine *engine, struct actor *actor,
 
 void monster_update(struct engine *engine, struct actor *actor)
 {
-    if (actor->destructible && is_dead(actor)) {
+    if (actor->life && is_dead(actor)) {
         return;
     }
 
@@ -771,7 +793,7 @@ void monster_update(struct engine *engine, struct actor *actor)
 
 void dragon_update(struct engine *engine, struct actor *actor)
 {
-    if (actor->destructible && is_dead(actor)) {
+    if (actor->life && is_dead(actor)) {
         return;
     }
 
@@ -920,9 +942,11 @@ struct actor *make_food(int x, int y)
 
 struct actor *make_weapon(int x, int y, float power,
                           const char ch, const char *name, TCOD_color_t col,
-                          bool(*wield)(struct engine *engine, struct actor *actor,
+                          bool(*wield)(struct engine *engine,
+                                       struct actor *actor,
                                        struct actor *item),
-                          bool(*blow)(struct engine *engine, struct actor *actor,
+                          bool(*blow)(struct engine *engine,
+                                      struct actor *actor,
                                       struct actor *item,
                                       struct actor *target))
 {
@@ -934,7 +958,8 @@ struct actor *make_weapon(int x, int y, float power,
 
 struct actor *make_kindzal(int x, int y)
 {
-    return make_weapon(x, y, 10, '|', "a Kindzal", TCOD_silver, weapon_wield, kindzal_blow);
+    return make_weapon(x, y, 20, '|', "a Kindzal", TCOD_silver, weapon_wield,
+                       kindzal_blow);
 }
 
 void free_container(struct container *container)
@@ -951,7 +976,8 @@ bool try_pick(struct engine *engine)
     for (iter = (struct actor **) TCOD_list_begin(engine->actors);
          iter != (struct actor **) TCOD_list_end(engine->actors); iter++) {
         struct actor *actor = *iter;
-        if (actor->pickable && actor->x == engine->player->x && actor->y == engine->player->y) {
+        if (actor->pickable && actor->x == engine->player->x &&
+            actor->y == engine->player->y) {
             /* Try picking up the item */
             if (pick(engine, engine->player, actor)) {
                 found = true;
@@ -1032,7 +1058,7 @@ bool lightning_wand_use(struct engine *engine, struct actor *actor,
          */
         const char *name = closest->name;
         float dmg_dealt =
-                closest->destructible->take_damage(engine, actor, closest,
+                closest->life->take_damage(engine, actor, closest,
                                                    item->pickable->power);
         engine->gui->message(engine, TCOD_light_yellow,
                              "A lightning bolt strikes %s with the damage of %g.\n",
@@ -1066,14 +1092,14 @@ bool fireball_wand_use(struct engine *engine, struct actor *dealer,
              (struct actor **) TCOD_list_end(engine->actors);
              iter++) {
             struct actor *actor = *iter;
-            if (actor->destructible && !is_dead(actor)
+            if (actor->life && !is_dead(actor)
                 && get_distance(actor, x,
                                 y) <= item->pickable->range) {
                 engine->gui->message(engine, TCOD_orange,
                                      "%s gets burned for %g hit points.",
                                      actor->name,
                                      item->pickable->power);
-                actor->destructible->take_damage(engine,
+                actor->life->take_damage(engine,
                                                  dealer,
                                                  actor,
                                                  item->pickable->power);
@@ -1122,7 +1148,7 @@ bool potion_of_poison_use(struct engine *engine, struct actor *actor,
                           struct actor *item)
 {
     /* heal the actor */
-    if (actor->destructible) {
+    if (actor->life) {
         float amount_healed = heal(actor, item->pickable->power);
         if (amount_healed > 0)
             /* Call the common use function */
@@ -1144,18 +1170,18 @@ bool use(struct actor *actor, struct actor *item)
 bool eat(struct engine *engine, struct actor *actor, struct actor *food)
 {
     bool used = false;
-    if (food->destructible && is_dead(food)) {
+    if (food->life && is_dead(food)) {
         float can_eat =
-                actor->destructible->max_stomach -
-                actor->destructible->stomach;
+                actor->life->max_stomach -
+                actor->life->stomach;
         float food_value = calc_food_value(food);
 
         if (food_value <= can_eat) {
-            actor->destructible->stomach += food_value;
+            actor->life->stomach += food_value;
             engine->gui->message(engine, TCOD_green,
                                  "You finish eating %s.\n",
                                  food->
-                                         destructible->corpse_name);
+                                         life->corpse_name);
             used = use(actor, food);
         }
     }
@@ -1171,7 +1197,7 @@ bool healer_use(struct engine *engine, struct actor *actor,
                 struct actor *item)
 {
     /* heal the actor */
-    if (actor->destructible) {
+    if (actor->life) {
         float amount_healed = heal(actor, item->pickable->power);
         if (amount_healed > 0) {
             /* Call the common use function */
@@ -1199,8 +1225,9 @@ bool curing_use(struct engine *engine, struct actor *actor,
     return healer_use(engine, actor, item);
 }
 
-/* TODO: Add log messages */
-bool weapon_wield(struct engine *engine, struct actor *actor, struct actor *weapon)
+/* TODO: Add message to log */
+bool weapon_wield(struct engine *engine, struct actor *actor,
+                  struct actor *weapon)
 {
     bool did_replace;
     /* Unwield the previous weapon and put it back into the inventory */
@@ -1219,7 +1246,7 @@ bool weapon_wield(struct engine *engine, struct actor *actor, struct actor *weap
 bool kindzal_blow(struct engine *engine, struct actor *actor,
                   struct actor *weapon, struct actor *target)
 {
-    if (target->destructible)
+    if (target->life)
         common_attack(engine, actor, target);
     return false;
 }
@@ -1227,8 +1254,8 @@ bool kindzal_blow(struct engine *engine, struct actor *actor,
 /* DEPRECATED: Use the get_hunger_status function instead! */
 bool is_hungry(struct actor *actor)
 {
-    if (actor->destructible
-        && actor->destructible->stomach < actor->destructible->max_stomach - 10)
+    if (actor->life
+        && actor->life->stomach < actor->life->max_stomach - 10)
         return true;
     return false;
 }
@@ -1238,20 +1265,20 @@ struct message get_hunger_status(struct actor *actor)
     struct message status;
     status.text = "";
 
-    if (actor->destructible->stomach < 10) {
+    if (actor->life->stomach < 10) {
         status.col = TCOD_lightest_red;
         status.text = "fainting";
-    } else if (actor->destructible->stomach < 40) {
+    } else if (actor->life->stomach < 40) {
         status.col = TCOD_light_red;
         status.text = "starving";
-    } else if (actor->destructible->stomach < 80) {
+    } else if (actor->life->stomach < 80) {
         status.col = TCOD_red;
         status.text = "very hungry";
-    } else if (actor->destructible->stomach < 100) {
+    } else if (actor->life->stomach < 100) {
         status.col = TCOD_dark_red;
         status.text = "hungry";
-    } else if (actor->destructible->stomach >
-               actor->destructible->max_stomach - 10) {
+    } else if (actor->life->stomach >
+               actor->life->max_stomach - 10) {
         status.col = TCOD_green;
         status.text = "full";
     }
@@ -1261,10 +1288,10 @@ struct message get_hunger_status(struct actor *actor)
 float calc_food_value(struct actor *food)
 {
     float value = 0;
-    if (!food->destructible)
+    if (!food->life)
         value = -1;
     else
-        value = food->destructible->max_hp;
+        value = food->life->max_hp;
     return value;
 }
 
@@ -1274,9 +1301,9 @@ float calc_food_value(struct actor *food)
  */
 bool make_hungry(struct actor *actor, float amount)
 {
-    if (actor->destructible
-        && actor->destructible->stomach - amount >= 0) {
-        actor->destructible->stomach -= amount;
+    if (actor->life
+        && actor->life->stomach - amount >= 0) {
+        actor->life->stomach -= amount;
         return true;
     }
     return false;

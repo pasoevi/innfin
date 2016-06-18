@@ -18,4 +18,4 @@ set(SOURCE_FILES
         src/util.h)
 
 add_executable(innfin ${SOURCE_FILES})
-target_link_libraries(innfin libtcod-mingw)
+target_link_libraries(innfin libtcod-mingw-debug)

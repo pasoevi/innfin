@@ -70,6 +70,9 @@ struct attacker {
     /* */
     float power;
 
+    float (*calc_hit_power)(struct engine *engine, struct actor *dealer,
+                            struct actor *target);
+
     void (*attack)(struct engine *engine, struct actor *dealer,
                    struct actor *target);
 };
@@ -146,7 +149,7 @@ struct actor {
     bool fov_only;
     /* display only when in field of view */
     struct attacker *attacker;
-    struct life *destructible;
+    struct life *life;
     struct ai *ai;
     struct pickable *pickable;
     struct container *inventory;
@@ -154,7 +157,6 @@ struct actor {
     TCOD_color_t col;
 
     void (*update)(struct engine *engine, struct actor *actor);
-
     void (*render)(struct actor *actor);    /* Draw an actor to the screen */
 };
 
@@ -313,6 +315,9 @@ bool eat(struct engine *engine, struct actor *actor, struct actor *food);
 struct message get_hunger_status(struct actor *actor);
 
 bool make_hungry(struct actor *actor, float amount);
+
+float calc_hit_power(struct engine *engine, struct actor *dealer, struct
+        actor *target);
 
 /* */
 float calc_kill_reward(struct engine *engine, struct actor *actor,

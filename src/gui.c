@@ -44,6 +44,7 @@ void free_message(struct message *message)
 static void message(struct engine *engine, const TCOD_color_t col,
                     const char *text, ...)
 {
+    TCOD_list_t log = engine->gui->log;
     /* Build the text */
     va_list ap;
     char buf[128];
@@ -56,10 +57,10 @@ static void message(struct engine *engine, const TCOD_color_t col,
 
     do {
         /* make room for the new message */
-        if (TCOD_list_size(engine->gui->log) == MSG_HEIGHT) {
+        if (TCOD_list_size(log) == MSG_HEIGHT) {
             struct message *to_remove =
-                    TCOD_list_get(engine->gui->log, 0);
-            TCOD_list_remove(engine->gui->log, to_remove);
+                    TCOD_list_get(log, 0);
+            TCOD_list_remove(log, to_remove);
             free(to_remove);
         }
         // detect end of the line
@@ -69,7 +70,7 @@ static void message(struct engine *engine, const TCOD_color_t col,
         // add a new message to the log
         struct message *msg;
         init_message(&msg, line_begin, col);
-        TCOD_list_push(engine->gui->log, msg);
+        TCOD_list_push(log, msg);
         /* go to next line */
         line_begin = line_end + 1;
     } while (line_end);
@@ -123,14 +124,16 @@ static void render_log(struct engine *engine, int startx, int starty)
     struct message **iter;
     float color_coef = 0.4f;
     int y = starty;
-    for (iter = (struct message **) TCOD_list_begin(engine->gui->log);
-         iter != (struct message **) TCOD_list_end(engine->gui->log);
+    TCOD_list_t *log = engine->gui->log;
+    size_t log_size = TCOD_list_size(log);
+    for (iter = (struct message **) TCOD_list_begin(log);
+         iter != (struct message **) TCOD_list_end(log);
          iter++) {
         struct message *message = *iter;
-        TCOD_color_t col = TCOD_color_multiply_scalar(message->col, color_coef);
-        TCOD_console_set_default_foreground(engine->gui->con, col);
+//        TCOD_color_t col = TCOD_color_multiply_scalar(message->col, color_coef);
+        TCOD_console_set_default_foreground(engine->gui->con, message->col);
         TCOD_console_print(engine->gui->con, startx, y,
-                           (*iter)->text);
+                           message->text);
         y++;
         if (color_coef < 1.0f)
             color_coef += 0.3f;
@@ -176,8 +179,8 @@ static void gui_render(struct engine *engine)
 
     /* Render health bar */
     engine->gui->render_bar(engine, 1, 1, BAR_W, "HP",
-                            engine->player->destructible->hp,
-                            engine->player->destructible->max_hp,
+                            engine->player->life->hp,
+                            engine->player->life->max_hp,
                             TCOD_light_red, TCOD_darker_red);
     render_status(engine->gui->con, 1, 3, engine->player);
 

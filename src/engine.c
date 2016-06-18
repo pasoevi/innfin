@@ -105,10 +105,13 @@ void engine_render(struct engine *engine)
 
     for (iter = (struct actor **) TCOD_list_begin(engine->actors);
          iter != (struct actor **) TCOD_list_end(engine->actors);
-         iter++)
-        if (!(*iter)->fov_only && is_explored(engine->map, (*iter)->x, (*iter)->y)
-            || is_in_fov(engine->map, (*iter)->x, (*iter)->y))
-            (*iter)->render(*iter);
+         iter++) {
+        struct actor *actor = *iter;
+        if (!actor->fov_only &&
+            is_explored(engine->map, actor->x, actor->y)
+            || is_in_fov(engine->map, actor->x, actor->y))
+            actor->render(actor);
+    }
 
     engine->player->render(engine->player);
 }
