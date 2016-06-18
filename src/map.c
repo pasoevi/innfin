@@ -244,14 +244,10 @@ bool pick_tile(struct engine *engine, int *x, int *y, float max_range)
         int cx, cy;
         for (cx = 0; cx < engine->map->w; cx++) {
             for (cy = 0; cy < engine->map->h; cy++) {
-                if (is_in_fov(engine->map, cx, cy)
-                    && (max_range == 0
-                        || get_distance(engine->player, cx,
-                                        cy) <=
-                           max_range)) {
-                    TCOD_color_t col =
-                            TCOD_console_get_char_background(NULL, cx, cy);
-                    col = TCOD_color_multiply_scalar(col, 1.4f);
+                if (is_in_fov(engine->map, cx, cy) &&
+                        (max_range == 0 || get_distance(engine->player, cx, cy) <= max_range)) {
+                    TCOD_color_t col = TCOD_console_get_char_background(NULL, cx, cy);
+//                    col = TCOD_color_multiply_scalar(col, 1.4f);
                     TCOD_console_set_char_background
                             (NULL, cx, cy, col, TCOD_BKGND_SET);
                 }
@@ -261,16 +257,12 @@ bool pick_tile(struct engine *engine, int *x, int *y, float max_range)
         TCOD_sys_check_for_event(TCOD_EVENT_KEY_PRESS |
                                  TCOD_EVENT_MOUSE, &(engine->key),
                                  &(engine->mouse));
-        if (is_in_fov
-                    (engine->map, engine->mouse.cx, engine->mouse.cy)
+        if (is_in_fov(engine->map, engine->mouse.cx, engine->mouse.cy)
             && (max_range == 0
                 || get_distance(engine->player, engine->mouse.cx,
                                 engine->mouse.cy) <= max_range)) {
-            TCOD_console_set_char_background(NULL,
-                                             engine->mouse.cx,
-                                             engine->mouse.cy,
-                                             TCOD_white,
-                                             TCOD_BKGND_SET);
+            TCOD_console_set_char_background(NULL, engine->mouse.cx, engine->mouse.cy,
+                                             TCOD_white, TCOD_BKGND_SET);
             if (engine->mouse.lbutton_pressed) {
                 *x = engine->mouse.cx;
                 *y = engine->mouse.cy;

@@ -21,6 +21,7 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <math.h>
+#include <console_types.h>
 #include "actor.h"
 #include "util.h"
 
@@ -654,6 +655,10 @@ void player_update(struct engine *engine, struct actor *actor)
                 break;
             case TCODK_CHAR:
                 handle_action_key(engine, actor);
+                break;
+            case TCODK_ENTER:
+                if (engine->key.lalt)
+                    TCOD_console_set_fullscreen(!TCOD_console_is_fullscreen());
                 break;
             default:
                 break;

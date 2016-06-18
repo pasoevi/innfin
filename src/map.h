@@ -60,6 +60,8 @@ void free_map(struct map *map);
 /* Draw the map on the screen */
 void map_render(struct map *map);
 
+void map_update(struct map *map);
+
 void add_monster(struct engine *engine, int x, int y);
 
 void add_item(struct engine *engine, int x, int y);
