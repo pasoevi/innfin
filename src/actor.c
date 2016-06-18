@@ -1085,39 +1085,25 @@ bool fireball_wand_use(struct engine *engine, struct actor *dealer,
     if (!pick_tile(engine, &x, &y, item->pickable->targetting_range))
         return false;
 
-    if (make_hungry
-            (dealer, item->pickable->calc_food_cost(dealer, item))) {
+    if (make_hungry(dealer, item->pickable->calc_food_cost(dealer, item))) {
         engine->gui->message(engine, TCOD_orange,
                              "the fireball explodes, burning everything within %g tiles.",
                              item->pickable->range);
         struct actor **iter;
-        for (iter =
-                     (struct actor **) TCOD_list_begin(engine->actors);
-             iter !=
-             (struct actor **) TCOD_list_end(engine->actors);
+        for (iter = (struct actor **) TCOD_list_begin(engine->actors);
+             iter != (struct actor **) TCOD_list_end(engine->actors);
              iter++) {
             struct actor *actor = *iter;
-            if (actor->life && !is_dead(actor)
-                && get_distance(actor, x,
-                                y) <= item->pickable->range) {
-                engine->gui->message(engine, TCOD_orange,
-                                     "%s gets burned for %g hit points.",
-                                     actor->name,
-                                     item->pickable->power);
-                actor->life->take_damage(engine,
-                                                 dealer,
-                                                 actor,
-                                                 item->pickable->power);
+            if (actor->life && !is_dead(actor) && get_distance(actor, x, y) <= item->pickable->range) {
+                engine->gui->message(engine, TCOD_orange, "%s gets burned for %g hit points.", actor->name, item->pickable->power);
+                actor->life->take_damage(engine, dealer, actor, item->pickable->power);
             }
         }
         return use(dealer, item);
     } else {
-        engine->gui->message(engine, TCOD_light_grey,
-                             "You are too hungry to invoke that wand.\n");
+        engine->gui->message(engine, TCOD_light_grey, "You are too hungry to invoke that wand.\n");
         return false;
     }
-
-
 }
 
 bool confusion_wand_use(struct engine *engine, struct actor *actor,
@@ -1137,20 +1123,21 @@ bool confusion_wand_use(struct engine *engine, struct actor *actor,
 
         struct ai *confused_ai = make_confused_ai(target, 5);
         target->ai = confused_ai;
-        engine->gui->message(engine, TCOD_light_green,
-                             "The eyes of %s look vacant,\nas he starts to stumble around!",
-                             target->name);
+        engine->gui->message(
+                engine,
+                TCOD_light_green,
+                "The eyes of %s look vacant,\nas he starts to stumble around!",
+                target->name
+        );
         return use(actor, item);
     } else {
-        engine->gui->message(engine, TCOD_light_grey,
-                             "You are too hungry to invoke that wand.\n");
+        engine->gui->message(engine, TCOD_light_grey, "You are too hungry to invoke that wand.\n");
         return false;
     }
 
 }
 
-bool potion_of_poison_use(struct engine *engine, struct actor *actor,
-                          struct actor *item)
+bool potion_of_poison_use(struct engine *engine, struct actor *actor, struct actor *item)
 {
     /* heal the actor */
     if (actor->life) {
@@ -1231,10 +1218,9 @@ bool curing_use(struct engine *engine, struct actor *actor,
 }
 
 /* TODO: Add message to log */
-bool weapon_wield(struct engine *engine, struct actor *actor,
-                  struct actor *weapon)
+bool weapon_wield(struct engine *engine, struct actor *actor, struct actor *weapon)
 {
-    bool did_replace;
+    bool did_replace = false;
     /* Unwield the previous weapon and put it back into the inventory */
     if (actor->attacker->weapon)
         did_replace = inventory_add(actor->inventory, actor->attacker->weapon);
@@ -1253,15 +1239,6 @@ bool kindzal_blow(struct engine *engine, struct actor *actor,
 {
     if (target->life)
         common_attack(engine, actor, target);
-    return false;
-}
-
-/* DEPRECATED: Use the get_hunger_status function instead! */
-bool is_hungry(struct actor *actor)
-{
-    if (actor->life
-        && actor->life->stomach < actor->life->max_stomach - 10)
-        return true;
     return false;
 }
 
