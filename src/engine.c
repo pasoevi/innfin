@@ -73,8 +73,7 @@ void engine_update(struct engine *engine)
 
     engine->game_status = IDLE;
 
-    TCOD_sys_check_for_event(TCOD_EVENT_ANY, &(engine->key),
-                             &(engine->mouse));
+    TCOD_sys_check_for_event(TCOD_EVENT_ANY, &engine->key, &engine->mouse);
     player->update(engine, player);
 
     map_update(engine->map);

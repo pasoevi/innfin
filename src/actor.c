@@ -1081,7 +1081,7 @@ bool fireball_wand_use(struct engine *engine, struct actor *dealer,
 {
     engine->gui->message(engine, TCOD_cyan,
                          "Left-click a target tile for the fireball,\nor right-click to cancel.");
-    int x, y;
+    int x = 0, y = 0;
     if (!pick_tile(engine, &x, &y, item->pickable->targetting_range))
         return false;
 
@@ -1125,7 +1125,7 @@ bool confusion_wand_use(struct engine *engine, struct actor *actor,
 {
     engine->gui->message(engine, TCOD_cyan,
                          "Left-click an enemy to confuse it,\nor right-click to cancel.");
-    int x, y;
+    int x = 0, y = 0;
     if (!pick_tile(engine, &x, &y, item->pickable->targetting_range))
         return false;
 

@@ -138,8 +138,7 @@ void init_map(struct engine *engine, int w, int h)
     engine->map->bsp_traverse.room_num = 0;
     TCOD_bsp_split_recursive(engine->map->bsp, NULL, 8, ROOM_MAX_SIZE,
                              ROOM_MAX_SIZE, 1.5f, 1.5f);
-    TCOD_bsp_traverse_inverted_level_order(engine->map->bsp,
-                                           visit_node, engine);
+    TCOD_bsp_traverse_inverted_level_order(engine->map->bsp, visit_node, engine);
 }
 
 void free_map(struct map *map)
@@ -246,16 +245,15 @@ bool pick_tile(struct engine *engine, int *x, int *y, float max_range)
             for (cy = 0; cy < engine->map->h; cy++) {
                 if (is_in_fov(engine->map, cx, cy) &&
                         (max_range == 0 || get_distance(engine->player, cx, cy) <= max_range)) {
-                    TCOD_color_t col = TCOD_console_get_char_background(NULL, cx, cy);
+//                    TCOD_color_t col = TCOD_console_get_char_background(NULL, cx, cy);
 //                    col = TCOD_color_multiply_scalar(col, 1.4f);
-                    TCOD_console_set_char_background
-                            (NULL, cx, cy, col, TCOD_BKGND_SET);
+//                    TCOD_console_set_char_background(NULL, cx, cy, col, TCOD_BKGND_SET);
                 }
             }
         }
 
         TCOD_sys_check_for_event(TCOD_EVENT_KEY_PRESS |
-                                 TCOD_EVENT_MOUSE, &(engine->key),
+                                 TCOD_EVENT_MOUSE, &engine->key,
                                  &(engine->mouse));
         if (is_in_fov(engine->map, engine->mouse.cx, engine->mouse.cy)
             && (max_range == 0
@@ -275,7 +273,7 @@ bool pick_tile(struct engine *engine, int *x, int *y, float max_range)
             return false;
         }
 
-        TCOD_console_flush();
+        TCOD_console_flush(NULL);
     }
 
     return false;
