@@ -1,12 +1,3 @@
----
-layout: page
-title: Innere Finsternis - Manual
-description: A Roguelike Game
-ads: false
-permalink: /innfin/
-published: false
----
-
 NOTE: This is a detailed game manual. For _Downloads_, or the _Quick
 Starting Guide_, please visit the game website.
 
