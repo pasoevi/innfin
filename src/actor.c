@@ -596,6 +596,15 @@ void handle_action_key(struct engine *engine, struct actor *actor)
             try_pick(engine);
 
             break;
+        case '>':
+            engine->gui->message(engine, TCOD_gray, "You can't climb down here. Try on stairs.");
+            break;
+        case '<':
+            engine->gui->message(engine, TCOD_gray, "You can't climb up here. Try on stairs.");
+            break;
+        case 'a':
+            engine->gui->message(engine, TCOD_gray, "You have no special abilities.");
+            break;
         case 'd':
             /* Drop item */
             invoke_command(engine, drop, is_usable, "drop");
