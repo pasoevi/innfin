@@ -127,7 +127,7 @@ static void render_log(struct engine *engine, int startx, int starty)
     float color_coef = 0.4f;
     int y = starty;
     TCOD_list_t *log = engine->gui->log;
-    size_t log_size = TCOD_list_size(log);
+
     for (iter = (struct message **) TCOD_list_begin(log);
          iter != (struct message **) TCOD_list_end(log);
          iter++) {
