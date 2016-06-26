@@ -41,7 +41,7 @@ struct ai {
     int move_count;
     /* allow monsters to track the player */
     struct skills *skills;
-    int xp_level;
+    float xp_level;
     float xp;
 
     bool (*level_up)(struct engine *engine, struct actor *actor);

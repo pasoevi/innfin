@@ -394,7 +394,7 @@ bool should_level_up(struct engine *engine, struct actor *actor)
     if (!actor->ai || actor->ai->xp_level == MAX_XP_LEVEL)
         return false;
 
-    float required_xp = 30 + actor->ai->xp_level * 30;
+    float required_xp = 30.f + actor->ai->xp_level * 30.f;
 
     if (actor->ai->xp > required_xp)
         return true;

@@ -151,6 +151,7 @@
     <ClCompile Include="..\src\gui.c" />
     <ClCompile Include="..\src\main.c" />
     <ClCompile Include="..\src\map.c" />
+    <ClCompile Include="..\src\parser.c" />
     <ClCompile Include="..\src\util.c" />
   </ItemGroup>
   <ItemGroup>
