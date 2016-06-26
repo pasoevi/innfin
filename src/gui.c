@@ -79,9 +79,8 @@ static void message(struct engine *engine, const TCOD_color_t col,
 }
 
 static void render_bar(struct engine *engine, int x, int y, int w,
-                       const char *name, const float value,
-                       const float max_value, const TCOD_color_t bar_col,
-                       const TCOD_color_t back_col)
+                       const char *name, float value, const float max_value,
+                       TCOD_color_t bar_col, TCOD_color_t back_col)
 {
     TCOD_console_set_default_background(engine->gui->con, back_col);
     TCOD_console_rect(engine->gui->con, x, y, w, 1, false,
@@ -90,10 +89,8 @@ static void render_bar(struct engine *engine, int x, int y, int w,
     int bar_w = (int) (value / max_value * w);
     if (bar_w > 0) {
         /* Draw the bar */
-        TCOD_console_set_default_background(engine->gui->con,
-                                            TCOD_white);
-        TCOD_console_rect(engine->gui->con, x, y, bar_w, 1, false,
-                          TCOD_BKGND_SET);
+        TCOD_console_set_default_background(engine->gui->con, bar_col);
+        TCOD_console_rect(engine->gui->con, x, y, bar_w, 1, false, TCOD_BKGND_SET);
     }
 
     /* Print text on top of a bar */
@@ -123,11 +120,12 @@ static void render_status(TCOD_console_t *con, int x, int y,
 static void render_log(struct engine *engine, int startx, int starty)
 {
     /* draw the message log */
-    struct message **iter;
     float color_coef = 0.4f;
     int y = starty;
+
     TCOD_list_t *log = engine->gui->log;
 
+    struct message **iter;
     for (iter = (struct message **) TCOD_list_begin(log);
          iter != (struct message **) TCOD_list_end(log);
          iter++) {
@@ -183,7 +181,7 @@ static void gui_render(struct engine *engine)
     engine->gui->render_bar(engine, 1, 1, BAR_W, "HP",
                             engine->player->life->hp,
                             engine->player->life->max_hp,
-                            TCOD_light_red, TCOD_darker_red);
+                            TCOD_white, TCOD_lighter_gray);
     render_status(engine->gui->con, 1, 3, engine->player);
 
     engine->gui->render_log(engine, MSG_X, 1);
@@ -194,9 +192,22 @@ static void gui_render(struct engine *engine)
                       1.f, 1.f);
 }
 
+void free_log(TCOD_list_t *log)
+{
+    struct message **iter;
+    for (iter = (struct message **) TCOD_list_begin(log);
+         iter != (struct message **) TCOD_list_end(log);
+         iter++) {
+        struct message *message = *iter;
+        free_message(message);
+    }
+
+    TCOD_list_delete(log);
+}
+
 void free_gui(struct gui *gui)
 {
-    TCOD_list_clear_and_delete(gui->log);
+    free_log(gui->log);
     free(gui);
 }
 

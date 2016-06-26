@@ -98,9 +98,15 @@ void free_actor(struct actor *actor)
     free(actor);
 }
 
-void free_actors(TCOD_list_t actors)
+void free_actors(TCOD_list_t *actors)
 {
-    TCOD_list_clear_and_delete(actors);
+	struct actor **iter;
+	for (iter = (struct actor **)TCOD_list_begin(actors); iter != (struct actor **)TCOD_list_end(actors); iter++) {
+		struct actor *actor = *iter;
+		free_actor(actor);
+	}
+		
+	TCOD_list_clear(actors);
 }
 
 struct actor *init_actor(int x, int y, int ch, const char *name,
