@@ -20,7 +20,7 @@
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{11CA02BA-CC6B-4B97-869C-4B6DE61A50C3}</ProjectGuid>
-    <RootNamespace>Innfinmsvc</RootNamespace>
+    <RootNamespace>Innfin</RootNamespace>
     <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
     <ProjectName>Innfin</ProjectName>
   </PropertyGroup>
