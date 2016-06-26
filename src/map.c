@@ -157,7 +157,7 @@ bool can_walk(struct engine *engine, int x, int y)
     for (actor = (struct actor **) TCOD_list_begin(engine->actors);
          actor != (struct actor **) TCOD_list_end(engine->actors);
          actor++)
-        if ((*actor)->blocks && (*actor)->x == x
+        if ((*actor)->blocking && (*actor)->x == x
             && (*actor)->y == y)
             /* There is a blocking actor there, cat't
                walk */

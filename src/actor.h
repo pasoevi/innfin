@@ -145,7 +145,7 @@ struct actor {
     int x;
     int y;
     char ch;
-    bool blocks;        /* can we walk on this actor? */
+    bool blocking;        /* can we walk on this actor? */
     bool fov_only;
     /* display only when in field of view */
     struct attacker *attacker;
@@ -174,6 +174,11 @@ struct actor *init_actor(int w, int h, int ch, const char *name,
 void free_actor(struct actor *actor);
 
 void free_actors(TCOD_list_t *actors);
+
+void free_attacker(struct attacker *attacker);
+void free_ai(struct ai *ai);
+void free_skills(struct skills *skills);
+void free_life(struct life *life);
 
 /* Get distance between the actor and the point specified by x and y. */
 float get_distance(struct actor *actor, int x, int y);

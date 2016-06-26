@@ -95,6 +95,10 @@ void confused_update(struct engine *engine, struct actor *actor)
 
 void free_actor(struct actor *actor)
 {
+    /* TODO: Free all items in the inventory */
+    free_attacker(actor->attacker);
+    free_life(actor->life);
+    free_ai(actor->ai);
     free(actor);
 }
 
@@ -146,6 +150,20 @@ struct ai *init_ai(void (*update)(struct engine *engine, struct actor *actor),
     return tmp;
 }
 
+void free_ai(struct ai *ai)
+{
+    if (ai != NULL) {
+        free_skills(ai->skills);
+        free(ai);
+    } 
+}
+
+void free_skills(struct skills *skills)
+{
+    if (skills != NULL)
+        free(skills);
+}
+
 struct attacker *init_attacker(float power,
                                void (*attack)(struct engine *engine,
                                               struct actor *dealer,
@@ -157,6 +175,12 @@ struct attacker *init_attacker(float power,
     tmp->calc_hit_power = calc_hit_power;
     tmp->weapon = NULL;
     return tmp;
+}
+
+void free_attacker(struct attacker *attacker)
+{
+    if (attacker != NULL)
+        free(attacker);
 }
 
 struct life *init_life(
@@ -176,6 +200,12 @@ struct life *init_life(
     tmp->max_hp = max_hp;
     tmp->hp = hp;
     return tmp;
+}
+
+void free_life(struct life *life)
+{
+    if (life != NULL)
+        free(life);
 }
 
 void render_actor(struct actor *actor)
@@ -246,7 +276,7 @@ void die(struct engine *engine, struct actor *actor)
     actor->ch = '%';
     actor->col = TCOD_dark_red;
     actor->name = actor->life->corpse_name;
-    actor->blocks = false;
+    actor->blocking = false;
     /* make sure corpses are drawn before living actors */
     send_to_back(engine, actor);
 }
@@ -860,7 +890,7 @@ struct pickable *init_pickable(float power, float range,
                                           struct actor *actor,
                                           struct actor *item))
 {
-    struct pickable *tmp = malloc(sizeof(*tmp));
+    struct pickable *tmp = malloc(sizeof *tmp);
     tmp->power = power;
     tmp->range = range;
     tmp->use = use;
@@ -890,7 +920,7 @@ struct actor *make_item(int x, int y, float power, float range,
     struct actor *tmp = init_actor(x, y, ch, name, col, render_actor);
     tmp->pickable = init_pickable(power, range, use);
     tmp->pickable->calc_food_cost = calc_food_cost;
-    tmp->blocks = false;
+    tmp->blocking = false;
 
     return tmp;
 }
@@ -1314,7 +1344,8 @@ float calc_food_cost(struct actor *actor, struct actor *item)
 
 void free_pickable(struct pickable *pickable)
 {
-
+    if (pickable != NULL)
+        free(pickable);
 }
 
 bool inventory_add(struct container *container, struct actor *actor)
