@@ -57,6 +57,17 @@ void create_room(struct engine *engine, bool first, int x1, int y1, int x2,
         TCOD_random_t *rng = TCOD_random_get_instance();
         int num_monsters =
                 TCOD_random_get_int(rng, 0, MAX_ROOM_MONSTERS);
+        /* Add items */
+        int num_items = TCOD_random_get_int(rng, 0, MAX_ROOM_ITEMS);
+        while (num_items > 0) {
+            int x = TCOD_random_get_int(rng, x1, x2);
+            int y = TCOD_random_get_int(rng, y1, y2);
+
+            if (can_walk(engine, x, y))
+                add_item(engine, x, y);
+            num_items--;
+        }
+
         while (num_monsters > 0) {
             int x = TCOD_random_get_int(rng, x1, x2);
             int y = TCOD_random_get_int(rng, y1, y2);
@@ -64,23 +75,8 @@ void create_room(struct engine *engine, bool first, int x1, int y1, int x2,
                 add_monster(engine, x, y);
                 num_monsters--;
             }
-
-        }
-
-        /* Add items */
-        int num_items =
-                TCOD_random_get_int(rng, 0, MAX_ROOM_ITEMS);
-        while (num_items > 0) {
-            int x = TCOD_random_get_int(rng, x1, x2);
-            int y = TCOD_random_get_int(rng, y1, y2);
-
-            if (can_walk(engine, x, y))
-                add_item(engine, x, y);
-
-            num_items--;
         }
     }
-
 }
 
 bool visit_node(TCOD_bsp_t *node, void *user_data)
@@ -273,7 +269,7 @@ bool pick_tile(struct engine *engine, int *x, int *y, float max_range)
             return false;
         }
 
-        TCOD_console_flush(NULL);
+        TCOD_console_flush();
     }
 
     return false;

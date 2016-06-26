@@ -80,10 +80,8 @@ void engine_update(struct engine *engine)
 
     if (engine->game_status == NEW_TURN) {
         struct actor **iterator;
-        for (iterator =
-                     (struct actor **) TCOD_list_begin(engine->actors);
-             iterator !=
-             (struct actor **) TCOD_list_end(engine->actors);
+        for (iterator = (struct actor **) TCOD_list_begin(engine->actors);
+             iterator != (struct actor **) TCOD_list_end(engine->actors);
              iterator++) {
             struct actor *actor = *iterator;
             if (actor != player)

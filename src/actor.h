@@ -173,7 +173,7 @@ struct actor *init_actor(int w, int h, int ch, const char *name,
 
 void free_actor(struct actor *actor);
 
-void free_actors(TCOD_list_t actors);
+void free_actors(TCOD_list_t *actors);
 
 /* Get distance between the actor and the point specified by x and y. */
 float get_distance(struct actor *actor, int x, int y);

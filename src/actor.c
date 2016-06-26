@@ -543,7 +543,7 @@ struct actor *choose_from_inventory(struct engine *engine,
                       NULL, engine->window_w / 2 - INVENTORY_WIDTH / 2,
                       engine->window_h / 2 - INVENTORY_HEIGHT / 2, 1.f,
                       1.f);
-    TCOD_console_flush(NULL);
+    TCOD_console_flush();
 
     /* wait for a key press */
     TCOD_key_t key;
