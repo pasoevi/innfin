@@ -264,8 +264,7 @@ bool pick_tile(struct engine *engine, int *x, int *y, float max_range)
             }
 
         }
-        if (engine->mouse.rbutton_pressed
-            || engine->key.vk != TCODK_NONE) {
+        if (engine->mouse.rbutton_pressed || engine->key.vk != TCODK_NONE) {
             return false;
         }
 
@@ -294,14 +293,11 @@ void map_render(struct map *map)
     for (x = 0; x < map->w; x++) {
         for (y = 0; y < map->h; y++) {
             if (is_in_fov(map, x, y))
-                TCOD_console_set_default_foreground(NULL,
-                                                    TCOD_white);
+                TCOD_console_set_default_foreground(NULL, TCOD_white);
             else
-                TCOD_console_set_default_foreground(NULL,
-                                                    TCOD_gray);
+                TCOD_console_set_default_foreground(NULL, TCOD_gray);
             if (is_wall(map, x, y))
-                TCOD_console_put_char(NULL, x, y, '#',
-                                      TCOD_BKGND_SET);
+                TCOD_console_put_char(NULL, x, y, '#', TCOD_BKGND_SET);
         }
     }
 }

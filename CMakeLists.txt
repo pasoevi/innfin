@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.5)
 project(innfin)
 
-include_directories(include)
+include_directories("include" "c:\\sdl\\msvc\\include\\")
 link_directories(lib)
 
 set(SOURCE_FILES
