@@ -28,7 +28,9 @@ static void init_message(struct message **message, const char *text,
                          TCOD_color_t col)
 {
     struct message *tmp = malloc(sizeof *tmp);
-    tmp->text = strdup(text);
+
+    tmp->text = malloc(strlen(text) + 1);
+	strcpy(tmp->text, text); /* TODO: free every message->text! */
     tmp->col = col;
     *message = tmp;
 }

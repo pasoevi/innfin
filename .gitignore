@@ -40,3 +40,9 @@ build
 .sconsign.dblite
 
 .idea
+.msvc/Debug
+/msvc/.vs/Innfin/v14
+/msvc/Innfin-msvc.VC.db
+/msvc/Innfin.VC.db
+/msvc/Innfin.VC.VC.opendb
+/msvc/Debug
