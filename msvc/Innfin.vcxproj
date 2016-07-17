@@ -72,18 +72,22 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <IncludePath>C:\sdl\msvc\include;C:\projects\gamedev\rogue\innfin\include;$(IncludePath)</IncludePath>
     <LibraryPath>C:\projects\gamedev\rogue\innfin\lib;$(LibraryPath)</LibraryPath>
+    <SourcePath>C:\projects\gamedev\rogue\innfin\src;$(SourcePath)</SourcePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <IncludePath>C:\sdl\msvc\include;C:\projects\gamedev\rogue\innfin\include;$(IncludePath)</IncludePath>
     <LibraryPath>C:\projects\gamedev\rogue\innfin\lib;$(LibraryPath)</LibraryPath>
+    <SourcePath>C:\projects\gamedev\rogue\innfin\src;$(SourcePath)</SourcePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <IncludePath>C:\sdl\msvc\include;C:\projects\gamedev\rogue\innfin\include;$(IncludePath)</IncludePath>
     <LibraryPath>C:\projects\gamedev\rogue\innfin\lib;$(LibraryPath)</LibraryPath>
+    <SourcePath>C:\projects\gamedev\rogue\innfin\src;$(SourcePath)</SourcePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <IncludePath>C:\sdl\msvc\include;C:\projects\gamedev\rogue\innfin\include;$(IncludePath)</IncludePath>
     <LibraryPath>C:\projects\gamedev\rogue\innfin\lib;$(LibraryPath)</LibraryPath>
+    <SourcePath>C:\projects\gamedev\rogue\innfin\src;$(SourcePath)</SourcePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -156,6 +160,7 @@
     <ClCompile Include="..\src\main.c" />
     <ClCompile Include="..\src\map.c" />
     <ClCompile Include="..\src\parser.c" />
+    <ClCompile Include="..\src\stairs.c" />
     <ClCompile Include="..\src\util.c" />
   </ItemGroup>
   <ItemGroup>
@@ -163,6 +168,7 @@
     <ClInclude Include="..\src\engine.h" />
     <ClInclude Include="..\src\gui.h" />
     <ClInclude Include="..\src\map.h" />
+    <ClInclude Include="..\src\stairs.h" />
     <ClInclude Include="..\src\util.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

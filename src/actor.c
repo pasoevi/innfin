@@ -104,13 +104,14 @@ void free_actor(struct actor *actor)
 
 void free_actors(TCOD_list_t *actors)
 {
-	struct actor **iter;
-	for (iter = (struct actor **)TCOD_list_begin(actors); iter != (struct actor **)TCOD_list_end(actors); iter++) {
-		struct actor *actor = *iter;
-		free_actor(actor);
-	}
-		
-	TCOD_list_clear(actors);
+    struct actor **iter;
+    for (iter = (struct actor **) TCOD_list_begin(actors);
+         iter != (struct actor **) TCOD_list_end(actors); iter++) {
+        struct actor *actor = *iter;
+        free_actor(actor);
+    }
+
+    TCOD_list_clear(actors);
 }
 
 struct actor *init_actor(int x, int y, int ch, const char *name,
@@ -125,6 +126,8 @@ struct actor *init_actor(int x, int y, int ch, const char *name,
     tmp->col = col;
     tmp->render = render;
     tmp->update = common_update;
+
+    tmp->fov_only = true;
 
     tmp->ai = NULL;
     tmp->life = NULL;
@@ -155,7 +158,7 @@ void free_ai(struct ai *ai)
     if (ai != NULL) {
         free_skills(ai->skills);
         free(ai);
-    } 
+    }
 }
 
 void free_skills(struct skills *skills)
@@ -525,7 +528,12 @@ bool is_wieldable(struct actor *actor)
 /* A dummy function to return true for all actors */
 bool is_usable(struct actor *actor)
 {
-    return actor->pickable;
+    bool usable = false;
+
+    if (actor->pickable)
+        usable = true;
+
+    return usable;
 }
 
 struct actor *choose_from_inventory(struct engine *engine,
@@ -633,13 +641,16 @@ void handle_action_key(struct engine *engine, struct actor *actor)
 
             break;
         case '>':
-            engine->gui->message(engine, TCOD_gray, "You can't climb down here. Try on stairs.");
+            engine->gui->message(engine, TCOD_gray,
+                                 "You can't climb down here. Try on stairs.");
             break;
         case '<':
-            engine->gui->message(engine, TCOD_gray, "You can't climb up here. Try on stairs.");
+            engine->gui->message(engine, TCOD_gray,
+                                 "You can't climb up here. Try on stairs.");
             break;
         case 'a':
-            engine->gui->message(engine, TCOD_gray, "You have no special abilities.");
+            engine->gui->message(engine, TCOD_gray,
+                                 "You have no special abilities.");
             break;
         case 'd':
             /* Drop item */
@@ -973,8 +984,8 @@ struct actor *make_healer_potion(int x, int y)
 struct actor *make_curing_potion(int x, int y)
 {
     float amount = 5;    /* TODO: this needs to be made random. */
-    return make_item(x, y, amount, 0, '!', "a curing potion",
-                     TCOD_violet, curing_use);
+    return make_item(x, y, amount, 0, '!', "a curing potion", TCOD_violet,
+                     curing_use);
 }
 
 /** Food **/
@@ -1109,7 +1120,7 @@ bool lightning_wand_use(struct engine *engine, struct actor *actor,
         const char *name = closest->name;
         float dmg_dealt =
                 closest->life->take_damage(engine, actor, closest,
-                                                   item->pickable->power);
+                                           item->pickable->power);
         engine->gui->message(engine, TCOD_light_yellow,
                              "A lightning bolt strikes %s with the damage of %g.\n",
                              name, dmg_dealt);
@@ -1139,14 +1150,19 @@ bool fireball_wand_use(struct engine *engine, struct actor *dealer,
              iter != (struct actor **) TCOD_list_end(engine->actors);
              iter++) {
             struct actor *actor = *iter;
-            if (actor->life && !is_dead(actor) && get_distance(actor, x, y) <= item->pickable->range) {
-                engine->gui->message(engine, TCOD_orange, "%s gets burned for %g hit points.", actor->name, item->pickable->power);
-                actor->life->take_damage(engine, dealer, actor, item->pickable->power);
+            if (actor->life && !is_dead(actor) &&
+                get_distance(actor, x, y) <= item->pickable->range) {
+                engine->gui->message(engine, TCOD_orange,
+                                     "%s gets burned for %g hit points.",
+                                     actor->name, item->pickable->power);
+                actor->life->take_damage(engine, dealer, actor,
+                                         item->pickable->power);
             }
         }
         return use(dealer, item);
     } else {
-        engine->gui->message(engine, TCOD_light_grey, "You are too hungry to invoke that wand.\n");
+        engine->gui->message(engine, TCOD_light_grey,
+                             "You are too hungry to invoke that wand.\n");
         return false;
     }
 }
@@ -1176,13 +1192,15 @@ bool confusion_wand_use(struct engine *engine, struct actor *actor,
         );
         return use(actor, item);
     } else {
-        engine->gui->message(engine, TCOD_light_grey, "You are too hungry to invoke that wand.\n");
+        engine->gui->message(engine, TCOD_light_grey,
+                             "You are too hungry to invoke that wand.\n");
         return false;
     }
 
 }
 
-bool potion_of_poison_use(struct engine *engine, struct actor *actor, struct actor *item)
+bool potion_of_poison_use(struct engine *engine, struct actor *actor,
+                          struct actor *item)
 {
     /* heal the actor */
     if (actor->life) {
@@ -1263,7 +1281,8 @@ bool curing_use(struct engine *engine, struct actor *actor,
 }
 
 /* TODO: Add message to log */
-bool weapon_wield(struct engine *engine, struct actor *actor, struct actor *weapon)
+bool weapon_wield(struct engine *engine, struct actor *actor,
+                  struct actor *weapon)
 {
     bool did_replace = false;
     /* Unwield the previous weapon and put it back into the inventory */

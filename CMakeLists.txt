@@ -7,6 +7,8 @@ link_directories(lib)
 set(SOURCE_FILES
         src/actor.c
         src/actor.h
+        src/stairs.c
+        src/stairs.h
         src/engine.c
         src/engine.h
         src/gui.c

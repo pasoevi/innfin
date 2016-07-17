@@ -42,6 +42,7 @@ enum GameStatus {
 struct engine {
     TCOD_list_t *actors;
     struct actor *player;
+    struct actor *stairs;
     struct map *map;
     int fov_radius;
     bool compute_fov;

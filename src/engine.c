@@ -20,6 +20,7 @@
 
 #include <stdlib.h>
 #include "engine.h"
+#include "stairs.h"
 
 extern void clean(void);
 
@@ -57,6 +58,9 @@ struct engine *engine_init(int w, int h, const char *title)
     engine->player->update = player_update;
     TCOD_list_push(engine->actors, (const void *) engine->player);
 
+    /* Create stairs */
+    engine->stairs = init_stairs(0, 0, '>');
+    TCOD_list_push(engine->actors, (const void *) engine->stairs);
 
     /* Add a map to the engine */
     init_map(engine, 80, 43);
@@ -104,8 +108,7 @@ void engine_render(struct engine *engine)
          iter != (struct actor **) TCOD_list_end(engine->actors);
          iter++) {
         struct actor *actor = *iter;
-        if (!actor->fov_only &&
-            is_explored(engine->map, actor->x, actor->y)
+        if ((!actor->fov_only && is_explored(engine->map, actor->x, actor->y))
             || is_in_fov(engine->map, actor->x, actor->y))
             actor->render(actor);
     }
@@ -113,13 +116,12 @@ void engine_render(struct engine *engine)
     engine->player->render(engine->player);
 }
 
+/*
+* Free all memory directly or indirectly allocated by the
+* engine.
+*/
 void free_engine(struct engine *engine)
 {
-    /*
-     * Free all memory directly or indirectly allocated by the
-     * engine.
-     */
-
     free_gui(engine->gui);
     free_map(engine->map);
     free_actors(engine->actors);

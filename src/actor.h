@@ -124,6 +124,7 @@ struct pickable {
     float range;
     /* damage dealt if an attacker item, hit_points restored if a healer */
     float power;
+
     bool(*use)(struct engine *engine, struct actor *actor,
                struct actor *item);
 
@@ -157,6 +158,7 @@ struct actor {
     TCOD_color_t col;
 
     void (*update)(struct engine *engine, struct actor *actor);
+
     void (*render)(struct actor *actor);    /* Draw an actor to the screen */
 };
 
@@ -176,8 +178,11 @@ void free_actor(struct actor *actor);
 void free_actors(TCOD_list_t *actors);
 
 void free_attacker(struct attacker *attacker);
+
 void free_ai(struct ai *ai);
+
 void free_skills(struct skills *skills);
+
 void free_life(struct life *life);
 
 /* Get distance between the actor and the point specified by x and y. */
@@ -266,7 +271,7 @@ bool use(struct actor *actor, struct actor *item);
 bool lightning_wand_use(struct engine *engine, struct actor *actor,
                         struct actor *item);
 /*
- * Confuses a target for a few turns, making him walki into and attack
+ * Confuses a target for a few turns, making him walk into and attack
  * anything in random directions.
  */
 bool confusion_wand_use(struct engine *engine, struct actor *actor,

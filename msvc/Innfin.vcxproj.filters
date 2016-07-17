@@ -36,6 +36,9 @@
     <ClCompile Include="..\src\parser.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\stairs.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\actor.h">
@@ -51,6 +54,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\src\util.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\stairs.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

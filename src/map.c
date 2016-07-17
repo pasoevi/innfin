@@ -77,6 +77,14 @@ void create_room(struct engine *engine, bool first, int x1, int y1, int x2,
             }
         }
     }
+
+    /*
+     * Set stairs position. As this function is run every time a room is
+     * created, the stairs will finally have the position of the middle of
+     * the last room created in this particular level.
+     */
+    engine->stairs->x = (x1 + x2) / 2;
+    engine->stairs->y = (y1 + y2) / 2;
 }
 
 bool visit_node(TCOD_bsp_t *node, void *user_data)
@@ -134,7 +142,8 @@ void init_map(struct engine *engine, int w, int h)
     engine->map->bsp_traverse.room_num = 0;
     TCOD_bsp_split_recursive(engine->map->bsp, NULL, 8, ROOM_MAX_SIZE,
                              ROOM_MAX_SIZE, 1.5f, 1.5f);
-    TCOD_bsp_traverse_inverted_level_order(engine->map->bsp, visit_node, engine);
+    TCOD_bsp_traverse_inverted_level_order(engine->map->bsp, visit_node,
+                                           engine);
 }
 
 void free_map(struct map *map)
@@ -240,7 +249,8 @@ bool pick_tile(struct engine *engine, int *x, int *y, float max_range)
         for (cx = 0; cx < engine->map->w; cx++) {
             for (cy = 0; cy < engine->map->h; cy++) {
                 if (is_in_fov(engine->map, cx, cy) &&
-                        (max_range == 0 || get_distance(engine->player, cx, cy) <= max_range)) {
+                    (max_range == 0 ||
+                     get_distance(engine->player, cx, cy) <= max_range)) {
 //                    TCOD_color_t col = TCOD_console_get_char_background(NULL, cx, cy);
 //                    col = TCOD_color_multiply_scalar(col, 1.4f);
 //                    TCOD_console_set_char_background(NULL, cx, cy, col, TCOD_BKGND_SET);
@@ -255,7 +265,8 @@ bool pick_tile(struct engine *engine, int *x, int *y, float max_range)
             && (max_range == 0
                 || get_distance(engine->player, engine->mouse.cx,
                                 engine->mouse.cy) <= max_range)) {
-            TCOD_console_set_char_background(NULL, engine->mouse.cx, engine->mouse.cy,
+            TCOD_console_set_char_background(NULL, engine->mouse.cx,
+                                             engine->mouse.cy,
                                              TCOD_white, TCOD_BKGND_SET);
             if (engine->mouse.lbutton_pressed) {
                 *x = engine->mouse.cx;

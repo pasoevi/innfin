@@ -30,7 +30,7 @@ static void init_message(struct message **message, const char *text,
     struct message *tmp = malloc(sizeof *tmp);
 
     tmp->text = malloc(strlen(text) + 1);
-	strcpy(tmp->text, text); /* TODO: free every message->text! */
+    strcpy(tmp->text, text); /* TODO: free every message->text! */
     tmp->col = col;
     *message = tmp;
 }
@@ -90,7 +90,8 @@ static void render_bar(struct engine *engine, int x, int y, int w,
     if (bar_w > 0) {
         /* Draw the bar */
         TCOD_console_set_default_background(engine->gui->con, bar_col);
-        TCOD_console_rect(engine->gui->con, x, y, bar_w, 1, false, TCOD_BKGND_SET);
+        TCOD_console_rect(engine->gui->con, x, y, bar_w, 1, false,
+                          TCOD_BKGND_SET);
     }
 
     /* Print text on top of a bar */
