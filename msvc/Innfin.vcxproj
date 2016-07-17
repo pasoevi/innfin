@@ -70,16 +70,20 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>C:\sdl\msvc\include;C:\projects\gamedev\innfin\include;$(IncludePath)</IncludePath>
+    <IncludePath>C:\sdl\msvc\include;C:\projects\gamedev\rogue\innfin\include;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\projects\gamedev\rogue\innfin\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <IncludePath>C:\sdl\msvc\include;C:\projects\gamedev\innfin\include;$(IncludePath)</IncludePath>
+    <IncludePath>C:\sdl\msvc\include;C:\projects\gamedev\rogue\innfin\include;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\projects\gamedev\rogue\innfin\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>C:\sdl\msvc\include;C:\projects\gamedev\innfin\include;$(IncludePath)</IncludePath>
+    <IncludePath>C:\sdl\msvc\include;C:\projects\gamedev\rogue\innfin\include;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\projects\gamedev\rogue\innfin\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>C:\sdl\msvc\include;C:\projects\gamedev\innfin\include;$(IncludePath)</IncludePath>
+    <IncludePath>C:\sdl\msvc\include;C:\projects\gamedev\rogue\innfin\include;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\projects\gamedev\rogue\innfin\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
