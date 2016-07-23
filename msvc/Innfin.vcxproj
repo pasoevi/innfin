@@ -157,9 +157,12 @@
     <ClCompile Include="..\src\actor.c" />
     <ClCompile Include="..\src\engine.c" />
     <ClCompile Include="..\src\gui.c" />
+    <ClCompile Include="..\src\items.c" />
     <ClCompile Include="..\src\main.c" />
     <ClCompile Include="..\src\map.c" />
+    <ClCompile Include="..\src\monsters.c" />
     <ClCompile Include="..\src\parser.c" />
+    <ClCompile Include="..\src\player.c" />
     <ClCompile Include="..\src\stairs.c" />
     <ClCompile Include="..\src\util.c" />
   </ItemGroup>
@@ -167,7 +170,10 @@
     <ClInclude Include="..\src\actor.h" />
     <ClInclude Include="..\src\engine.h" />
     <ClInclude Include="..\src\gui.h" />
+    <ClInclude Include="..\src\items.h" />
     <ClInclude Include="..\src\map.h" />
+    <ClInclude Include="..\src\monsters.h" />
+    <ClInclude Include="..\src\player.h" />
     <ClInclude Include="..\src\stairs.h" />
     <ClInclude Include="..\src\util.h" />
   </ItemGroup>
