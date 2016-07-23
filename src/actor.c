@@ -54,7 +54,9 @@ struct actor *init_actor(int x, int y, char ch, const char *name,
 
 void free_actor(struct actor *actor)
 {
-    /* TODO: Free all items in the inventory */
+    /*
+     * TODO: Free all items in the inventory
+     **/
     free_attacker(actor->attacker);
     free_life(actor->life);
     free_ai(actor->ai);
@@ -75,8 +77,8 @@ void free_actors(TCOD_list_t *actors)
 
 struct ai *init_ai(void (*update)(struct engine *engine, struct actor *actor),
                    bool(*move_or_attack)(struct engine *engine,
-                                         struct actor *actor, int targetx,
-                                         int targety))
+                                         struct actor *actor, int target_x,
+                                         int target_y))
 {
     struct ai *tmp = malloc(sizeof *tmp);
     tmp->update = update;
@@ -204,6 +206,7 @@ void confused_update(struct engine *engine, struct actor *actor)
             }
         }
     }
+
     actor->ai->num_turns--;
     if (actor->ai->num_turns == 0) {
         struct ai *tmp = actor->ai;
@@ -493,7 +496,7 @@ struct ai *make_confused_ai(struct actor *actor, int num_turns)
 /* 
  * Generic item-maker function. Weapon items are made by a different
  * function 
-*/
+ */
 struct actor *make_item(int x, int y, float power, float range,
                         const char ch, const char *name, TCOD_color_t col,
                         bool(*use)(struct engine *engine,
@@ -509,7 +512,6 @@ struct actor *make_item(int x, int y, float power, float range,
 }
 
 /* Wands */
-
 struct actor *make_lightning_wand(int x, int y)
 {
     struct actor *item =
@@ -540,7 +542,6 @@ struct actor *make_confusion_wand(int x, int y)
 }
 
 /** Potions **/
-
 struct actor *make_potion_of_posion(int x, int y)
 {
     return make_item(x, y, 10, 0, '6', "a potion of poisoning",
