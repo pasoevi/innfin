@@ -83,12 +83,6 @@ void free_actors(TCOD_list_t *actors)
     TCOD_list_clear(actors);
 }
 
-struct skills *init_skills()
-{
-    struct skills *skills = malloc(sizeof *skills);
-    return skills;
-}
-
 struct ai *init_ai(void (*update)(struct engine *engine, struct actor *actor),
                    bool(*move_or_attack)(struct engine *engine,
                                          struct actor *actor, int target_x,
@@ -108,15 +102,8 @@ struct ai *init_ai(void (*update)(struct engine *engine, struct actor *actor),
 void free_ai(struct ai *ai)
 {
     if (ai != NULL) {
-        /*free_skills(ai->skills);*/
         free(ai);
     }
-}
-
-void free_skills(struct skills *skills)
-{
-    if (skills != NULL)
-        free(skills);
 }
 
 struct attacker *init_attacker(float power,
@@ -124,12 +111,12 @@ struct attacker *init_attacker(float power,
                                               struct actor *dealer,
                                               struct actor *target))
 {
-    struct attacker *tmp = malloc(sizeof *tmp);
-    tmp->attack = attack;
-    tmp->power = power;
-    tmp->calc_hit_power = calc_hit_power;
-    tmp->weapon = NULL;
-    return tmp;
+    struct attacker *attacker = malloc(sizeof *attacker);
+    attacker->attack = attack;
+    attacker->power = power;
+    attacker->calc_hit_power = calc_hit_power;
+    attacker->weapon = NULL;
+    return attacker;
 }
 
 void free_attacker(struct attacker *attacker)
@@ -146,14 +133,14 @@ struct life *init_life(
                              struct actor *target, float damage),
         void (*die)(struct engine *engine, struct actor *actor))
 {
-    struct life *tmp = malloc(sizeof *tmp);
-    tmp->die = die;
-    tmp->defence = defence;
-    tmp->corpse_name = corpse_name;
-    tmp->take_damage = take_damage;
-    tmp->max_hp = max_hp;
-    tmp->hp = hp;
-    return tmp;
+    struct life *life = malloc(sizeof *life);
+    life->die = die;
+    life->defence = defence;
+    life->corpse_name = corpse_name;
+    life->take_damage = take_damage;
+    life->max_hp = max_hp;
+    life->hp = hp;
+    return life;
 }
 
 void free_life(struct life *life)
@@ -478,11 +465,11 @@ bool is_usable(struct actor *actor)
 
 struct container *init_container(int capacity)
 {
-    struct container *tmp = malloc(sizeof *tmp);
-    tmp->capacity = capacity;
-    tmp->inventory = TCOD_list_new();
+    struct container *container = malloc(sizeof *container);
+    container->capacity = capacity;
+    container->inventory = TCOD_list_new();
 
-    return tmp;
+    return container;
 }
 
 struct pickable *init_pickable(float power, float range,
@@ -490,11 +477,11 @@ struct pickable *init_pickable(float power, float range,
                                           struct actor *actor,
                                           struct actor *item))
 {
-    struct pickable *tmp = malloc(sizeof *tmp);
-    tmp->power = power;
-    tmp->range = range;
-    tmp->use = use;
-    return tmp;
+    struct pickable *pickable = malloc(sizeof *pickable);
+    pickable->power = power;
+    pickable->range = range;
+    pickable->use = use;
+    return pickable;
 }
 
 struct ai *make_confused_ai(struct actor *actor, int num_turns)
@@ -540,7 +527,7 @@ struct actor *make_fireball_wand(int x, int y)
     struct actor *item = make_item(x, y, 10, 3, '/', "a fireball wand",
                                    TCOD_dark_orange,
                                    fireball_wand_use);
-    item->pickable->targetting_range = 8;
+    item->pickable->targeting_range = 8;
     item->pickable->default_food_cost = 15;
     return item;
 }
@@ -550,7 +537,7 @@ struct actor *make_confusion_wand(int x, int y)
     struct actor *item =
             make_item(x, y, 0, 1, '/', "a wand of confusion",
                       TCOD_light_green, confusion_wand_use);
-    item->pickable->targetting_range = 8;
+    item->pickable->targeting_range = 8;
     item->pickable->default_food_cost = 8;
     return item;
 }
@@ -725,7 +712,7 @@ bool fireball_wand_use(struct engine *engine, struct actor *dealer,
     engine->gui->message(engine, TCOD_cyan,
                          "Left-click a target tile for the fireball,\nor right-click to cancel.");
     int x = 0, y = 0;
-    if (!pick_tile(engine, &x, &y, item->pickable->targetting_range))
+    if (!pick_tile(engine, &x, &y, item->pickable->targeting_range))
         return false;
 
     if (make_hungry(dealer, item->pickable->calc_food_cost(dealer, item))) {
@@ -760,7 +747,7 @@ bool confusion_wand_use(struct engine *engine, struct actor *actor,
     engine->gui->message(engine, TCOD_cyan,
                          "Left-click an enemy to confuse it,\nor right-click to cancel.");
     int x = 0, y = 0;
-    if (!pick_tile(engine, &x, &y, item->pickable->targetting_range))
+    if (!pick_tile(engine, &x, &y, item->pickable->targeting_range))
         return false;
 
     if (make_hungry

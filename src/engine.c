@@ -26,7 +26,7 @@
 
 extern void clean(void);
 
-static const char *WELCOME_MESSAGE =
+static const char *WELCOME_MSG =
         "Welcome stranger!\nPrepare to perish in the Tombs of the Ancient Kings.";
 
 /*
@@ -57,6 +57,7 @@ struct engine *engine_init(int w, int h, const char *title)
     engine->game_status = STARTUP;
 
     engine->actors = TCOD_list_new();
+
     /* Create a player */
     engine->player = make_player(40, 25);
     engine->player->update = player_update;
@@ -68,7 +69,7 @@ struct engine *engine_init(int w, int h, const char *title)
 
     /* Add a map to the engine */
     init_map(engine, 80, 43);
-    engine->gui->message(engine, TCOD_red, WELCOME_MESSAGE);
+    engine->gui->message(engine, TCOD_red, WELCOME_MSG);
     return engine;
 }
 

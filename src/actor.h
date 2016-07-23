@@ -48,9 +48,8 @@ struct ai {
 
     void (*update)(struct engine *engine, struct actor *actor);
 
-    bool(*move_or_attack)(struct engine *engine,
-                          struct actor *actor, int targetx,
-                          int targety);
+    bool(*move_or_attack)(struct engine *engine, struct actor *actor,
+                          int target_x, int target_y);
 
     struct ai *old_ai;
     /* confused actors have their previous minds saved here. */
@@ -67,7 +66,6 @@ struct ai {
  */
 struct attacker {
     struct actor *weapon;
-    /* */
     float power;
 
     float (*calc_hit_power)(struct engine *engine, struct actor *dealer,
@@ -109,27 +107,26 @@ struct life {
 struct pickable {
     bool auto_pickup;
     /* desired by every actor, they pick it without pressing 'g' */
-    float targetting_range;
+    float targeting_range;
 
     /* range at which the target can be selected */
     float (*calc_food_cost)(struct actor *actor,
                             struct actor *item);
 
+    /*
+     * The amount by which hunger increases. *DO NOT* access this directly,
+     * use the calculate_food_cost function
+     **/
     float default_food_cost;
-    /* the amount by which hunger
-                       increases. *DO NOT* access this
-                       directly, use the
-                       calculate_food_cost function */
     /* range the item has effect starting from the target tile */
     float range;
     /* damage dealt if an attacker item, hit_points restored if a healer */
     float power;
 
-    bool(*use)(struct engine *engine, struct actor *actor,
-               struct actor *item);
+    bool(*use)(struct engine *engine, struct actor *actor, struct actor *item);
 
-    bool(*blow)(struct engine *engine, struct actor *actor,
-                struct actor *weapon, struct actor *target);
+    bool(*blow)(struct engine *engine, struct actor *actor, struct actor *weapon,
+                struct actor *target);
 };
 
 /* 
@@ -146,9 +143,10 @@ struct actor {
     int x;
     int y;
     char ch;
-    bool blocking;        /* can we walk on this actor? */
-    bool fov_only;
+    /* can we walk on this actor? */
+    bool blocking;
     /* display only when in field of view */
+    bool fov_only;
     struct attacker *attacker;
     struct life *life;
     struct ai *ai;
@@ -156,10 +154,9 @@ struct actor {
     struct container *inventory;
     const char *name;
     TCOD_color_t col;
-
     void (*update)(struct engine *engine, struct actor *actor);
-
-    void (*render)(struct actor *actor);    /* Draw an actor to the screen */
+    /* Draw an actor to the screen */
+    void (*render)(struct actor *actor);
 };
 
 /***************** Actor creation & destruction functions *********************/
@@ -185,10 +182,6 @@ struct ai *init_ai(void (*update)(struct engine *engine, struct actor *actor),
                                          int target_y));
 
 void free_ai(struct ai *ai);
-
-struct skills *init_skills();
-
-void free_skills(struct skills *skills);
 
 struct life *init_life(float max_hp, float hp, float defence,
                        const char *corpse_name,
