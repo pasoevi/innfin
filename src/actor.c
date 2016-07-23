@@ -422,8 +422,6 @@ bool level_up(struct engine *engine, struct actor *actor)
     return false;
 }
 
-/*** Player functions WERE HERE @@ ***/
-
 bool is_edible(struct actor *actor)
 {
     bool is_edible = false;
@@ -457,155 +455,6 @@ bool is_usable(struct actor *actor)
         usable = true;
 
     return usable;
-}
-
-struct actor *choose_from_inventory(struct engine *engine,
-                                    struct actor *actor,
-                                    const char *window_title,
-                                    bool(*predicate)(struct actor *
-                                    actor))
-{
-    /* Display the inventory frame */
-    TCOD_console_t *con = engine->gui->inventory_con;
-    TCOD_color_t color = (TCOD_color_t) {200, 180, 50};
-    TCOD_console_set_default_foreground(con, color);
-    TCOD_console_print_frame(con, 0, 0, INVENTORY_WIDTH,
-                             INVENTORY_HEIGHT, true,
-                             TCOD_BKGND_DEFAULT, window_title);
-
-    /*
-     * Count the items that specify the predicate and display the
-     * items with their respective shortcuts.
-     */
-    TCOD_console_set_default_foreground(con, TCOD_white);
-    int num_items = 0;
-    int shortcut = 'a';
-    int y = 1;
-    struct actor **iter;
-    for (iter =
-                 (struct actor **) TCOD_list_begin(actor->
-                         inventory->inventory);
-         iter !=
-         (struct actor **) TCOD_list_end(actor->inventory->inventory);
-         iter++) {
-        struct actor *item = *iter;
-        if (predicate(item)) {
-            TCOD_console_print(con, 2, y, "(%c) %s", shortcut,
-                               item->name);
-            y++;
-            num_items++;
-        }
-        shortcut++;
-
-    }
-
-    /* Blit the inventory console to the root console. */
-    TCOD_console_blit(con, 0, 0, INVENTORY_WIDTH, INVENTORY_HEIGHT,
-                      NULL, engine->window_w / 2 - INVENTORY_WIDTH / 2,
-                      engine->window_h / 2 - INVENTORY_HEIGHT / 2, 1.f,
-                      1.f);
-    TCOD_console_flush();
-
-    /* wait for a key press */
-    TCOD_key_t key;
-    TCOD_sys_wait_for_event(TCOD_EVENT_KEY_PRESS, &key, NULL, true);
-    if (key.vk == TCODK_CHAR) {
-        int actor_index = key.c - 'a';
-        if (actor_index >= 0
-            && actor_index <
-               TCOD_list_size(actor->inventory->inventory)) {
-            struct actor *tmp =
-                    TCOD_list_get(actor->inventory->inventory,
-                                  actor_index);
-            if (predicate(tmp))
-                return tmp;
-            else
-                engine->gui->message(engine,
-                                     TCOD_light_grey,
-                                     "You can't %s that.\n",
-                                     window_title);
-        }
-    }
-    return NULL;
-}
-
-/* 
- * Invoke the command on the item which is chosen by the item_chooser
- * function. The command to be invoked is specified as the *command*
- * argument or if passed NULL, it is implied to be the
- * item->pickable->use function.
- */
-void invoke_command(struct engine *engine,
-                    bool command(struct engine *engine, struct actor *actor,
-                                 struct actor *item),
-                    bool (*item_chooser)(struct actor *actor),
-                    const char *window_title)
-{
-    struct actor *item =
-            choose_from_inventory(engine, engine->player, window_title,
-                                  item_chooser);
-    if (item) {
-        if (command)
-            command(engine, engine->player, item);
-        else
-            item->pickable->use(engine, engine->player, item);
-        engine->game_status = NEW_TURN;
-    }
-}
-
-
-void handle_action_key(struct engine *engine, struct actor *actor)
-{
-    /* */
-    switch (engine->key.c) {
-        case ',':
-        case 'g':
-            try_pick(engine);
-
-            break;
-        case '>':
-            engine->gui->message(engine, TCOD_gray,
-                                 "You can't climb down here. Try on stairs.");
-            break;
-        case '<':
-            engine->gui->message(engine, TCOD_gray,
-                                 "You can't climb up here. Try on stairs.");
-            break;
-        case 'a':
-            engine->gui->message(engine, TCOD_gray,
-                                 "You have no special abilities.");
-            break;
-        case 'd':
-            /* Drop item */
-            invoke_command(engine, drop, is_usable, "drop");
-            break;
-        case 'D':
-            /* Drop the last item */
-            drop_last(engine, actor);
-            break;
-        case 'e':
-            /* Eat */
-            invoke_command(engine, NULL, is_edible, "eat");
-            break;
-        case 'i':
-            /* display inventory */
-            invoke_command(engine, NULL, is_usable, "inventory");
-            break;
-        case 'q':
-            /* Quaff */
-            invoke_command(engine, NULL, is_drinkable, "quaff");
-            break;
-
-        case 'W':
-            /* Wield */
-            invoke_command(engine, NULL, is_wieldable, "wield");
-            break;
-        default:
-            engine->gui->message(engine, TCOD_grey,
-                                 "Unknown command: %c.\n",
-                                 engine->key.c);
-            break;
-    }
 }
 
 /* MONSTER FUNCTIONS WERE HERE @@ */
@@ -993,7 +842,9 @@ bool healer_use(struct engine *engine, struct actor *actor,
     return false;
 }
 
-/* TODO: At the moment does the same as the HEALTH POTION (See above) */
+/*
+ * TODO: At the moment does the same as the HEALTH POTION (See above)
+ **/
 bool curing_use(struct engine *engine, struct actor *actor,
                 struct actor *item)
 {

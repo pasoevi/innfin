@@ -185,6 +185,17 @@ void free_skills(struct skills *skills);
 
 void free_life(struct life *life);
 
+/************************** Actor identifying functions ***********************/
+bool is_edible(struct actor *actor);
+
+bool is_drinkable(struct actor *actor);
+
+bool is_wieldable(struct actor *actor);
+
+bool is_usable(struct actor *actor);
+
+/***************************** Utility functions ******************************/
+
 /* Get distance between the actor and the point specified by x and y. */
 float get_distance(struct actor *actor, int x, int y);
 
@@ -198,6 +209,39 @@ struct actor *get_closest_monster(struct engine *engine, int x, int y,
 /* Get actor closest to the *actor* within range, including player. */
 struct actor *get_closest_actor(struct engine *engine, struct actor *actor,
                                 float range);
+
+/*
+ * Calculate the amount by which to increase hunger upon using a certain
+ * item. Many items have their specific calculating functions, if so,
+ * an item pickable will have a pointer to his own calculating
+ * function. Call that function instead of this.
+ */
+float calc_food_cost(struct actor *actor, struct actor *item);
+
+/* Returns -1 if inedible */
+float calc_food_value(struct actor *food);
+
+/*
+ * Returns message structure that contains the text (hungry, starving,
+ * etc) and the appropriate color with which to display in status bar.
+ */
+struct message get_hunger_status(struct actor *actor);
+
+/*
+ * Calculate the actual damage dealt to the target.
+ */
+float calc_hit_power(struct engine *engine, struct actor *dealer,
+                     struct actor *target);
+
+/*
+ * Calculate the experience points earned by killing a monster.
+ **/
+float calc_kill_reward(struct engine *engine, struct actor *actor,
+                       struct actor *target);
+
+bool should_level_up(struct engine *engine, struct actor *actor);
+
+/***************** Actor creation & destruction functions *********************/
 
 struct ai *init_ai(void (*update)(struct engine *engine, struct actor *actor),
                    bool(*move_or_attack)(struct engine *engine,
@@ -225,22 +269,6 @@ struct pickable *init_pickable(float power, float range,
                                           struct actor *actor,
                                           struct actor *item));
 
-bool inventory_add(struct container *container, struct actor *actor);
-
-void inventory_remove(struct container *container, struct actor *actor);
-/*
- * Examine the location of the player and try picking the items.
- */
-bool try_pick(struct engine *engine);
-
-bool pick(struct engine *engine, struct actor *actor, struct actor *item);
-
-bool drop(struct engine *engine, struct actor *actor, struct actor *item);
-
-bool drop_last(struct engine *engine, struct actor *actor);
-
-/*** Item factory functions ***/
-
 struct actor *make_item(int x, int y, float power, float range,
                         const char ch, const char *name, TCOD_color_t col,
                         bool(*use)(struct engine *engine,
@@ -267,18 +295,25 @@ struct actor *make_transfiguration_wand(int x, int y);
 /* Weapons */
 struct actor *make_kindzal(int x, int y);
 
+
+/****************** Functions that act as actions ****************/
+
+bool inventory_add(struct container *container, struct actor *actor);
+
+void inventory_remove(struct container *container, struct actor *actor);
+/*
+ * Examine the location of the player and try picking the items.
+ */
+bool try_pick(struct engine *engine);
+
+bool pick(struct engine *engine, struct actor *actor, struct actor *item);
+
+bool drop(struct engine *engine, struct actor *actor, struct actor *item);
+
+bool drop_last(struct engine *engine, struct actor *actor);
+
 /* Other tools */
 
-/*
- * Calculate the amount by which to increase hunger upon using an
- * item. Many items have their specific calculating functions, if so,
- * an item pickable will have a pointer to his own calculating
- * function. Call that function instead of this.
- */
-float calc_food_cost(struct actor *actor, struct actor *item);
-
-/* Returns -1 if inedible */
-float calc_food_value(struct actor *food);
 /* 
  * A common function to all usable items. All item-specific *_use
  * functions should call this as the last statemunt.
@@ -337,32 +372,14 @@ bool kindzal_blow(struct engine *engine, struct actor *actor,
  */
 bool eat(struct engine *engine, struct actor *actor, struct actor *food);
 
-/*
- * Returns message structure that contains the text (hungry, starving,
- * etc) and the appropriate color with which to display in status bar.
- */
-struct message get_hunger_status(struct actor *actor);
-
 bool make_hungry(struct actor *actor, float amount);
-
-float calc_hit_power(struct engine *engine, struct actor *dealer, struct
-        actor *target);
-
-/* */
-float calc_kill_reward(struct engine *engine, struct actor *actor,
-                       struct actor *target);
 
 float reward_kill(struct engine *engine, struct actor *actor,
                   struct actor *target);
 
-bool should_level_up(struct engine *engine, struct actor *actor);
-
 bool level_up(struct engine *engine, struct actor *actor);
 
 void render_actor(struct actor *actor);
-
-/*** Monster factory functions ***/
-/******* WERE HERE @@ **********/
 
 /*
  * Ally update function, behaves like typical monsters except that it

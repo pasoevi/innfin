@@ -1,7 +1,7 @@
 /*
   Copyright (C) 2016 Sergi Pasoev.
 
-  This pragram is free software: you can redistribute it and/or modify
+  This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
   the Free Software Foundation, either version 3 of the License, or (at
   your option) any later version.
@@ -60,7 +60,7 @@ struct engine *engine_init(int w, int h, const char *title)
     TCOD_list_push(engine->actors, (const void *) engine->player);
 
     /* Create stairs */
-    engine->stairs = init_stairs(0, 0, '>');
+    engine->stairs = init_stairs(40, 25, '>');
     TCOD_list_push(engine->actors, (const void *) engine->stairs);
 
     /* Add a map to the engine */

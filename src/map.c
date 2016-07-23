@@ -1,7 +1,7 @@
 /*
   Copyright (C) 2016 Sergi Pasoev.
 
-  This pragram is free software: you can redistribute it and/or modify
+  This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
   the Free Software Foundation, either version 3 of the License, or (at
   your option) any later version.
@@ -84,8 +84,8 @@ void create_room(struct engine *engine, bool first, int x1, int y1, int x2,
      * created, the stairs will finally have the position of the middle of
      * the last room created in this particular level.
      */
-    engine->stairs->x = (x1 + x2) / 2;
-    engine->stairs->y = (y1 + y2) / 2;
+    /*engine->stairs->x = (x1 + x2) / 2;
+    engine->stairs->y = (y1 + y2) / 2;*/
 }
 
 bool visit_node(TCOD_bsp_t *node, void *user_data)
@@ -93,8 +93,8 @@ bool visit_node(TCOD_bsp_t *node, void *user_data)
     struct engine *engine = (struct engine *) user_data;
 
     /* struct BSPTraverse trv = engine->map->bsp_traverse; */
-    static int lastx;
-    static int lasty;
+    static int last_x;
+    static int last_y;
     static int room_num;
 
     if (TCOD_bsp_is_leaf(node)) {
@@ -112,13 +112,13 @@ bool visit_node(TCOD_bsp_t *node, void *user_data)
 
         if (room_num != 0) {
             /* dig a corridor from last room */
-            dig(engine->map, lastx, lasty, x + w / 2, lasty);
-            dig(engine->map, x + w / 2, lasty, x + w / 2,
+            dig(engine->map, last_x, last_y, x + w / 2, last_y);
+            dig(engine->map, x + w / 2, last_y, x + w / 2,
                 y + h / 2);
         }
 
-        lastx = x + w / 2;
-        lasty = y + h / 2;
+        last_x = x + w / 2;
+        last_y = y + h / 2;
         room_num++;
     }
     return true;
