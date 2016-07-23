@@ -20,6 +20,7 @@
 
 #include <stdlib.h>
 #include "engine.h"
+#include "player.h"
 #include "stairs.h"
 
 extern void clean(void);

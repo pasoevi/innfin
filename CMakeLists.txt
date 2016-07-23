@@ -17,7 +17,7 @@ set(SOURCE_FILES
         src/map.c
         src/map.h
         src/util.c
-        src/util.h)
+        src/util.h src/monsters.c src/items.c src/items.h src/monsters.h src/player.c src/player.h)
 
 add_executable(innfin ${SOURCE_FILES})
 target_link_libraries(innfin libtcod-mingw-debug)

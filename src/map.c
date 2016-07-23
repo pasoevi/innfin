@@ -19,6 +19,7 @@
 */
 
 #include "map.h"
+#include "monsters.h"
 #include <stdlib.h>
 
 static const int MAX_ROOM_MONSTERS = 3;

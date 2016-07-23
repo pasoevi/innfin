@@ -199,6 +199,25 @@ struct actor *get_closest_monster(struct engine *engine, int x, int y,
 struct actor *get_closest_actor(struct engine *engine, struct actor *actor,
                                 float range);
 
+struct ai *init_ai(void (*update)(struct engine *engine, struct actor *actor),
+                   bool(*move_or_attack)(struct engine *engine,
+                                         struct actor *actor, int targetx,
+                                         int targety));
+
+struct life *init_life(
+        float max_hp,
+        float hp, float defence,
+        const char *corpse_name,
+        float (*take_damage)(struct engine *engine, struct actor *dealer,
+                             struct actor *target, float damage),
+        void (*die)(struct engine *engine,
+                    struct actor *actor));
+
+struct attacker *init_attacker(float power,
+                               void (*attack)(struct engine *engine,
+                                              struct actor *dealer,
+                                              struct actor *target));
+
 struct container *init_container(int capacity);
 
 struct pickable *init_pickable(float power, float range,
@@ -340,45 +359,10 @@ bool should_level_up(struct engine *engine, struct actor *actor);
 
 bool level_up(struct engine *engine, struct actor *actor);
 
-/*** Monster factory functions ***/
-struct actor *make_player(int x, int y);
-
-struct actor *make_orc(int x, int y);
-
-struct actor *make_goblin(int x, int y);
-
-struct actor *make_troll(int x, int y);
-
-struct actor *make_dragon(int x, int y);
-
 void render_actor(struct actor *actor);
 
-void player_update(struct engine *engine, struct actor *actor);
-
-void monster_update(struct engine *engine, struct actor *actor);
-
-/*
- * Attacks player and other monsters as well.
- */
-void dragon_update(struct engine *engine, struct actor *actor);
-
-/*
- * Temporary AI for actors that are confused. They move to random
- * directions attacking everything in their way. 
- */
-void confused_update(struct engine *engine, struct actor *actor);
-
-/*
- * Monsters that wander do not immediately attack anybody, but they
- * start behaving as typical attacker intelligences once attacked.
- */
-void wandering_update(struct engine *engine, struct actor *actor);
-
-bool player_move_or_attack(struct engine *engine, struct actor *actor,
-                           int x, int y);
-
-bool monster_move_or_attack(struct engine *engine, struct actor *actor,
-                            int x, int y);
+/*** Monster factory functions ***/
+/******* WERE HERE @@ **********/
 
 /*
  * Ally update function, behaves like typical monsters except that it
@@ -402,16 +386,5 @@ float take_damage(struct engine *engine, struct actor *dealer,
    this function.
 */
 void die(struct engine *engine, struct actor *actor);
-
-/* 
- * Called when the player hit points equal to zero. It first calls the
- * common die function. 
- *
- * Also calls the function that creates character memorial file and
- * deletes saved game if present.
- */
-void player_die(struct engine *engine, struct actor *actor);
-
-void monster_die(struct engine *engine, struct actor *actor);
 
 #endif
