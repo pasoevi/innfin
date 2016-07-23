@@ -1,7 +1,7 @@
 /*
   Copyright (C) 2016 Sergi Pasoev.
 
-  This pragram is free software: you can redistribute it and/or modify
+  This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
   the Free Software Foundation, either version 3 of the License, or (at
   your option) any later version.
@@ -162,14 +162,16 @@ struct actor {
     void (*render)(struct actor *actor);    /* Draw an actor to the screen */
 };
 
-/* 
-   Initialise the actor by the values given as parameters. 
-   Not all values are provided as arguments. 
-   
+/***************** Actor creation & destruction functions *********************/
+
+/*
+   Initialise the actor by the values given as parameters.
+   Not all values are provided as arguments.
+
    NOTE: this is a low level function, intended to be used ONLY by
    wrapper functions e.g. make_orc, make_player, etc.
 */
-struct actor *init_actor(int w, int h, int ch, const char *name,
+struct actor *init_actor(int w, int h, char ch, const char *name,
                          TCOD_color_t col,
                          void (*render)(struct actor *));
 
@@ -177,15 +179,69 @@ void free_actor(struct actor *actor);
 
 void free_actors(TCOD_list_t *actors);
 
-void free_attacker(struct attacker *attacker);
+struct ai *init_ai(void (*update)(struct engine *engine, struct actor *actor),
+                   bool(*move_or_attack)(struct engine *engine,
+                                         struct actor *actor, int target_x,
+                                         int target_y));
 
 void free_ai(struct ai *ai);
 
 void free_skills(struct skills *skills);
 
+struct life *init_life(
+        float max_hp,
+        float hp, float defence,
+        const char *corpse_name,
+        float (*take_damage)(struct engine *engine, struct actor *dealer,
+                             struct actor *target, float damage),
+        void (*die)(struct engine *engine,
+                    struct actor *actor));
+
 void free_life(struct life *life);
 
+struct attacker *init_attacker(float power,
+                               void (*attack)(struct engine *engine,
+                                              struct actor *dealer,
+                                              struct actor *target));
+
+void free_attacker(struct attacker *attacker);
+
+struct container *init_container(int capacity);
+
+struct pickable *init_pickable(float power, float range,
+                               bool(*use)(struct engine *engine,
+                                          struct actor *actor,
+                                          struct actor *item));
+
+struct actor *make_item(int x, int y, float power, float range,
+                        const char ch, const char *name, TCOD_color_t col,
+                        bool(*use)(struct engine *engine,
+                                   struct actor *actor,
+                                   struct actor *item));
+
+/* Food */
+struct actor *make_food(int x, int y);
+
+/* Potions */
+struct actor *make_healer_potion(int x, int y);
+
+struct actor *make_curing_potion(int x, int y);
+
+/* Wands */
+struct actor *make_lightning_wand(int x, int y);
+
+struct actor *make_fireball_wand(int x, int y);
+
+struct actor *make_confusion_wand(int x, int y);
+
+struct actor *make_transfiguration_wand(int x, int y);
+
+/* Weapons */
+struct actor *make_kindzal(int x, int y);
+
 /************************** Actor identifying functions ***********************/
+bool is_dead(struct actor *actor);
+
 bool is_edible(struct actor *actor);
 
 bool is_drinkable(struct actor *actor);
@@ -240,61 +296,6 @@ float calc_kill_reward(struct engine *engine, struct actor *actor,
                        struct actor *target);
 
 bool should_level_up(struct engine *engine, struct actor *actor);
-
-/***************** Actor creation & destruction functions *********************/
-
-struct ai *init_ai(void (*update)(struct engine *engine, struct actor *actor),
-                   bool(*move_or_attack)(struct engine *engine,
-                                         struct actor *actor, int targetx,
-                                         int targety));
-
-struct life *init_life(
-        float max_hp,
-        float hp, float defence,
-        const char *corpse_name,
-        float (*take_damage)(struct engine *engine, struct actor *dealer,
-                             struct actor *target, float damage),
-        void (*die)(struct engine *engine,
-                    struct actor *actor));
-
-struct attacker *init_attacker(float power,
-                               void (*attack)(struct engine *engine,
-                                              struct actor *dealer,
-                                              struct actor *target));
-
-struct container *init_container(int capacity);
-
-struct pickable *init_pickable(float power, float range,
-                               bool(*use)(struct engine *engine,
-                                          struct actor *actor,
-                                          struct actor *item));
-
-struct actor *make_item(int x, int y, float power, float range,
-                        const char ch, const char *name, TCOD_color_t col,
-                        bool(*use)(struct engine *engine,
-                                   struct actor *actor,
-                                   struct actor *item));
-
-/* Food */
-struct actor *make_food(int x, int y);
-
-/* Potions */
-struct actor *make_healer_potion(int x, int y);
-
-struct actor *make_curing_potion(int x, int y);
-
-/* Wands */
-struct actor *make_lightning_wand(int x, int y);
-
-struct actor *make_fireball_wand(int x, int y);
-
-struct actor *make_confusion_wand(int x, int y);
-
-struct actor *make_transfiguration_wand(int x, int y);
-
-/* Weapons */
-struct actor *make_kindzal(int x, int y);
-
 
 /****************** Functions that act as actions ****************/
 
@@ -390,8 +391,6 @@ void ally_update(struct engine *engine, struct actor *actor);
 
 void attack(struct engine *engine, struct actor *dealer,
             struct actor *target);
-
-bool is_dead(struct actor *actor);
 
 float take_damage(struct engine *engine, struct actor *dealer,
                   struct actor *target, float damage);

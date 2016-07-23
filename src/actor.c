@@ -25,6 +25,127 @@
 
 extern void compute_fov(struct engine *engine);
 
+void common_update(struct engine *engine, struct actor *actor);
+
+/***************** Actor creation & destruction functions *********************/
+struct actor *init_actor(int x, int y, char ch, const char *name,
+                         TCOD_color_t col, void (*render)(struct actor *))
+{
+    struct actor *tmp = malloc(sizeof *tmp);
+
+    tmp->x = x;
+    tmp->y = y;
+    tmp->ch = ch;
+    tmp->name = name;
+    tmp->col = col;
+    tmp->render = render;
+    tmp->update = common_update;
+
+    tmp->fov_only = true;
+
+    tmp->ai = NULL;
+    tmp->life = NULL;
+    tmp->attacker = NULL;
+    tmp->pickable = NULL;
+    tmp->inventory = NULL;
+
+    return tmp;
+}
+
+void free_actor(struct actor *actor)
+{
+    /* TODO: Free all items in the inventory */
+    free_attacker(actor->attacker);
+    free_life(actor->life);
+    free_ai(actor->ai);
+    free(actor);
+}
+
+void free_actors(TCOD_list_t *actors)
+{
+    struct actor **iter;
+    for (iter = (struct actor **) TCOD_list_begin(actors);
+         iter != (struct actor **) TCOD_list_end(actors); iter++) {
+        struct actor *actor = *iter;
+        free_actor(actor);
+    }
+
+    TCOD_list_clear(actors);
+}
+
+struct ai *init_ai(void (*update)(struct engine *engine, struct actor *actor),
+                   bool(*move_or_attack)(struct engine *engine,
+                                         struct actor *actor, int targetx,
+                                         int targety))
+{
+    struct ai *tmp = malloc(sizeof *tmp);
+    tmp->update = update;
+    tmp->move_or_attack = move_or_attack;
+    tmp->level_up = level_up;
+    tmp->xp_level = 1;
+    tmp->xp = 0.f;
+    tmp->skills = malloc(sizeof *tmp->skills);
+    return tmp;
+}
+
+void free_ai(struct ai *ai)
+{
+    if (ai != NULL && ai->skills) {
+        free_skills(ai->skills);
+        free(ai);
+    }
+}
+
+void free_skills(struct skills *skills)
+{
+    if (skills != NULL)
+        free(skills);
+}
+
+struct attacker *init_attacker(float power,
+                               void (*attack)(struct engine *engine,
+                                              struct actor *dealer,
+                                              struct actor *target))
+{
+    struct attacker *tmp = malloc(sizeof *tmp);
+    tmp->attack = attack;
+    tmp->power = power;
+    tmp->calc_hit_power = calc_hit_power;
+    tmp->weapon = NULL;
+    return tmp;
+}
+
+void free_attacker(struct attacker *attacker)
+{
+    if (attacker != NULL)
+        free(attacker);
+}
+
+struct life *init_life(
+        float max_hp,
+        float hp, float defence,
+        const char *corpse_name,
+        float (*take_damage)(struct engine *engine, struct actor *dealer,
+                             struct actor *target, float damage),
+        void (*die)(struct engine *engine,
+                    struct actor *actor))
+{
+    struct life *tmp = malloc(sizeof *tmp);
+    tmp->die = die;
+    tmp->defence = defence;
+    tmp->corpse_name = corpse_name;
+    tmp->take_damage = take_damage;
+    tmp->max_hp = max_hp;
+    tmp->hp = hp;
+    return tmp;
+}
+
+void free_life(struct life *life)
+{
+    if (life != NULL)
+        free(life);
+}
+
 /*** Common functions ***/
 float take_damage(struct engine *engine, struct actor *dealer,
                   struct actor *target, float damage)
@@ -91,129 +212,10 @@ void confused_update(struct engine *engine, struct actor *actor)
     }
 }
 
-void free_actor(struct actor *actor)
-{
-    /* TODO: Free all items in the inventory */
-    free_attacker(actor->attacker);
-    free_life(actor->life);
-    free_ai(actor->ai);
-    free(actor);
-}
-
-void free_actors(TCOD_list_t *actors)
-{
-    struct actor **iter;
-    for (iter = (struct actor **) TCOD_list_begin(actors);
-         iter != (struct actor **) TCOD_list_end(actors); iter++) {
-        struct actor *actor = *iter;
-        free_actor(actor);
-    }
-
-    TCOD_list_clear(actors);
-}
-
-struct actor *init_actor(int x, int y, int ch, const char *name,
-                         TCOD_color_t col, void (*render)(struct actor *))
-{
-    struct actor *tmp = malloc(sizeof *tmp);
-
-    tmp->x = x;
-    tmp->y = y;
-    tmp->ch = ch;
-    tmp->name = name;
-    tmp->col = col;
-    tmp->render = render;
-    tmp->update = common_update;
-
-    tmp->fov_only = true;
-
-    tmp->ai = NULL;
-    tmp->life = NULL;
-    tmp->attacker = NULL;
-    tmp->pickable = NULL;
-    tmp->inventory = NULL;
-
-    return tmp;
-}
-
-struct ai *init_ai(void (*update)(struct engine *engine, struct actor *actor),
-                   bool(*move_or_attack)(struct engine *engine,
-                                         struct actor *actor, int targetx,
-                                         int targety))
-{
-    struct ai *tmp = malloc(sizeof *tmp);
-    tmp->update = update;
-    tmp->move_or_attack = move_or_attack;
-    tmp->level_up = level_up;
-    tmp->xp_level = 1;
-    tmp->xp = 0.f;
-    tmp->skills = malloc(sizeof *tmp->skills);
-    return tmp;
-}
-
-void free_ai(struct ai *ai)
-{
-    if (ai != NULL) {
-        free_skills(ai->skills);
-        free(ai);
-    }
-}
-
-void free_skills(struct skills *skills)
-{
-    if (skills != NULL)
-        free(skills);
-}
-
-struct attacker *init_attacker(float power,
-                               void (*attack)(struct engine *engine,
-                                              struct actor *dealer,
-                                              struct actor *target))
-{
-    struct attacker *tmp = malloc(sizeof *tmp);
-    tmp->attack = attack;
-    tmp->power = power;
-    tmp->calc_hit_power = calc_hit_power;
-    tmp->weapon = NULL;
-    return tmp;
-}
-
-void free_attacker(struct attacker *attacker)
-{
-    if (attacker != NULL)
-        free(attacker);
-}
-
-struct life *init_life(
-        float max_hp,
-        float hp, float defence,
-        const char *corpse_name,
-        float (*take_damage)(struct engine *engine, struct actor *dealer,
-                             struct actor *target, float damage),
-        void (*die)(struct engine *engine,
-                    struct actor *actor))
-{
-    struct life *tmp = malloc(sizeof *tmp);
-    tmp->die = die;
-    tmp->defence = defence;
-    tmp->corpse_name = corpse_name;
-    tmp->take_damage = take_damage;
-    tmp->max_hp = max_hp;
-    tmp->hp = hp;
-    return tmp;
-}
-
-void free_life(struct life *life)
-{
-    if (life != NULL)
-        free(life);
-}
-
 void render_actor(struct actor *actor)
 {
     TCOD_console_set_char(NULL, actor->x, actor->y, actor->ch);
-    TCOD_console_set_char_foreground(NULL, actor->x, actor->y,
-                                     actor->col);
+    TCOD_console_set_char_foreground(NULL, actor->x, actor->y, actor->col);
 }
 
 /*
@@ -457,11 +459,6 @@ bool is_usable(struct actor *actor)
     return usable;
 }
 
-/* MONSTER FUNCTIONS WERE HERE @@ */
-
-/*** Inventory functions ***/
-
-/** Factory functions **/
 struct container *init_container(int capacity)
 {
     struct container *tmp = malloc(sizeof *tmp);

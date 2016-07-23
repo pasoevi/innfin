@@ -26,6 +26,7 @@
 
 struct actor *make_player(int x, int y);
 
+bool descend(struct engine *engine, struct actor *actor, struct actor *stairs);
 
 void player_update(struct engine *engine, struct actor *actor);
 

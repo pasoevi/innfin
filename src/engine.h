@@ -27,8 +27,29 @@
 #include "gui.h"
 
 enum {
+    /* Configuration options */
     WINDOW_W = 80,
-    WINDOW_H = 50
+    WINDOW_H = 50,
+
+    /* Levels, dungeons, portals, places */
+    LVL_DUNGEON_1,
+    LVL_DUNGEON_2,
+    LVL_DUNGEON_3,
+    LVL_DUNGEON_4,
+    LVL_DUNGEON_5,
+    LVL_DUNGEON_6,
+    LVL_DUNGEON_7,
+    LVL_DUNGEON_8,
+    LVL_DUNGEON_9,
+    LVL_DUNGEON_10,
+    LVL_DUNGEON_11,
+    LVL_DUNGEON_12,
+    LVL_DUNGEON_13,
+    LVL_DUNGEON_14,
+    LVL_DUNGEON_15,
+    LVL_DUNGEON_16,
+
+    /* Monsters, items, spells, potions, weapons */
 };
 
 enum GameStatus {
@@ -52,6 +73,7 @@ struct engine {
     struct gui *gui;
     int window_w;
     int window_h;
+    int level;
 
     void (*update)(struct engine *);
 
@@ -59,6 +81,8 @@ struct engine {
 };
 
 struct engine *engine_init(int w, int h, const char *title);
+
+int load_level(struct engine *engine, int level_id);
 
 void free_engine(struct engine *engine);
 

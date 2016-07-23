@@ -52,7 +52,10 @@ struct map {
     struct bsp_traverse bsp_traverse;
 };
 
-/* Initialise the map with w(idth) and h(eight) */
+/*
+ * Initialise the map with w(idth) and h(eight)
+ * Creates new map and assigns it to engine->map.
+ * */
 void init_map(struct engine *engine, int w, int h);
 
 void free_map(struct map *map);

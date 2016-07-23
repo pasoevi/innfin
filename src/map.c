@@ -84,8 +84,8 @@ void create_room(struct engine *engine, bool first, int x1, int y1, int x2,
      * created, the stairs will finally have the position of the middle of
      * the last room created in this particular level.
      */
-    /*engine->stairs->x = (x1 + x2) / 2;
-    engine->stairs->y = (y1 + y2) / 2;*/
+    engine->stairs->x = (x1 + x2) / 2;
+    engine->stairs->y = (y1 + y2) / 2;
 }
 
 bool visit_node(TCOD_bsp_t *node, void *user_data)

@@ -19,6 +19,7 @@
 */
 
 #include <stdlib.h>
+#include <stdio.h>
 #include "engine.h"
 #include "player.h"
 #include "stairs.h"
@@ -43,6 +44,8 @@ struct engine *engine_init(int w, int h, const char *title)
     TCOD_console_init_root(w, h, title, false, TCOD_RENDERER_OPENGL);
     struct engine *engine = malloc(sizeof *engine);
 
+    engine->level = 1;
+
     engine->gui = init_gui(WINDOW_W, PANEL_H);
     engine->window_w = WINDOW_W;
     engine->window_h = WINDOW_H;
@@ -60,13 +63,48 @@ struct engine *engine_init(int w, int h, const char *title)
     TCOD_list_push(engine->actors, (const void *) engine->player);
 
     /* Create stairs */
-    engine->stairs = init_stairs(40, 25, '>');
+    engine->stairs = init_stairs(0, 0, '>');
     TCOD_list_push(engine->actors, (const void *) engine->stairs);
 
     /* Add a map to the engine */
     init_map(engine, 80, 43);
     engine->gui->message(engine, TCOD_red, WELCOME_MESSAGE);
     return engine;
+}
+
+int load_level(struct engine *engine, int level_id)
+{
+    printf("Actors before descending: %d\n", TCOD_list_size(engine->actors));
+
+    if (level_id < 0)
+        return level_id;
+
+    engine->level = level_id;
+
+    free_map(engine->map);
+    /* Delete all actors except the player and the stairs */
+    struct actor **iter;
+    for (iter = (struct actor **) TCOD_list_begin(engine->actors);
+         iter != (struct actor **) TCOD_list_end(engine->actors);
+         iter++) {
+        struct actor *actor = *iter;
+        if (actor != engine->player && actor != engine->stairs) {
+            free_actor(actor);
+            TCOD_list_remove(engine->actors, actor);
+        }
+    }
+
+    printf("Actors remaining: %d\n", TCOD_list_size(engine->actors));
+
+    init_map(engine, 80, 43);
+    engine->game_status = STARTUP;
+
+    printf("Actors after descend: %d\n", TCOD_list_size(engine->actors));
+
+    /* Display the dungeon level */
+    engine->gui->message(engine, TCOD_white, "Dungeon level %d", engine->level);
+
+    return engine->level;
 }
 
 void engine_update(struct engine *engine)
@@ -109,8 +147,12 @@ void engine_render(struct engine *engine)
          iter != (struct actor **) TCOD_list_end(engine->actors);
          iter++) {
         struct actor *actor = *iter;
-        if ((!actor->fov_only && is_explored(engine->map, actor->x, actor->y))
-            || is_in_fov(engine->map, actor->x, actor->y))
+
+        if (actor != engine->player &&
+            /* will be rendered later as the last item */
+            (!actor->fov_only &&
+             is_explored(engine->map, actor->x, actor->y)) ||
+            is_in_fov(engine->map, actor->x, actor->y))
             actor->render(actor);
     }
 

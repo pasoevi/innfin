@@ -19,6 +19,7 @@
 */
 
 #include "player.h"
+#include "engine.h"
 
 /* Writes a memorial file */
 static void make_memorial(struct actor *actor)
@@ -51,7 +52,7 @@ struct actor *make_player(int x, int y)
     tmp->attacker = init_attacker(10, attack);
 
     /* Init life */
-    tmp->life = init_life(100, 100, 6, "your dead body", take_damage,
+    tmp->life = init_life(1000, 1000, 6, "your dead body", take_damage,
                           player_die);
     tmp->life->max_stomach = 500;
     tmp->life->stomach = tmp->life->max_stomach;
@@ -60,6 +61,16 @@ struct actor *make_player(int x, int y)
     tmp->inventory = init_container(26);
 
     return tmp;
+}
+
+bool descend(struct engine *engine, struct actor *actor, struct actor *stairs)
+{
+    if (actor == NULL || is_dead(actor) || stairs == NULL)
+        return false;
+
+    if (actor->x == stairs->x && actor->y == stairs->y) {
+        load_level(engine, 2);
+    }
 }
 
 bool player_move_or_attack(struct engine *engine, struct actor *actor,
@@ -212,48 +223,38 @@ void handle_action_key(struct engine *engine, struct actor *actor)
         case ',':
         case 'g':
             try_pick(engine);
-
             break;
         case '>':
-            engine->gui->message(engine, TCOD_gray,
-                                 "You can't climb down here. Try on stairs.");
+            descend(engine, engine->player, engine->stairs);
+            engine->gui->message(engine, TCOD_gray, "You can't climb down here. Try on stairs.");
             break;
         case '<':
-            engine->gui->message(engine, TCOD_gray,
-                                 "You can't climb up here. Try on stairs.");
+            engine->gui->message(engine, TCOD_gray, "You can't climb up here. Try on stairs.");
             break;
         case 'a':
-            engine->gui->message(engine, TCOD_gray,
-                                 "You have no special abilities.");
+            engine->gui->message(engine, TCOD_gray, "You have no special abilities.");
             break;
-        case 'd':
-            /* Drop item */
+        case 'd': /* Drop item */
             invoke_command(engine, drop, is_usable, "drop");
             break;
-        case 'D':
-            /* Drop the last item */
+        case 'D': /* Drop the last item */
             drop_last(engine, actor);
             break;
-        case 'e':
-            /* Eat */
+        case 'e': /* Eat */
             invoke_command(engine, NULL, is_edible, "eat");
             break;
-        case 'i':
-            /* display inventory */
+        case 'i': /* display inventory */
             invoke_command(engine, NULL, is_usable, "inventory");
             break;
-        case 'q':
-            /* Quaff */
+        case 'q': /* Quaff */
             invoke_command(engine, NULL, is_drinkable, "quaff");
             break;
 
-        case 'W':
-            /* Wield */
+        case 'W': /* Wield */
             invoke_command(engine, NULL, is_wieldable, "wield");
             break;
         default:
-            engine->gui->message(engine, TCOD_grey,
-                                 "Unknown command: %c.\n",
+            engine->gui->message(engine, TCOD_grey, "Unknown command: %c.\n",
                                  engine->key.c);
             break;
     }
