@@ -54,12 +54,20 @@ struct actor *init_actor(int x, int y, char ch, const char *name,
 
 void free_actor(struct actor *actor)
 {
+    if (actor == NULL)
+        return;
     /*
      * TODO: Free all items in the inventory
-     **/
-    free_attacker(actor->attacker);
-    free_life(actor->life);
-    free_ai(actor->ai);
+     */
+    if (actor->attacker)
+        free_attacker(actor->attacker);
+
+    if (actor->life)
+        free_life(actor->life);
+
+    if (actor->ai)
+        free_ai(actor->ai);
+
     free(actor);
 }
 
@@ -75,6 +83,12 @@ void free_actors(TCOD_list_t *actors)
     TCOD_list_clear(actors);
 }
 
+struct skills *init_skills()
+{
+    struct skills *skills = malloc(sizeof *skills);
+    return skills;
+}
+
 struct ai *init_ai(void (*update)(struct engine *engine, struct actor *actor),
                    bool(*move_or_attack)(struct engine *engine,
                                          struct actor *actor, int target_x,
@@ -86,14 +100,15 @@ struct ai *init_ai(void (*update)(struct engine *engine, struct actor *actor),
     tmp->level_up = level_up;
     tmp->xp_level = 1;
     tmp->xp = 0.f;
-    tmp->skills = malloc(sizeof *tmp->skills);
+    tmp->skills.strength = 10;
+    tmp->skills.intelligence = 10;
     return tmp;
 }
 
 void free_ai(struct ai *ai)
 {
-    if (ai != NULL && ai->skills) {
-        free_skills(ai->skills);
+    if (ai != NULL) {
+        /*free_skills(ai->skills);*/
         free(ai);
     }
 }
@@ -129,8 +144,7 @@ struct life *init_life(
         const char *corpse_name,
         float (*take_damage)(struct engine *engine, struct actor *dealer,
                              struct actor *target, float damage),
-        void (*die)(struct engine *engine,
-                    struct actor *actor))
+        void (*die)(struct engine *engine, struct actor *actor))
 {
     struct life *tmp = malloc(sizeof *tmp);
     tmp->die = die;
@@ -418,7 +432,7 @@ bool level_up(struct engine *engine, struct actor *actor)
         actor->ai->xp = 0;
 
         /* increase strength stat */
-        actor->ai->skills->strength += 1;
+        actor->ai->skills.strength += 1;
         engine->gui->message(engine, TCOD_light_grey,
                              "You advance to level %d!", actor->ai->xp_level);
         return true;

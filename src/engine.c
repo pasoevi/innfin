@@ -90,7 +90,7 @@ int load_level(struct engine *engine, int level_id)
         struct actor *actor = *iter;
         if (actor != engine->player && actor != engine->stairs) {
             free_actor(actor);
-            TCOD_list_remove(engine->actors, actor);
+            iter = (struct actor **)TCOD_list_remove_iterator(engine->actors, (void **)iter);
         }
     }
 

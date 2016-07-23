@@ -45,8 +45,8 @@ struct actor *make_player(int x, int y)
 
     /* Artificial intelligence */
     tmp->ai = init_ai(player_update, player_move_or_attack);
-    tmp->ai->skills->strength = 15;
-    tmp->ai->skills->intelligence = 9;
+    tmp->ai->skills.strength = 15;
+    tmp->ai->skills.intelligence = 9;
 
     /* Init attacker */
     tmp->attacker = init_attacker(10, attack);
@@ -69,7 +69,12 @@ bool descend(struct engine *engine, struct actor *actor, struct actor *stairs)
         return false;
 
     if (actor->x == stairs->x && actor->y == stairs->y) {
-        load_level(engine, 2);
+        load_level(engine, engine->level + 1);
+        return true;
+    }
+    else {
+        engine->gui->message(engine, TCOD_gray, "You can't climb down here. Try on stairs.");
+        return false;
     }
 }
 
@@ -226,7 +231,6 @@ void handle_action_key(struct engine *engine, struct actor *actor)
             break;
         case '>':
             descend(engine, engine->player, engine->stairs);
-            engine->gui->message(engine, TCOD_gray, "You can't climb down here. Try on stairs.");
             break;
         case '<':
             engine->gui->message(engine, TCOD_gray, "You can't climb up here. Try on stairs.");

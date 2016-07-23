@@ -40,7 +40,7 @@ struct skills {
 struct ai {
     int move_count;
     /* allow monsters to track the player */
-    struct skills *skills;
+    struct skills skills;
     float xp_level;
     float xp;
 
@@ -186,16 +186,16 @@ struct ai *init_ai(void (*update)(struct engine *engine, struct actor *actor),
 
 void free_ai(struct ai *ai);
 
+struct skills *init_skills();
+
 void free_skills(struct skills *skills);
 
-struct life *init_life(
-        float max_hp,
-        float hp, float defence,
-        const char *corpse_name,
-        float (*take_damage)(struct engine *engine, struct actor *dealer,
-                             struct actor *target, float damage),
-        void (*die)(struct engine *engine,
-                    struct actor *actor));
+struct life *init_life(float max_hp, float hp, float defence,
+                       const char *corpse_name,
+                       float (*take_damage)(struct engine *engine,
+                                            struct actor *dealer,
+                                            struct actor *target, float damage),
+                       void (*die)(struct engine *engine, struct actor *actor));
 
 void free_life(struct life *life);
 
