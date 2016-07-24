@@ -163,15 +163,15 @@ bool can_walk(struct engine *engine, int x, int y)
     if (is_wall(engine->map, x, y))
         return false;
 
-    struct actor **actor;
-    for (actor = (struct actor **) TCOD_list_begin(engine->actors);
-         actor != (struct actor **) TCOD_list_end(engine->actors);
-         actor++)
-        if ((*actor)->blocking && (*actor)->x == x
-            && (*actor)->y == y)
-            /* There is a blocking actor there, cat't
-               walk */
+    struct actor **iter;
+    for (iter = (struct actor **)TCOD_list_begin(engine->actors);
+         iter != (struct actor **)TCOD_list_end(engine->actors);
+         iter++) {
+        struct actor *actor = *iter;
+        if (actor->blocking && actor->x == x && actor->y == y)
             return false;
+    }
+
     return true;
 }
 
@@ -221,6 +221,7 @@ void add_item(struct engine *engine, int x, int y)
 {
     TCOD_random_t *rng = TCOD_random_get_instance();
     struct actor *item;
+
     int dice = TCOD_random_get_int(rng, 0, 100);
     if (dice < 10)
         item = make_kindzal(x, y);
@@ -236,8 +237,7 @@ void add_item(struct engine *engine, int x, int y)
         item = make_healer_potion(x, y);
     else
         item = make_food(x, y);
-
-
+    
     TCOD_list_push(engine->actors, item);
 }
 
