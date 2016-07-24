@@ -27,7 +27,8 @@ static void make_memorial(struct actor *actor)
 }
 
 /* Transform the actor into a decaying corpse */
-void player_die(struct engine *engine, struct actor *actor, struct actor *killer)
+void player_die(struct engine *engine, struct actor *actor,
+                struct actor *killer)
 {
     engine->gui->message(engine, TCOD_red, "You die.\n");
     /* Call the common death function */
@@ -72,21 +73,22 @@ bool descend(struct engine *engine, struct actor *actor, struct actor *stairs)
         return true;
     }
     else {
-        engine->gui->message(engine, TCOD_gray, "You can't climb down here. Try on stairs.");
+        engine->gui->message(engine, TCOD_gray,
+                             "You can't climb down here. Try on stairs.");
         return false;
     }
 }
 
-bool player_move_or_attack(struct engine *engine, struct actor *actor,
+bool player_move_or_attack(struct engine *engine, struct actor *player,
                            int target_x, int target_y)
 {
     /* Consume energy from stomach and kill the player if beyond
      * starvation.
      */
-    if (!make_hungry(actor, 1)) {
+    if (!make_hungry(player, 1)) {
         engine->gui->message(engine, TCOD_light_grey,
                              "You starve to death.\n");
-        actor->life->die(engine, actor, NULL);
+        player->life->die(engine, player, NULL);
         return false;
     }
 
@@ -101,7 +103,7 @@ bool player_move_or_attack(struct engine *engine, struct actor *actor,
         if ((*iter)->life && !is_dead(*iter) &&
             (*iter)->x == target_x && (*iter)->y == target_y) {
             /* There is an actor there, cat't walk */
-            actor->attacker->attack(engine, actor, *iter);
+            player->attacker->attack(engine, player, *iter);
             return false;
         }
     }
@@ -121,8 +123,8 @@ bool player_move_or_attack(struct engine *engine, struct actor *actor,
                                  (*iter)->name);
     }
 
-    actor->x = target_x;
-    actor->y = target_y;
+    player->x = target_x;
+    player->y = target_y;
 
     return true;
 }
@@ -149,11 +151,8 @@ struct actor *choose_from_inventory(struct engine *engine,
     int shortcut = 'a';
     int y = 1;
     struct actor **iter;
-    for (iter =
-                 (struct actor **) TCOD_list_begin(actor->
-                         inventory->inventory);
-         iter !=
-         (struct actor **) TCOD_list_end(actor->inventory->inventory);
+    for (iter = (struct actor **) TCOD_list_begin(actor->inventory->inventory);
+         iter != (struct actor **) TCOD_list_end(actor->inventory->inventory);
          iter++) {
         struct actor *item = *iter;
         if (predicate(item)) {
@@ -192,6 +191,7 @@ struct actor *choose_from_inventory(struct engine *engine,
                                      window_title);
         }
     }
+
     return NULL;
 }
 
@@ -231,10 +231,12 @@ void handle_action_key(struct engine *engine, struct actor *actor)
             descend(engine, engine->player, engine->stairs);
             break;
         case '<':
-            engine->gui->message(engine, TCOD_gray, "You can't climb up here. Try on stairs.");
+            engine->gui->message(engine, TCOD_gray,
+                                 "You can't climb up here. Try on stairs.");
             break;
         case 'a':
-            engine->gui->message(engine, TCOD_gray, "You have no special abilities.");
+            engine->gui->message(engine, TCOD_gray,
+                                 "You have no special abilities.");
             break;
         case 'd': /* Drop item */
             invoke_command(engine, drop, is_usable, "drop");
