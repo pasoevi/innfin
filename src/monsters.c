@@ -135,9 +135,6 @@ void dragon_update(struct engine *engine, struct actor *actor)
  */
 void monster_die(struct engine *engine, struct actor *actor, struct actor *killer)
 {
-    engine->gui->message(engine, TCOD_light_grey, "%s is dead.\n",
-                         actor->name);
-
     /* Transform this dead body into an edible corpse */
     actor->pickable = init_pickable(0, 0, eat);
 

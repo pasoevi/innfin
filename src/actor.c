@@ -131,7 +131,8 @@ struct life *init_life(
         const char *corpse_name,
         float (*take_damage)(struct engine *engine, struct actor *dealer,
                              struct actor *target, float damage),
-        void (*die)(struct engine *engine, struct actor *actor, struct actor *killer))
+        void (*die)(struct engine *engine, struct actor *actor,
+                    struct actor *killer))
 {
     struct life *life = malloc(sizeof *life);
     life->die = die;
@@ -390,12 +391,21 @@ float reward_kill(struct engine *engine, struct actor *actor,
     if (!actor->ai)
         return -1;
 
-    
     float reward = calc_kill_reward(engine, actor, target);
 
+    actor->ai->xp += reward;
+
     if (reward > 0) {
-        actor->ai->xp += reward;
-        engine->gui->message(engine, TCOD_light_grey, "%s is dead. You gain %.0f xp.\n", actor->name, reward);
+        /* Do correct grammar: You gain, He gains */
+        char *reward_message = target == engine->player ?
+                               "%s is dead. %s gain %.0f xp.\n" :
+                               "%s is dead. %s gains %.0f xp.\n";
+
+        engine->gui->message(engine, TCOD_light_grey, reward_message,
+                             actor->name, target->name, reward);
+    } else {
+        engine->gui->message(engine, TCOD_light_grey, "%s is dead.\n",
+                             actor->name);
     }
 
     return reward;
