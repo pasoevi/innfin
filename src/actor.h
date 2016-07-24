@@ -124,6 +124,12 @@ struct pickable {
     float power;
 
     bool(*use)(struct engine *engine, struct actor *actor, struct actor *item);
+    /*
+     * Some items have lasting effect, so you don't just use them once, but
+     * "wear" (in case of clothes, jewelry, etc), or "wield" them (in case of
+     * weapons, etc). Use this function to "stop using" such items.
+     */
+    bool(*unuse)(struct engine *engine, struct actor *actor, struct actor *item);
 
     bool(*blow)(struct engine *engine, struct actor *actor, struct actor *weapon,
                 struct actor *target);
@@ -358,10 +364,12 @@ bool potion_of_poison_use(struct engine *engine, struct actor *actor,
                           struct actor *item);
 
 /* Weapons */
-bool weapon_wield(struct engine *engine, struct actor *actor,
+bool wield_weapon(struct engine *engine, struct actor *actor,
                   struct actor *weapon);
 
-bool kindzal_blow(struct engine *engine, struct actor *actor,
+bool unwield_current_weapon(struct engine *engine, struct actor *actor);
+
+bool blow_kindzal(struct engine *engine, struct actor *actor,
                   struct actor *item, struct actor *target);
 /* 
  * A generic eating function. Units eaten will be equal to the 50% of

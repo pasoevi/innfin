@@ -27,6 +27,7 @@ extern void compute_fov(struct engine *engine);
 
 /* Forward declare internal functions */
 void common_update(struct engine *engine, struct actor *actor);
+bool unwield_weapon(struct engine *engine, struct actor *actor, struct actor *weapon);
 void render_actor(struct actor *actor);
 
 /***************** Actor creation & destruction functions *********************/
@@ -179,6 +180,7 @@ struct pickable *init_pickable(float power, float range,
     pickable->power = power;
     pickable->range = range;
     pickable->use = use;
+    pickable->unuse = NULL;
     return pickable;
 }
 
@@ -269,24 +271,23 @@ struct actor *make_confusion_wand(int x, int y)
 /*********************** Weapons *****************/
 struct actor *make_weapon(int x, int y, float power,
                           const char ch, const char *name, TCOD_color_t col,
-                          bool(*wield)(struct engine *engine,
-                                       struct actor *actor,
+                          bool(*wield)(struct engine *engine, struct actor *actor,
                                        struct actor *item),
-                          bool(*blow)(struct engine *engine,
-                                      struct actor *actor,
+                          bool(*blow)(struct engine *engine, struct actor *actor,
                                       struct actor *item,
                                       struct actor *target))
 {
-    struct actor *tmp = make_item(x, y, power, 0, ch, name, col, weapon_wield);
-    tmp->pickable->blow = kindzal_blow;
+    struct actor *tmp = make_item(x, y, power, 0, ch, name, col, wield_weapon);
+    tmp->pickable->blow = blow_kindzal;
+    tmp->pickable->unuse = unwield_weapon;
     return tmp;
 
 }
 
 struct actor *make_kindzal(int x, int y)
 {
-    return make_weapon(x, y, 20, '|', "a Kindzal", TCOD_silver, weapon_wield,
-                       kindzal_blow);
+    return make_weapon(x, y, 20, '|', "a Kindzal", TCOD_silver, wield_weapon,
+                       blow_kindzal);
 }
 
 /* AI */
@@ -741,7 +742,7 @@ bool potion_of_poison_use(struct engine *engine, struct actor *actor,
 /**** Weapons ****/
 
 /* TODO: Add message to log */
-bool weapon_wield(struct engine *engine, struct actor *actor,
+bool wield_weapon(struct engine *engine, struct actor *actor,
                   struct actor *weapon)
 {
     bool did_replace = false;
@@ -757,11 +758,34 @@ bool weapon_wield(struct engine *engine, struct actor *actor,
     return did_replace;
 }
 
+/* TODO: Add message to log */
+bool unwield_weapon(struct engine *engine, struct actor *actor, struct actor *weapon)
+{
+    bool did_unwield = false;
+    /* Unwield the previous weapon and put it back into the inventory */
+    if (actor->attacker->weapon) {
+        did_unwield = inventory_add(actor->inventory, actor->attacker->weapon);
+        actor->attacker->weapon = NULL;
+    }
+
+    return did_unwield;
+}
+
+bool unwield_current_weapon(struct engine *engine, struct actor *actor)
+{
+    if (!actor->attacker)
+        return false;
+
+    struct actor *weapon = actor->attacker->weapon;
+    if (weapon)
+        return weapon->pickable->unuse(engine, actor, weapon);
+}
+
 /*
  * Unlike potion_use functions, the weapon_blow functions are called
  * every time you hit the enemy with them.
  */
-bool kindzal_blow(struct engine *engine, struct actor *actor,
+bool blow_kindzal(struct engine *engine, struct actor *actor,
                   struct actor *weapon, struct actor *target)
 {
     if (target->life)

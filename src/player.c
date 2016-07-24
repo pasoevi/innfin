@@ -252,8 +252,11 @@ void handle_action_key(struct engine *engine, struct actor *actor)
             invoke_command(engine, NULL, is_drinkable, "quaff");
             break;
 
-        case 'W': /* Wield */
+        case 'w': /* Wield */
             invoke_command(engine, NULL, is_wieldable, "wield");
+            break;
+        case 'W': /* Unield */
+            unwield_current_weapon(engine, actor);
             break;
         default:
             engine->gui->message(engine, TCOD_grey, "Unknown command: %c.\n",
