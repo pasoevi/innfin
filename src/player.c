@@ -32,7 +32,7 @@ void player_die(struct engine *engine, struct actor *actor)
 {
     engine->gui->message(engine, TCOD_red, "You die.\n");
     /* Call the common death function */
-    die(engine, actor);
+    die(engine, actor, NULL);
     make_memorial(actor);
     engine->game_status = DEFEAT;
 
@@ -87,7 +87,7 @@ bool player_move_or_attack(struct engine *engine, struct actor *actor,
     if (!make_hungry(actor, 1)) {
         engine->gui->message(engine, TCOD_light_grey,
                              "You starve to death.\n");
-        actor->life->die(engine, actor);
+        actor->life->die(engine, actor, NULL);
         return false;
     }
 
@@ -158,8 +158,7 @@ struct actor *choose_from_inventory(struct engine *engine,
          iter++) {
         struct actor *item = *iter;
         if (predicate(item)) {
-            TCOD_console_print(con, 2, y, "(%c) %s", shortcut,
-                               item->name);
+            TCOD_console_print(con, 2, y, "(%c) %s", shortcut, item->name);
             y++;
             num_items++;
         }

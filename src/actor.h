@@ -97,7 +97,7 @@ struct life {
     float (*take_damage)(struct engine *engine, struct actor *dealer,
                          struct actor *target, float damage);
 
-    void (*die)(struct engine *engine, struct actor *actor);
+    void (*die)(struct engine *engine, struct actor *actor, struct actor *killer);
 };
 
 /*
@@ -188,7 +188,8 @@ struct life *init_life(float max_hp, float hp, float defence,
                        float (*take_damage)(struct engine *engine,
                                             struct actor *dealer,
                                             struct actor *target, float damage),
-                       void (*die)(struct engine *engine, struct actor *actor));
+                       void (*die)(struct engine *engine, struct actor *actor,
+                                   struct actor *killer));
 
 void free_life(struct life *life);
 
@@ -394,6 +395,6 @@ float take_damage(struct engine *engine, struct actor *dealer,
    actor structures instead, like monster_die, player_die. They call
    this function.
 */
-void die(struct engine *engine, struct actor *actor);
+void die(struct engine *engine, struct actor *actor, struct actor *killer);
 
 #endif

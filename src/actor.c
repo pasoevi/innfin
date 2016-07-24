@@ -131,7 +131,7 @@ struct life *init_life(
         const char *corpse_name,
         float (*take_damage)(struct engine *engine, struct actor *dealer,
                              struct actor *target, float damage),
-        void (*die)(struct engine *engine, struct actor *actor))
+        void (*die)(struct engine *engine, struct actor *actor, struct actor *killer))
 {
     struct life *life = malloc(sizeof *life);
     life->die = die;
@@ -159,7 +159,7 @@ float take_damage(struct engine *engine, struct actor *dealer,
         target->life->hp -= damage;
         if (target->life->hp <= 0) {
             target->life->hp = 0; /* prevent hp from goint below zero */
-            target->life->die(engine, target);
+            target->life->die(engine, target, dealer);
         }
     } else {
         damage = 0;
@@ -277,7 +277,7 @@ bool is_dead(struct actor *actor)
 }
 
 /* Transform an actor into a corpse */
-void die(struct engine *engine, struct actor *actor)
+void die(struct engine *engine, struct actor *actor, struct actor *killer)
 {
     actor->ch = '%';
     actor->col = TCOD_dark_red;
