@@ -267,7 +267,6 @@ struct actor *make_confusion_wand(int x, int y)
 }
 
 /*********************** Weapons *****************/
-
 struct actor *make_weapon(int x, int y, float power,
                           const char ch, const char *name, TCOD_color_t col,
                           bool(*wield)(struct engine *engine,

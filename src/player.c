@@ -180,15 +180,12 @@ struct actor *choose_from_inventory(struct engine *engine,
             && actor_index <
                TCOD_list_size(actor->inventory->inventory)) {
             struct actor *tmp =
-                    TCOD_list_get(actor->inventory->inventory,
-                                  actor_index);
+                    TCOD_list_get(actor->inventory->inventory, actor_index);
             if (predicate(tmp))
                 return tmp;
             else
-                engine->gui->message(engine,
-                                     TCOD_light_grey,
-                                     "You can't %s that.\n",
-                                     window_title);
+                engine->gui->message(engine, TCOD_light_grey,
+                                     "You can't %s that.\n", window_title);
         }
     }
 
@@ -215,6 +212,7 @@ void invoke_command(struct engine *engine,
             command(engine, engine->player, item);
         else
             item->pickable->use(engine, engine->player, item);
+
         engine->game_status = NEW_TURN;
     }
 }
