@@ -75,8 +75,6 @@ struct engine *engine_init(int w, int h, const char *title)
 
 int load_level(struct engine *engine, int level_id)
 {
-    printf("Actors before descending: %d\n", TCOD_list_size(engine->actors));
-
     if (level_id < 0)
         return level_id;
 
@@ -95,15 +93,11 @@ int load_level(struct engine *engine, int level_id)
         }
     }
 
-    printf("Actors remaining: %d\n", TCOD_list_size(engine->actors));
-
     init_map(engine, 80, 43);
     engine->game_status = STARTUP;
 
-    printf("Actors after descend: %d\n", TCOD_list_size(engine->actors));
-
     /* Display the dungeon level */
-    engine->gui->message(engine, TCOD_white, "Dungeon level %d", engine->level);
+    engine->gui->message(engine, TCOD_white, "Dungeon level %d\n", engine->level);
 
     return engine->level;
 }

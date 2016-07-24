@@ -160,7 +160,6 @@ float take_damage(struct engine *engine, struct actor *dealer,
         if (target->life->hp <= 0) {
             target->life->hp = 0; /* prevent hp from goint below zero */
             target->life->die(engine, target);
-            reward_kill(engine, dealer, target);
         }
     } else {
         damage = 0;
@@ -382,7 +381,7 @@ float calc_hit_power(struct engine *engine, struct actor *dealer, struct
 float calc_kill_reward(struct engine *engine, struct actor *actor,
                        struct actor *target)
 {
-    return 10 + target->life->hp;
+    return 10 + actor->ai->xp;
 }
 
 float reward_kill(struct engine *engine, struct actor *actor,
@@ -391,8 +390,14 @@ float reward_kill(struct engine *engine, struct actor *actor,
     if (!actor->ai)
         return -1;
 
+    
     float reward = calc_kill_reward(engine, actor, target);
-    actor->ai->xp += reward;
+
+    if (reward > 0) {
+        actor->ai->xp += reward;
+        engine->gui->message(engine, TCOD_light_grey, "%s is dead. You gain %.0f xp.\n", actor->name, reward);
+    }
+
     return reward;
 }
 

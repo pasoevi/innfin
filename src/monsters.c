@@ -12,20 +12,23 @@ struct actor *make_monster(int x, int y, const char ch, const char *name,
                            void (*update)(struct engine *engine,
                                           struct actor *actor))
 {
-    struct actor *tmp = init_actor(x, y, ch, name, col, render_actor);
+    struct actor *monster = init_actor(x, y, ch, name, col, render_actor);
 
     /* Artificial intelligence */
-    tmp->ai = init_ai(update, monster_move_or_attack);
+    monster->ai = init_ai(update, monster_move_or_attack);
+    if (monster->ai != NULL) {
+        monster->ai->xp = 100;
+        monster->ai->xp_level = 1;
+    }
 
     /* Init attacker */
-    tmp->attacker = init_attacker(power, attack);
+    monster->attacker = init_attacker(power, attack);
 
     /* Init life */
-    tmp->life =
-            init_life(max_hp, hp, defence, corpse_name,
+    monster->life = init_life(max_hp, hp, defence, corpse_name,
                       take_damage, monster_die);
 
-    return tmp;
+    return monster;
 }
 
 struct actor *make_orc(int x, int y)
@@ -134,7 +137,12 @@ void monster_die(struct engine *engine, struct actor *actor)
 {
     engine->gui->message(engine, TCOD_light_grey, "%s is dead.\n",
                          actor->name);
+
+    /* Transform this dead body into an edible corpse */
     actor->pickable = init_pickable(0, 0, eat);
+
+    reward_kill(engine, actor, engine->player);
+
     /* Call the common die function */
     die(engine, actor);
 }
