@@ -1,6 +1,9 @@
 NOTE: This is a detailed game manual. For _Downloads_, or the _Quick
 Starting Guide_, please visit the game website.
 
+[Download](https://github.com/pasoev/innfin/releases/download/0.0.1/innfin_0.0.1.tar.gz)
+alpha version.
+
 *Innfin - Innere Finsternis* is a horror-themed fantasy role-playing
 game set in the underworld of dungeons carved into stone and earth. It
 is a roguelike game in the tradition of classics of the genre like
