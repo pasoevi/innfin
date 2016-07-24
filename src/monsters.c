@@ -17,7 +17,7 @@ struct actor *make_monster(int x, int y, const char ch, const char *name,
     /* Artificial intelligence */
     monster->ai = init_ai(update, monster_move_or_attack);
     if (monster->ai != NULL) {
-        monster->ai->xp = 1;
+        monster->ai->xp = max_hp / 2;
         monster->ai->xp_level = 1;
     }
 

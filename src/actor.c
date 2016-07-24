@@ -882,6 +882,7 @@ bool weapon_wield(struct engine *engine, struct actor *actor,
 
     /* Wield the new weapon */
     actor->attacker->weapon = weapon;
+    use(actor, weapon);
     return did_replace;
 }
 
