@@ -19,7 +19,6 @@
 */
 
 #include "player.h"
-#include "engine.h"
 
 /* Writes a memorial file */
 static void make_memorial(struct actor *actor)
@@ -28,7 +27,7 @@ static void make_memorial(struct actor *actor)
 }
 
 /* Transform the actor into a decaying corpse */
-void player_die(struct engine *engine, struct actor *actor)
+void player_die(struct engine *engine, struct actor *actor, struct actor *killer)
 {
     engine->gui->message(engine, TCOD_red, "You die.\n");
     /* Call the common death function */
@@ -41,7 +40,7 @@ void player_die(struct engine *engine, struct actor *actor)
 struct actor *make_player(int x, int y)
 {
     struct actor *tmp =
-            init_actor(x, y, '@', "you", TCOD_white, render_actor);
+            init_actor(x, y, '@', "you", TCOD_white);
 
     /* Artificial intelligence */
     tmp->ai = init_ai(player_update, player_move_or_attack);

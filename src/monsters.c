@@ -12,7 +12,7 @@ struct actor *make_monster(int x, int y, const char ch, const char *name,
                            void (*update)(struct engine *engine,
                                           struct actor *actor))
 {
-    struct actor *monster = init_actor(x, y, ch, name, col, render_actor);
+    struct actor *monster = init_actor(x, y, ch, name, col);
 
     /* Artificial intelligence */
     monster->ai = init_ai(update, monster_move_or_attack);

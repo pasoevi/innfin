@@ -40,6 +40,6 @@ bool player_move_or_attack(struct engine *engine, struct actor *actor,
  * Also calls the function that creates character memorial file and
  * deletes saved game if present.
  */
-void player_die(struct engine *engine, struct actor *actor);
+void player_die(struct engine *engine, struct actor *actor, struct actor *killer);
 
 #endif //INNFIN_PLAYER_H

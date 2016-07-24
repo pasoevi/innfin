@@ -169,8 +169,7 @@ struct actor {
    wrapper functions e.g. make_orc, make_player, etc.
 */
 struct actor *init_actor(int w, int h, char ch, const char *name,
-                         TCOD_color_t col,
-                         void (*render)(struct actor *));
+                         TCOD_color_t col);
 
 void free_actor(struct actor *actor);
 
@@ -221,6 +220,8 @@ struct actor *make_healer_potion(int x, int y);
 
 struct actor *make_curing_potion(int x, int y);
 
+struct actor *make_posioning_potion(int x, int y);
+
 /* Wands */
 struct actor *make_lightning_wand(int x, int y);
 
@@ -232,6 +233,9 @@ struct actor *make_transfiguration_wand(int x, int y);
 
 /* Weapons */
 struct actor *make_kindzal(int x, int y);
+
+/* AI */
+struct ai *make_confused_ai(struct actor *actor, int num_turns);
 
 /************************** Actor identifying functions ***********************/
 bool is_dead(struct actor *actor);
@@ -307,8 +311,6 @@ bool drop(struct engine *engine, struct actor *actor, struct actor *item);
 
 bool drop_last(struct engine *engine, struct actor *actor);
 
-/* Other tools */
-
 /* 
  * A common function to all usable items. All item-specific *_use
  * functions should call this as the last statemunt.
@@ -374,20 +376,16 @@ float reward_kill(struct engine *engine, struct actor *actor,
 
 bool level_up(struct engine *engine, struct actor *actor);
 
-void render_actor(struct actor *actor);
-
-/*
- * Ally update function, behaves like typical monsters except that it
- * attacks and tracks everybody except you. When no monsters are
- * around, it follows you.
- */
-void ally_update(struct engine *engine, struct actor *actor);
+void common_attack(struct engine *engine, struct actor *dealer,
+                   struct actor *target);
 
 void attack(struct engine *engine, struct actor *dealer,
             struct actor *target);
 
 float take_damage(struct engine *engine, struct actor *dealer,
                   struct actor *target, float damage);
+
+float heal(struct actor *actor, float amount);
 
 /* 
    A common function that is called when ANY actor dies. NOTE: Do not
