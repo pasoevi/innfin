@@ -277,17 +277,47 @@ void player_update(struct engine *engine, struct actor *actor)
     int dx = 0, dy = 0;
     if (engine->key.pressed) {
         switch (engine->key.vk) {
-            case TCODK_UP:
-                dy = -1;
-                break;
-            case TCODK_DOWN:
+            case TCODK_KP1:
+            case TCODK_1:
+                dx = -1;
                 dy = 1;
                 break;
+            case TCODK_KP4:
             case TCODK_LEFT:
+            case TCODK_4:
                 dx = -1;
                 break;
-            case TCODK_RIGHT:
+            case TCODK_7:
+            case TCODK_KP7:
+                dx = -1;
+                dy = -1;
+                break;
+            case TCODK_UP:
+            case TCODK_8:
+            case TCODK_KP8:
+                dy = -1;
+                break;
+            case TCODK_9:
+            case TCODK_KP9:
                 dx = 1;
+                dy = -1;
+                break;
+            case TCODK_RIGHT:
+            case TCODK_6:
+            case TCODK_KP6:
+                dx = 1;
+                break;
+            case TCODK_KP3:
+                dx = 1;
+                dy = 1;
+                break;
+            case TCODK_DOWN:
+            case TCODK_KP2:
+                dy = 1;
+                break;
+            case TCODK_KP5:
+            case TCODK_5:
+                engine->game_status = NEW_TURN;
                 break;
             case TCODK_CHAR:
                 handle_action_key(engine, actor);
