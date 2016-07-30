@@ -40,26 +40,25 @@ void player_die(struct engine *engine, struct actor *actor,
 
 struct actor *make_player(int x, int y)
 {
-    struct actor *player =
-            init_actor(x, y, '@', "you", TCOD_white);
+    struct actor *player = init_actor(x, y, '@', "you", TCOD_white);
 
     /* Artificial intelligence */
     player->ai = init_ai(player_update, player_move_or_attack);
     player->ai->skills.strength = 15;
     player->ai->skills.intelligence = 9;
+    player->ai->skills.fighting = 10;
 
     /* Init attacker */
     player->attacker = init_attacker(10, attack);
 
     /* Init life */
-    player->life = init_life(100, 100, 6, "your dead body", take_damage,
-                          player_die);
+    player->life = init_life(100, 100, 6, "your dead body", take_damage, player_die);
     player->life->regen = regen_hp;
 
     player->life->max_stomach = 500;
     player->life->stomach = player->life->max_stomach;
 
-    /* Init inventory */
+    /* Init items */
     player->inventory = init_container(26);
 
     return player;
@@ -102,10 +101,11 @@ bool player_move_or_attack(struct engine *engine, struct actor *player,
     for (iter = (struct actor **) TCOD_list_begin(engine->actors);
          iter != (struct actor **) TCOD_list_end(engine->actors);
          iter++) {
-        if ((*iter)->life && !is_dead(*iter) &&
-            (*iter)->x == target_x && (*iter)->y == target_y) {
+        struct actor *actor = *iter;
+        if (actor->life && !is_dead(actor) &&
+            actor->x == target_x && actor->y == target_y) {
             /* There is an actor there, cat't walk */
-            player->attacker->attack(engine, player, *iter);
+            player->attacker->attack(engine, player, actor);
             return false;
         }
     }
@@ -115,9 +115,7 @@ bool player_move_or_attack(struct engine *engine, struct actor *player,
          iter != (struct actor **) TCOD_list_end(engine->actors);
          iter++) {
         struct actor *actor = *iter;
-        bool corpse_or_item = (actor->life
-                               && is_dead(actor))
-                              || actor->pickable;
+        bool corpse_or_item = (actor->life && is_dead(actor)) || actor->pickable;
         if (corpse_or_item && actor->x == target_x
             && actor->y == target_y)
             engine->gui->message(engine, TCOD_light_gray,
@@ -136,7 +134,7 @@ struct actor *choose_from_inventory(struct engine *engine,
                                     const char *window_title,
                                     bool(*predicate)(struct actor *actor))
 {
-    /* Display the inventory frame */
+    /* Display the items frame */
     TCOD_console_t *con = engine->gui->inventory_con;
     TCOD_color_t color = (TCOD_color_t) {200, 180, 50};
     TCOD_console_set_default_foreground(con, color);
@@ -153,8 +151,8 @@ struct actor *choose_from_inventory(struct engine *engine,
     int shortcut = 'a';
     int y = 1;
     struct actor **iter;
-    for (iter = (struct actor **) TCOD_list_begin(actor->inventory->inventory);
-         iter != (struct actor **) TCOD_list_end(actor->inventory->inventory);
+    for (iter = (struct actor **) TCOD_list_begin(actor->inventory->items);
+         iter != (struct actor **) TCOD_list_end(actor->inventory->items);
          iter++) {
         struct actor *item = *iter;
         if (predicate(item)) {
@@ -166,7 +164,7 @@ struct actor *choose_from_inventory(struct engine *engine,
 
     }
 
-    /* Blit the inventory console to the root console. */
+    /* Blit the items console to the root console. */
     TCOD_console_blit(con, 0, 0, INVENTORY_WIDTH, INVENTORY_HEIGHT,
                       NULL, engine->window_w / 2 - INVENTORY_WIDTH / 2,
                       engine->window_h / 2 - INVENTORY_HEIGHT / 2, 1.f,
@@ -180,9 +178,9 @@ struct actor *choose_from_inventory(struct engine *engine,
         int actor_index = key.c - 'a';
         if (actor_index >= 0
             && actor_index <
-               TCOD_list_size(actor->inventory->inventory)) {
+               TCOD_list_size(actor->inventory->items)) {
             struct actor *tmp =
-                    TCOD_list_get(actor->inventory->inventory, actor_index);
+                    TCOD_list_get(actor->inventory->items, actor_index);
             if (predicate(tmp))
                 return tmp;
             else
@@ -247,8 +245,8 @@ void handle_action_key(struct engine *engine, struct actor *actor)
         case 'e': /* Eat */
             invoke_command(engine, NULL, is_edible, "eat");
             break;
-        case 'i': /* display inventory */
-            invoke_command(engine, NULL, is_usable, "inventory");
+        case 'i': /* display items */
+            invoke_command(engine, NULL, is_usable, "items");
             break;
         case 'q': /* Quaff */
             invoke_command(engine, NULL, is_drinkable, "quaff");

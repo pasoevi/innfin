@@ -16,6 +16,8 @@ struct actor *make_monster(int x, int y, const char ch, const char *name,
     if (monster->ai != NULL) {
         monster->ai->xp = max_hp / 2;
         monster->ai->xp_level = 1;
+        monster->ai->skills.strength = 1;
+        monster->ai->skills.fighting = 1;
     }
 
     /* Init attacker */
@@ -32,7 +34,7 @@ struct actor *make_orc(int x, int y)
 {
     struct actor *orc = make_monster(x, y, 'o', "an orc",
                                      TCOD_desaturated_green, 2,
-                                     15, 15, 2, "a dead orc", monster_update);
+                                     15, 15, 4, "a dead orc", monster_update);
     orc->ai->xp_level = 2;
     return orc;
 }
@@ -41,7 +43,7 @@ struct actor *make_goblin(int x, int y)
 {
     struct actor *goblin = make_monster(x, y, 'g', "a goblin", TCOD_green, 5,
                                         14, 14,
-                                        1, "a dead goblin", monster_update);
+                                        2, "a dead goblin", monster_update);
     goblin->ai->xp_level = 1;
     return goblin;
 }
@@ -49,20 +51,19 @@ struct actor *make_goblin(int x, int y)
 struct actor *make_troll(int x, int y)
 {
     struct actor *troll = make_monster(x, y, 'T', "a troll", TCOD_darker_green,
-                                       3, 20, 20, 3, "a troll carcass", monster_update);
+                                       6, 20, 20, 3, "a troll carcass", monster_update);
     troll->ai->xp_level = 2;
     return troll;
 }
 
 struct actor *make_dragon(int x, int y)
 {
-    struct actor *dragon = make_monster(x, y, 'D', "a dragon",
-                                        TCOD_darkest_green,
-                                        4,
-                                        25, 25, 7, "dragon scales and flesh",
+    struct actor *dragon = make_monster(x, y, 'D', "a dragon", TCOD_darkest_green,
+                                        8, 25, 25, 7, "dragon scales and flesh",
                                         dragon_update);
     dragon->fov_only = false;
     dragon->ai->xp_level = 4;
+    dragon->ai->skills.strength = 2;
 
     return dragon;
 }

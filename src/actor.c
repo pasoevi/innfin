@@ -18,8 +18,9 @@
 
 */
 
-#include <stdlib.h>
 #include <math.h>
+#include <stdio.h>
+#include <stdlib.h>
 #include "monsters.h"
 #include "util.h"
 
@@ -63,7 +64,7 @@ void free_actor(struct actor *actor)
     if (actor == NULL)
         return;
     /*
-     * TODO: Free all items in the inventory
+     * TODO: Free all items in the items
      */
     if (actor->attacker)
         free_attacker(actor->attacker);
@@ -165,14 +166,14 @@ struct container *init_container(int capacity)
 {
     struct container *container = malloc(sizeof *container);
     container->capacity = capacity;
-    container->inventory = TCOD_list_new();
+    container->items = TCOD_list_new();
 
     return container;
 }
 
 void free_container(struct container *container)
 {
-    TCOD_list_clear_and_delete(container->inventory);
+    TCOD_list_clear_and_delete(container->items);
     free(container);
 }
 
@@ -467,7 +468,7 @@ struct message get_hunger_status(struct actor *actor)
 float calc_hit_power(struct engine *engine, struct actor *dealer, struct
         actor *target)
 {
-    float power = 0.f;
+    float power;
 
     struct actor *weapon = dealer->attacker->weapon;
     if (weapon)
@@ -479,7 +480,8 @@ float calc_hit_power(struct engine *engine, struct actor *dealer, struct
      * Use the weapon/fist power as a base value and calculate the final
      * hit power honoring your strength, fighting and other skills.
      */
-    power = power * powf(1.08f, dealer->ai->skills.strength);
+    power += dealer->ai->skills.strength;
+    power *= dealer->ai->skills.fighting;
     
     return power;
 }
@@ -491,7 +493,7 @@ float calc_kill_reward(struct engine *engine, struct actor *killer,
 
     float reward;
     int level_diff = target->ai->xp_level - killer->ai->xp_level;
-    reward = base_kill_reward * powf(1.1f, level_diff);
+    reward = base_kill_reward * powf(1.8f, level_diff);
 
     float max_hp_diff = target->life->max_hp > killer->life->max_hp;
     if (max_hp_diff > 0)
@@ -502,7 +504,7 @@ float calc_kill_reward(struct engine *engine, struct actor *killer,
 
 float calc_next_level_xp(struct engine *engine, struct actor *actor)
 {
-    float required_xp = 100.f + (actor->ai->xp_level - 1) * 100.f;
+    float required_xp = 100.f + powf(1.9f, actor->ai->xp_level);
     return required_xp;
 }
 
@@ -523,16 +525,16 @@ bool should_level_up(struct engine *engine, struct actor *actor)
 bool inventory_add(struct container *container, struct actor *actor)
 {
     if (container->capacity > 0
-        && TCOD_list_size(container->inventory) > container->capacity)
+        && TCOD_list_size(container->items) > container->capacity)
         return false;
 
-    TCOD_list_push(container->inventory, actor);
+    TCOD_list_push(container->items, actor);
     return true;
 }
 
 void inventory_remove(struct container *container, struct actor *actor)
 {
-    TCOD_list_remove(container->inventory, actor);
+    TCOD_list_remove(container->items, actor);
 }
 
 bool try_pick(struct engine *engine)
@@ -597,13 +599,17 @@ bool drop(struct engine *engine, struct actor *actor, struct actor *item)
 
 bool drop_last(struct engine *engine, struct actor *actor)
 {
-    if (TCOD_list_is_empty(actor->inventory->inventory)) {
-        engine->gui->message(engine, TCOD_light_gray, "Nothing to drop.\n");
+    if (!actor->inventory)
+        return false;
+
+    if (TCOD_list_is_empty(actor->inventory->items)) {
+        engine->gui->message(engine, TCOD_light_gray,
+                             "Don't have anything to drop.\n");
         return false;
     }
 
     struct actor **last_item =
-            (struct actor **) TCOD_list_end(actor->inventory->inventory);
+            (struct actor **) TCOD_list_end(actor->inventory->items);
     last_item--;
     engine->game_status = NEW_TURN;
 
@@ -792,7 +798,7 @@ bool wield_weapon(struct engine *engine, struct actor *actor,
         return false;
 
     bool did_replace = false;
-    /* Unwield the previous weapon and put it back into the inventory */
+    /* Unwield the previous weapon and put it back into the items */
     if (actor->attacker->weapon)
         did_replace = inventory_add(actor->inventory, actor->attacker->weapon);
 
@@ -802,7 +808,7 @@ bool wield_weapon(struct engine *engine, struct actor *actor,
     engine->gui->message(engine, TCOD_green, "You are now wielding %s.\n",
                          weapon->name);
 
-    /* Remove the weapon from the inventory */
+    /* Remove the weapon from the items */
     if (actor->inventory)
         inventory_remove(actor->inventory, weapon);
 
@@ -814,7 +820,7 @@ bool unwield_weapon(struct engine *engine, struct actor *actor,
                     struct actor *weapon)
 {
     bool did_unwield = false;
-    /* Unwield the previous weapon and put it back into the inventory */
+    /* Unwield the previous weapon and put it back into the items */
     if (actor->attacker->weapon) {
         did_unwield = inventory_add(actor->inventory, actor->attacker->weapon);
         actor->attacker->weapon = NULL;
@@ -943,25 +949,26 @@ void common_attack(struct engine *engine, struct actor *dealer,
     defence = target->life->defence;
 
     if (target->life && !is_dead(target)) {
+        bool is_player = dealer == engine->player;
         if (power - defence > 0) {
-            bool is_player = dealer == engine->player;
             engine->gui->message(
-                    engine,
-                    is_player ? TCOD_light_grey : TCOD_red,
+                    engine, is_player ? TCOD_light_grey : TCOD_red,
                     "%s %s %s for %.0f hit points.\n",
                     dealer->name, is_player ? "attack" : "attacks",
-                    target->name, power - defence);
+                    target->name, power - defence
+            );
         } else {
             engine->gui->message(
                     engine, TCOD_light_grey,
-                    "%s attacks %s but it has no effect!\n",
-                    dealer->name, target->name);
+                    "%s %s %s but it has no effect!\n",
+                    dealer->name, is_player ? "attack" : "attacks", target->name
+            );
         }
         target->life->take_damage(engine, dealer, target, power);
 
         if (dealer->ai) {
-            dealer->ai->skills.strength++;
-            dealer->ai->skills.fighting;
+            dealer->ai->skills.strength += 0.05;
+            dealer->ai->skills.fighting += 0.1;
         }
     } else {
         engine->gui->message(engine, TCOD_light_grey,

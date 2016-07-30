@@ -149,7 +149,7 @@ struct pickable {
 struct container {
     int capacity;
     /* The maximum number of items (actors) in it. */
-    TCOD_list_t inventory;    /* */
+    TCOD_list_t items;    /* */
 };
 
 struct actor {
