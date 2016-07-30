@@ -35,6 +35,10 @@ struct actor;
 struct skills {
     int strength;
     int intelligence;
+    int agility;
+    int providence;
+    int prudence;
+    int fighting;
 };
 
 struct ai {
@@ -67,6 +71,8 @@ struct ai {
 struct attacker {
     struct actor *weapon;
     float power;
+
+    struct actor *current_target;
 
     float (*calc_hit_power)(struct engine *engine, struct actor *dealer,
                             struct actor *target);

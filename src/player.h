@@ -21,7 +21,6 @@
 #ifndef INNFIN_PLAYER_H
 #define INNFIN_PLAYER_H
 
-#include <stdbool.h>
 #include "actor.h"
 
 struct actor *make_player(int x, int y);

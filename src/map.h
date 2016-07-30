@@ -21,7 +21,6 @@
 #ifndef MAP_H
 #define MAP_H
 
-#include <stdbool.h>
 #include "libtcod.h"
 #include "engine.h"
 

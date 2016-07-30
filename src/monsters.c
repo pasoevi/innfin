@@ -2,13 +2,10 @@
 #include "monsters.h"
 #include <math.h>
 
-/*** Monster functions ***/
-
 /** Factory functions **/
 struct actor *make_monster(int x, int y, const char ch, const char *name,
                            TCOD_color_t col, float power, float max_hp,
-                           float hp, float defence,
-                           const char *corpse_name,
+                           float hp, float defence, const char *corpse_name,
                            void (*update)(struct engine *engine,
                                           struct actor *actor))
 {
@@ -26,14 +23,15 @@ struct actor *make_monster(int x, int y, const char ch, const char *name,
 
     /* Init life */
     monster->life = init_life(max_hp, hp, defence, corpse_name,
-                      take_damage, monster_die);
+                              take_damage, monster_die);
 
     return monster;
 }
 
 struct actor *make_orc(int x, int y)
 {
-    struct actor *orc = make_monster(x, y, 'o', "an orc", TCOD_desaturated_green, 8,
+    struct actor *orc = make_monster(x, y, 'o', "an orc",
+                                     TCOD_desaturated_green, 2,
                                      15, 15, 2, "a dead orc", monster_update);
     orc->ai->xp_level = 2;
     return orc;
@@ -41,26 +39,28 @@ struct actor *make_orc(int x, int y)
 
 struct actor *make_goblin(int x, int y)
 {
-    struct actor *goblin = make_monster(x, y, 'g', "a goblin", TCOD_green, 5, 14, 14,
-                                        3, "a dead goblin", monster_update);
+    struct actor *goblin = make_monster(x, y, 'g', "a goblin", TCOD_green, 5,
+                                        14, 14,
+                                        1, "a dead goblin", monster_update);
     goblin->ai->xp_level = 1;
     return goblin;
 }
 
 struct actor *make_troll(int x, int y)
 {
-    struct actor *troll = make_monster(x, y, 'T', "a troll", TCOD_darker_green, 10,
-                                      20, 20, 3, "a troll carcass", monster_update);
+    struct actor *troll = make_monster(x, y, 'T', "a troll", TCOD_darker_green,
+                                       3, 20, 20, 3, "a troll carcass", monster_update);
     troll->ai->xp_level = 2;
     return troll;
 }
 
 struct actor *make_dragon(int x, int y)
 {
-    struct actor *dragon = make_monster(x, y, 'D', "a dragon", TCOD_darkest_green,
-                                     10,
-                                     25, 25, 7, "dragon scales and flesh",
-                                     dragon_update);
+    struct actor *dragon = make_monster(x, y, 'D', "a dragon",
+                                        TCOD_darkest_green,
+                                        4,
+                                        25, 25, 7, "dragon scales and flesh",
+                                        dragon_update);
     dragon->fov_only = false;
     dragon->ai->xp_level = 4;
 
@@ -68,12 +68,12 @@ struct actor *make_dragon(int x, int y)
 }
 
 bool monster_move_or_attack(struct engine *engine, struct actor *actor,
-                            int targetx, int targety)
+                            int target_x, int target_y)
 {
-    int dx = targetx - actor->x;
-    int dy = targety - actor->y;
-    int stepdx = (dx > 0 ? 1 : -1);
-    int stepdy = (dy > 0 ? 1 : -1);
+    int dx = target_x - actor->x;
+    int dy = target_y - actor->y;
+    int step_dx = (dx > 0 ? 1 : -1);
+    int step_dy = (dy > 0 ? 1 : -1);
     float distance = sqrtf(dx * dx + dy * dy);
 
     if (distance >= 2) {
@@ -83,13 +83,13 @@ bool monster_move_or_attack(struct engine *engine, struct actor *actor,
         if (can_walk(engine, actor->x + dx, actor->y + dy)) {
             actor->x += dx;
             actor->y += dy;
-        } else if (can_walk(engine, actor->x + stepdx, actor->y)) {
-            actor->x += stepdx;
-        } else if (can_walk(engine, actor->x, actor->y + stepdy)) {
-            actor->y += stepdy;
+        } else if (can_walk(engine, actor->x + step_dx, actor->y)) {
+            actor->x += step_dx;
+        } else if (can_walk(engine, actor->x, actor->y + step_dy)) {
+            actor->y += step_dy;
         }
     } else if (actor->attacker) {
-        struct actor *target = get_actor(engine, targetx, targety);
+        struct actor *target = get_actor(engine, target_x, target_y);
         if (target) {
             actor->attacker->attack(engine, actor, target);
             return false;
@@ -105,16 +105,23 @@ void monster_update(struct engine *engine, struct actor *actor)
         return;
     }
 
-    if (is_in_fov(engine->map, actor->x, actor->y)) {
+    struct actor *target;
+
+    if (actor->attacker->current_target) {
+        /* We have been attacked by somebody. Attack him in turn! */
+        target = actor->attacker->current_target;
+        actor->ai->move_count = TRACKING_TURNS;
+    } else if (is_in_fov(engine->map, actor->x, actor->y)) {
         /* We can see the player, start tracking him */
+        target = engine->player;
         actor->ai->move_count = TRACKING_TURNS;
     } else {
-        (actor->ai->move_count)--;
+        target = NULL;
+        actor->ai->move_count--;
     }
 
-    if (actor->ai->move_count > 0) {
-        actor->ai->move_or_attack(engine, actor, engine->player->x,
-                                  engine->player->y);
+    if (actor->ai->move_count > 0 && target) {
+        actor->ai->move_or_attack(engine, actor, target->x, target->y);
     }
 }
 
@@ -132,16 +139,17 @@ void dragon_update(struct engine *engine, struct actor *actor)
         actor->ai->move_count = TRACKING_TURNS;
     else
         actor->ai->move_count--;
+
     if (actor->ai->move_count > 0 && target) {
-        actor->ai->move_or_attack(engine, actor, target->x,
-                                  target->y);
+        actor->ai->move_or_attack(engine, actor, target->x, target->y);
     }
 }
 
 /*
  * Transform a monster into an edible corpse.
  */
-void monster_die(struct engine *engine, struct actor *actor, struct actor *killer)
+void monster_die(struct engine *engine, struct actor *actor,
+                 struct actor *killer)
 {
     /* Transform this dead body into an edible corpse */
     actor->pickable = init_pickable(0, 0, eat);

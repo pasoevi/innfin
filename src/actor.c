@@ -19,7 +19,6 @@
 */
 
 #include <stdlib.h>
-#include <stdbool.h>
 #include <math.h>
 #include "monsters.h"
 #include "util.h"
@@ -28,11 +27,15 @@ extern void compute_fov(struct engine *engine);
 
 /* Forward declare internal functions */
 void common_update(struct engine *engine, struct actor *actor);
-bool unwield_weapon(struct engine *engine, struct actor *actor, struct actor *weapon);
+
+bool unwield_weapon(struct engine *engine, struct actor *actor,
+                    struct actor *weapon);
+
 void render_actor(struct actor *actor);
 
 /***************** Actor creation & destruction functions *********************/
-struct actor *init_actor(int x, int y, char ch, const char *name, TCOD_color_t col)
+struct actor *init_actor(int x, int y, char ch, const char *name,
+                         TCOD_color_t col)
 {
     struct actor *actor = malloc(sizeof *actor);
 
@@ -144,6 +147,7 @@ struct attacker *init_attacker(float power,
     attacker->power = power;
     attacker->calc_hit_power = calc_hit_power;
     attacker->weapon = NULL;
+    attacker->current_target = NULL;
     return attacker;
 }
 
@@ -272,9 +276,11 @@ struct actor *make_confusion_wand(int x, int y)
 /*********************** Weapons *****************/
 struct actor *make_weapon(int x, int y, float power,
                           const char ch, const char *name, TCOD_color_t col,
-                          bool(*wield)(struct engine *engine, struct actor *actor,
+                          bool(*wield)(struct engine *engine,
+                                       struct actor *actor,
                                        struct actor *item),
-                          bool(*blow)(struct engine *engine, struct actor *actor,
+                          bool(*blow)(struct engine *engine,
+                                      struct actor *actor,
                                       struct actor *item,
                                       struct actor *target))
 {
@@ -462,10 +468,19 @@ float calc_hit_power(struct engine *engine, struct actor *dealer, struct
         actor *target)
 {
     float power = 0.f;
-    if (dealer->attacker->weapon)
-        power = dealer->attacker->weapon->pickable->power;
+
+    struct actor *weapon = dealer->attacker->weapon;
+    if (weapon)
+        power = weapon->pickable->power;
     else
         power = dealer->attacker->power;
+
+    /*
+     * Use the weapon/fist power as a base value and calculate the final
+     * hit power honoring your strength, fighting and other skills.
+     */
+    power = power * powf(1.08f, dealer->ai->skills.strength);
+    
     return power;
 }
 
@@ -564,6 +579,9 @@ bool pick(struct engine *engine, struct actor *actor, struct actor *item)
 
 bool drop(struct engine *engine, struct actor *actor, struct actor *item)
 {
+    if (!item)
+        return false;
+
     if (actor->inventory) {
         inventory_remove(actor->inventory, item);
         TCOD_list_push(engine->actors, item);
@@ -579,10 +597,19 @@ bool drop(struct engine *engine, struct actor *actor, struct actor *item)
 
 bool drop_last(struct engine *engine, struct actor *actor)
 {
+    if (TCOD_list_is_empty(actor->inventory->inventory)) {
+        engine->gui->message(engine, TCOD_light_gray, "Nothing to drop.\n");
+        return false;
+    }
+
     struct actor **last_item =
             (struct actor **) TCOD_list_end(actor->inventory->inventory);
     last_item--;
     engine->game_status = NEW_TURN;
+
+    if (!last_item)
+        return false;
+
     return drop(engine, actor, *last_item);
 }
 
@@ -761,6 +788,9 @@ bool potion_of_poison_use(struct engine *engine, struct actor *actor,
 bool wield_weapon(struct engine *engine, struct actor *actor,
                   struct actor *weapon)
 {
+    if (!weapon)
+        return false;
+
     bool did_replace = false;
     /* Unwield the previous weapon and put it back into the inventory */
     if (actor->attacker->weapon)
@@ -768,6 +798,11 @@ bool wield_weapon(struct engine *engine, struct actor *actor,
 
     /* Wield the new weapon */
     actor->attacker->weapon = weapon;
+
+    engine->gui->message(engine, TCOD_green, "You are now wielding %s.\n",
+                         weapon->name);
+
+    /* Remove the weapon from the inventory */
     if (actor->inventory)
         inventory_remove(actor->inventory, weapon);
 
@@ -775,13 +810,17 @@ bool wield_weapon(struct engine *engine, struct actor *actor,
 }
 
 /* TODO: Add message to log */
-bool unwield_weapon(struct engine *engine, struct actor *actor, struct actor *weapon)
+bool unwield_weapon(struct engine *engine, struct actor *actor,
+                    struct actor *weapon)
 {
     bool did_unwield = false;
     /* Unwield the previous weapon and put it back into the inventory */
     if (actor->attacker->weapon) {
         did_unwield = inventory_add(actor->inventory, actor->attacker->weapon);
         actor->attacker->weapon = NULL;
+
+        engine->gui->message(engine, TCOD_green,
+                             "You are no longer wielding %s.\n", weapon->name);
     }
 
     return did_unwield;
@@ -795,6 +834,8 @@ bool unwield_current_weapon(struct engine *engine, struct actor *actor)
     struct actor *weapon = actor->attacker->weapon;
     if (weapon)
         return weapon->pickable->unuse(engine, actor, weapon);
+
+    return false;
 }
 
 /*
@@ -813,24 +854,19 @@ bool eat(struct engine *engine, struct actor *actor, struct actor *food)
 {
     bool used = false;
     if (food->life && is_dead(food)) {
-        float can_eat =
-                actor->life->max_stomach -
-                actor->life->stomach;
+        float can_eat = actor->life->max_stomach - actor->life->stomach;
         float food_value = calc_food_value(food);
 
         if (food_value <= can_eat) {
             actor->life->stomach += food_value;
-            engine->gui->message(engine, TCOD_green,
-                                 "You finish eating %s.\n",
-                                 food->
-                                         life->corpse_name);
+            engine->gui->message(engine, TCOD_green, "You finish eating %s.\n",
+                                 food->life->corpse_name);
             used = use(actor, food);
         }
     }
 
     if (!used)
-        engine->gui->message(engine, TCOD_green,
-                             "You aren't hungry enough to eat.\n");
+        engine->gui->message(engine, TCOD_green, "You aren't hungry.\n");
 
     return used;
 }
@@ -902,7 +938,7 @@ bool level_up(struct engine *engine, struct actor *actor)
 void common_attack(struct engine *engine, struct actor *dealer,
                    struct actor *target)
 {
-    float power = 0.f, defence = 0.f;
+    float power, defence;
     power = dealer->attacker->calc_hit_power(engine, dealer, target);
     defence = target->life->defence;
 
@@ -912,7 +948,7 @@ void common_attack(struct engine *engine, struct actor *dealer,
             engine->gui->message(
                     engine,
                     is_player ? TCOD_light_grey : TCOD_red,
-                    "%s %s %s for %g hit points.\n",
+                    "%s %s %s for %.0f hit points.\n",
                     dealer->name, is_player ? "attack" : "attacks",
                     target->name, power - defence);
         } else {
@@ -922,6 +958,11 @@ void common_attack(struct engine *engine, struct actor *dealer,
                     dealer->name, target->name);
         }
         target->life->take_damage(engine, dealer, target, power);
+
+        if (dealer->ai) {
+            dealer->ai->skills.strength++;
+            dealer->ai->skills.fighting;
+        }
     } else {
         engine->gui->message(engine, TCOD_light_grey,
                              "%s attacks %s in vain.\n",
@@ -957,6 +998,10 @@ float take_damage(struct engine *engine, struct actor *dealer,
     } else {
         damage = 0;
     }
+
+    if (target->attacker)
+        target->attacker->current_target = dealer;
+
     return damage;
 }
 
