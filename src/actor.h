@@ -41,7 +41,7 @@ struct ai {
     int move_count;
     /* allow monsters to track the player */
     struct skills skills;
-    float xp_level;
+    int xp_level;
     float xp;
 
     bool (*level_up)(struct engine *engine, struct actor *actor);
@@ -298,6 +298,8 @@ float calc_hit_power(struct engine *engine, struct actor *dealer,
  **/
 float calc_kill_reward(struct engine *engine, struct actor *actor,
                        struct actor *target);
+
+float calc_next_level_xp(struct engine *engine, struct actor *actor);
 
 bool should_level_up(struct engine *engine, struct actor *actor);
 

@@ -55,7 +55,10 @@ struct map {
 /*
  * Initialise the map with w(idth) and h(eight)
  * Creates new map and assigns it to engine->map.
- * */
+ * @param engine
+ * @param w
+ * @param h
+ */
 void init_map(struct engine *engine, int w, int h);
 
 void free_map(struct map *map);

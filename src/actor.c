@@ -474,13 +474,18 @@ float calc_kill_reward(struct engine *engine, struct actor *actor,
     return 10 + actor->ai->xp;
 }
 
+float calc_next_level_xp(struct engine *engine, struct actor *actor)
+{
+    float required_xp = 30.f + actor->ai->xp_level * 30.f;
+    return required_xp;
+}
 
 bool should_level_up(struct engine *engine, struct actor *actor)
 {
     if (!actor->ai || actor->ai->xp_level == MAX_XP_LEVEL)
         return false;
 
-    float required_xp = 30.f + actor->ai->xp_level * 30.f;
+    float required_xp = calc_next_level_xp(engine, actor);
 
     if (actor->ai->xp > required_xp)
         return true;

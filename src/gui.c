@@ -118,11 +118,11 @@ static void render_status(TCOD_console_t *con, int x, int y,
         render_fixed_text(con, x, y, status.col, status.text);
 }
 
-static void render_log(struct engine *engine, int startx, int starty)
+static void render_log(struct engine *engine, int start_x, int start_y)
 {
     /* draw the message log */
     float color_coef = 0.4f;
-    int y = starty;
+    int y = start_y;
 
     TCOD_list_t *log = engine->gui->log;
 
@@ -133,7 +133,7 @@ static void render_log(struct engine *engine, int startx, int starty)
         struct message *message = *iter;
 //        TCOD_color_t col = TCOD_color_multiply_scalar(message->col, color_coef);
         TCOD_console_set_default_foreground(engine->gui->con, message->col);
-        TCOD_console_print(engine->gui->con, startx, y,
+        TCOD_console_print(engine->gui->con, start_x, y,
                            message->text);
         y++;
         if (color_coef < 1.0f)
@@ -183,7 +183,16 @@ static void gui_render(struct engine *engine)
                             engine->player->life->hp,
                             engine->player->life->max_hp,
                             TCOD_white, TCOD_lighter_gray);
-    render_status(engine->gui->con, 1, 3, engine->player);
+
+    /* Render XP bar */
+    float next_level_xp = calc_next_level_xp(engine, engine->player);
+    char xp_txt[20];
+    sprintf(xp_txt, "level %d XP", engine->player->ai->xp_level);
+    engine->gui->render_bar(engine, 1, 2, BAR_W, xp_txt, engine->player->ai->xp,
+                            next_level_xp, TCOD_white, TCOD_lighter_gray);
+
+
+    render_status(engine->gui->con, 1, 4, engine->player);
 
     engine->gui->render_log(engine, MSG_X, 1);
     engine->gui->render_mouse_look(engine);

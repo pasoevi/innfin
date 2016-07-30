@@ -138,7 +138,7 @@ void monster_die(struct engine *engine, struct actor *actor, struct actor *kille
     /* Transform this dead body into an edible corpse */
     actor->pickable = init_pickable(0, 0, eat);
 
-    reward_kill(engine, actor, killer);
+    reward_kill(engine, killer, actor);
 
     /* Call the common die function */
     die(engine, actor, killer);

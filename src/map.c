@@ -88,6 +88,11 @@ void create_room(struct engine *engine, bool first, int x1, int y1, int x2,
     engine->stairs->y = (y1 + y2) / 2;
 }
 
+/*
+ * Engine is passed user_data.
+ * TODO: Use engine->level to determine what kind of  monsters, portals, items,
+ * etc to generate in this room.
+ */
 bool visit_node(TCOD_bsp_t *node, void *user_data)
 {
     struct engine *engine = (struct engine *) user_data;
