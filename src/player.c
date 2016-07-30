@@ -40,27 +40,29 @@ void player_die(struct engine *engine, struct actor *actor,
 
 struct actor *make_player(int x, int y)
 {
-    struct actor *tmp =
+    struct actor *player =
             init_actor(x, y, '@', "you", TCOD_white);
 
     /* Artificial intelligence */
-    tmp->ai = init_ai(player_update, player_move_or_attack);
-    tmp->ai->skills.strength = 15;
-    tmp->ai->skills.intelligence = 9;
+    player->ai = init_ai(player_update, player_move_or_attack);
+    player->ai->skills.strength = 15;
+    player->ai->skills.intelligence = 9;
 
     /* Init attacker */
-    tmp->attacker = init_attacker(10, attack);
+    player->attacker = init_attacker(10, attack);
 
     /* Init life */
-    tmp->life = init_life(1000, 1000, 6, "your dead body", take_damage,
+    player->life = init_life(100, 100, 6, "your dead body", take_damage,
                           player_die);
-    tmp->life->max_stomach = 500;
-    tmp->life->stomach = tmp->life->max_stomach;
+    player->life->regen = regen_hp;
+
+    player->life->max_stomach = 500;
+    player->life->stomach = player->life->max_stomach;
 
     /* Init inventory */
-    tmp->inventory = init_container(26);
+    player->inventory = init_container(26);
 
-    return tmp;
+    return player;
 }
 
 bool descend(struct engine *engine, struct actor *actor, struct actor *stairs)
@@ -338,5 +340,26 @@ void player_update(struct engine *engine, struct actor *actor)
             compute_fov(engine);
         }
     }
+
+    if (engine->game_status == NEW_TURN)
+        actor->life->regen(engine, actor);
+}
+
+float regen_hp(struct engine *engine, struct actor *actor)
+{
+    float hp_gained = 0.1f;
+    if (is_dead(actor) || !actor->life || actor->life->hp >= actor->life->max_hp)
+        return 0.f;
+
+    actor->life->hp += hp_gained;
+
+    float hp_overflow = actor->life->hp - actor->life->max_hp;
+
+    if (hp_overflow > 0) {
+        hp_gained = hp_gained - hp_overflow;
+        actor->life->hp = actor->life->max_hp;
+    }
+
+    return hp_gained;
 }
 

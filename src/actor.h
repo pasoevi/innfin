@@ -96,6 +96,7 @@ struct life {
     /* the actor's name once dead/destroyed */
     float (*take_damage)(struct engine *engine, struct actor *dealer,
                          struct actor *target, float damage);
+    float (*regen)(struct engine *engine, struct actor *actor);
 
     void (*die)(struct engine *engine, struct actor *actor, struct actor *killer);
 };

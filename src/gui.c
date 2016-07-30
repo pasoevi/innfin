@@ -98,7 +98,7 @@ static void render_bar(struct engine *engine, int x, int y, int w,
     TCOD_color_t hp_color = TCOD_black;
     TCOD_console_set_default_foreground(engine->gui->con, hp_color);
     TCOD_console_print_ex(engine->gui->con, x + w / 2, y,
-                          TCOD_BKGND_NONE, TCOD_CENTER, "%s : %g/%g",
+                          TCOD_BKGND_NONE, TCOD_CENTER, "%s : %.0f/%.0f",
                           name, value, max_value);
 }
 

@@ -33,30 +33,38 @@ struct actor *make_monster(int x, int y, const char ch, const char *name,
 
 struct actor *make_orc(int x, int y)
 {
-    return make_monster(x, y, 'o', "an orc", TCOD_desaturated_green, 8,
-                        15, 15, 2, "a dead orc", monster_update);
+    struct actor *orc = make_monster(x, y, 'o', "an orc", TCOD_desaturated_green, 8,
+                                     15, 15, 2, "a dead orc", monster_update);
+    orc->ai->xp_level = 2;
+    return orc;
 }
 
 struct actor *make_goblin(int x, int y)
 {
-    return make_monster(x, y, 'g', "a goblin", TCOD_green, 5, 14, 14,
-                        3, "a dead goblin", monster_update);
+    struct actor *goblin = make_monster(x, y, 'g', "a goblin", TCOD_green, 5, 14, 14,
+                                        3, "a dead goblin", monster_update);
+    goblin->ai->xp_level = 1;
+    return goblin;
 }
 
 struct actor *make_troll(int x, int y)
 {
-    return make_monster(x, y, 'T', "a troll", TCOD_darker_green, 10,
-                        20, 20, 3, "a troll carcass", monster_update);
+    struct actor *troll = make_monster(x, y, 'T', "a troll", TCOD_darker_green, 10,
+                                      20, 20, 3, "a troll carcass", monster_update);
+    troll->ai->xp_level = 2;
+    return troll;
 }
 
 struct actor *make_dragon(int x, int y)
 {
-    struct actor *tmp = make_monster(x, y, 'D', "a dragon", TCOD_darkest_green,
+    struct actor *dragon = make_monster(x, y, 'D', "a dragon", TCOD_darkest_green,
                                      10,
                                      25, 25, 7, "dragon scales and flesh",
                                      dragon_update);
-    tmp->fov_only = false;
-    return tmp;
+    dragon->fov_only = false;
+    dragon->ai->xp_level = 4;
+
+    return dragon;
 }
 
 bool monster_move_or_attack(struct engine *engine, struct actor *actor,

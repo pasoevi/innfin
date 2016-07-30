@@ -30,6 +30,8 @@ bool descend(struct engine *engine, struct actor *actor, struct actor *stairs);
 
 void player_update(struct engine *engine, struct actor *actor);
 
+float regen_hp(struct engine *engine, struct actor *actor);
+
 bool player_move_or_attack(struct engine *engine, struct actor *actor,
                            int target_x, int target_y);
 

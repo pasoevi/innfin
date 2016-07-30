@@ -20,6 +20,7 @@
 
 #include <stdlib.h>
 #include <stdbool.h>
+#include <math.h>
 #include "monsters.h"
 #include "util.h"
 
@@ -468,15 +469,25 @@ float calc_hit_power(struct engine *engine, struct actor *dealer, struct
     return power;
 }
 
-float calc_kill_reward(struct engine *engine, struct actor *actor,
+float calc_kill_reward(struct engine *engine, struct actor *killer,
                        struct actor *target)
 {
-    return 10 + actor->ai->xp;
+    float base_kill_reward = 5.0f * engine->level;
+
+    float reward;
+    int level_diff = target->ai->xp_level - killer->ai->xp_level;
+    reward = base_kill_reward * powf(1.1f, level_diff);
+
+    float max_hp_diff = target->life->max_hp > killer->life->max_hp;
+    if (max_hp_diff > 0)
+        reward += max_hp_diff;
+
+    return reward;
 }
 
 float calc_next_level_xp(struct engine *engine, struct actor *actor)
 {
-    float required_xp = 30.f + actor->ai->xp_level * 30.f;
+    float required_xp = 100.f + (actor->ai->xp_level - 1) * 100.f;
     return required_xp;
 }
 
@@ -851,15 +862,15 @@ float reward_kill(struct engine *engine, struct actor *actor,
 
     if (reward > 0) {
         /* Do correct grammar: You gain, He gains */
-        char *reward_message = target == engine->player ?
+        char *reward_message = actor == engine->player ?
                                "%s is dead. %s gain %.0f xp.\n" :
                                "%s is dead. %s gains %.0f xp.\n";
 
         engine->gui->message(engine, TCOD_light_grey, reward_message,
-                             actor->name, target->name, reward);
+                             target->name, actor->name, reward);
     } else {
         engine->gui->message(engine, TCOD_light_grey, "%s is dead.\n",
-                             actor->name);
+                             target->name);
     }
 
     return reward;
