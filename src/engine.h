@@ -52,7 +52,7 @@ enum {
     /* Monsters, items, spells, potions, weapons */
 };
 
-enum GameStatus {
+enum game_status {
     STARTUP,
     IDLE,
     NEW_TURN,
@@ -69,7 +69,7 @@ struct engine {
     bool compute_fov;
     TCOD_key_t key;
     TCOD_mouse_t mouse;
-    enum GameStatus game_status;
+    enum game_status game_status;
     struct gui *gui;
     int window_w;
     int window_h;

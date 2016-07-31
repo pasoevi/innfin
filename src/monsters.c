@@ -16,8 +16,8 @@ struct actor *make_monster(int x, int y, const char ch, const char *name,
     if (monster->ai != NULL) {
         monster->ai->xp = max_hp / 2;
         monster->ai->xp_level = 1;
-        monster->ai->skills.strength = 1;
-        monster->ai->skills.fighting = 1;
+        monster->ai->skills.strength = 10;
+        monster->ai->skills.fighting = 4;
     }
 
     /* Init attacker */
@@ -33,38 +33,45 @@ struct actor *make_monster(int x, int y, const char ch, const char *name,
 struct actor *make_orc(int x, int y)
 {
     struct actor *orc = make_monster(x, y, 'o', "an orc",
-                                     TCOD_desaturated_green, 2,
+                                     TCOD_desaturated_green, 11,
                                      15, 15, 4, "a dead orc", monster_update);
     orc->ai->xp_level = 2;
+    orc->ai->skills.strength = 8;
+    orc->ai->skills.fighting = 13;
     return orc;
 }
 
 struct actor *make_goblin(int x, int y)
 {
-    struct actor *goblin = make_monster(x, y, 'g', "a goblin", TCOD_green, 5,
-                                        14, 14,
-                                        2, "a dead goblin", monster_update);
+    struct actor *goblin = make_monster(x, y, 'g', "a goblin", TCOD_green, 10,
+                                        14, 14, 2, "a dead goblin", monster_update);
     goblin->ai->xp_level = 1;
+    goblin->ai->skills.strength = 5;
+    goblin->ai->skills.fighting = 20;
     return goblin;
 }
 
 struct actor *make_troll(int x, int y)
 {
-    struct actor *troll = make_monster(x, y, 'T', "a troll", TCOD_darker_green,
-                                       6, 20, 20, 3, "a troll carcass", monster_update);
+    struct actor *troll = make_monster(x, y, 'T', "a troll", TCOD_lighter_green,
+                                       12, 20, 20, 3, "a troll carcass",
+                                       monster_update);
     troll->ai->xp_level = 2;
+    troll->ai->skills.strength = 20;
+    troll->ai->skills.fighting = 7;
     return troll;
 }
 
 struct actor *make_dragon(int x, int y)
 {
-    struct actor *dragon = make_monster(x, y, 'D', "a dragon", TCOD_darkest_green,
-                                        8, 25, 25, 7, "dragon scales and flesh",
+    struct actor *dragon = make_monster(x, y, 'D', "a dragon", TCOD_dark_green,
+                                        16, 25, 25, 10, "dragon scales and flesh",
                                         dragon_update);
     dragon->fov_only = false;
     dragon->ai->xp_level = 4;
-    dragon->ai->skills.strength = 2;
-
+    dragon->ai->skills.strength = 25;
+    dragon->ai->skills.fighting = 5;
+    
     return dragon;
 }
 
@@ -121,16 +128,15 @@ void monster_update(struct engine *engine, struct actor *actor)
         actor->ai->move_count--;
     }
 
-    if (actor->ai->move_count > 0 && target) {
+    if (actor->ai->move_count > 0 && target)
         actor->ai->move_or_attack(engine, actor, target->x, target->y);
-    }
 }
 
 void dragon_update(struct engine *engine, struct actor *actor)
 {
-    if (actor->life && is_dead(actor)) {
+    if (actor->life && is_dead(actor))
         return;
-    }
+    
 
     if (!is_in_fov(engine->map, actor->x, actor->y))
         return;
@@ -141,16 +147,14 @@ void dragon_update(struct engine *engine, struct actor *actor)
     else
         actor->ai->move_count--;
 
-    if (actor->ai->move_count > 0 && target) {
+    if (actor->ai->move_count > 0 && target)
         actor->ai->move_or_attack(engine, actor, target->x, target->y);
-    }
 }
 
 /*
  * Transform a monster into an edible corpse.
  */
-void monster_die(struct engine *engine, struct actor *actor,
-                 struct actor *killer)
+void monster_die(struct engine *engine, struct actor *actor, struct actor *killer)
 {
     /* Transform this dead body into an edible corpse */
     actor->pickable = init_pickable(0, 0, eat);

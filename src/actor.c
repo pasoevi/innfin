@@ -465,10 +465,10 @@ struct message get_hunger_status(struct actor *actor)
     return status;
 }
 
-float calc_hit_power(struct engine *engine, struct actor *dealer, struct
-        actor *target)
+float calc_hit_power(struct engine *engine, struct actor *dealer, struct actor *target)
 {
     float power;
+    float skill_base_value;
 
     struct actor *weapon = dealer->attacker->weapon;
     if (weapon)
@@ -476,12 +476,13 @@ float calc_hit_power(struct engine *engine, struct actor *dealer, struct
     else
         power = dealer->attacker->power;
 
+    skill_base_value = (dealer->ai->skills.strength / 2) * dealer->ai->skills.fighting;
+
     /*
      * Use the weapon/fist power as a base value and calculate the final
      * hit power honoring your strength, fighting and other skills.
      */
-    power += dealer->ai->skills.strength;
-    power *= dealer->ai->skills.fighting;
+    power *= skill_base_value * 0.02f;
     
     return power;
 }

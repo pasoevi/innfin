@@ -223,15 +223,15 @@ void free_gui(struct gui *gui)
 
 struct gui *init_gui(int w, int h)
 {
-    struct gui *tmp = malloc(sizeof *tmp);
-    tmp->con = TCOD_console_new(w, h);
-    tmp->inventory_con =
+    struct gui *gui = malloc(sizeof *gui);
+    gui->con = TCOD_console_new(w, h);
+    gui->inventory_con =
             TCOD_console_new(INVENTORY_WIDTH, INVENTORY_HEIGHT);
-    tmp->render_bar = render_bar;
-    tmp->render_log = render_log;
-    tmp->render_mouse_look = render_mouse_look;
-    tmp->render = gui_render;
-    tmp->message = message;
-    tmp->log = TCOD_list_new();
-    return tmp;
+    gui->render_bar = render_bar;
+    gui->render_log = render_log;
+    gui->render_mouse_look = render_mouse_look;
+    gui->render = gui_render;
+    gui->message = message;
+    gui->log = TCOD_list_new();
+    return gui;
 }
