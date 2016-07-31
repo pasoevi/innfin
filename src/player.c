@@ -26,6 +26,13 @@ static void make_memorial(struct actor *actor)
 
 }
 
+static void make_player_ghost(struct engine *engine, struct actor *player)
+{
+    /*
+     * TODO: Unimplemented.
+     */
+}
+
 /* Transform the actor into a decaying corpse */
 void player_die(struct engine *engine, struct actor *actor,
                 struct actor *killer)
@@ -44,9 +51,9 @@ struct actor *make_player(int x, int y)
 
     /* Artificial intelligence */
     player->ai = init_ai(player_update, player_move_or_attack);
-    player->ai->skills.strength = 15;
+    player->ai->skills.strength = 10;
     player->ai->skills.intelligence = 9;
-    player->ai->skills.fighting = 10;
+    player->ai->skills.fighting = 12;
 
     /* Init attacker */
     player->attacker = init_attacker(10, attack);
