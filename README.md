@@ -1,4 +1,4 @@
-~~NOTE: This is a detailed game manual. For _Downloads_, or the _Quick
+~NOTE: This is a detailed game manual. For _Downloads_, or the _Quick
 Starting Guide_, please visit the game website.~~
 
 [Download](https://github.com/pasoev/innfin/releases/download/0.0.1/innfin_0.0.1.tar.gz)
@@ -15,10 +15,10 @@ later in the game and have the objective of the game changed, as well.
 
 # The World
 
-The game is set in the world deep in the past in which magic
-reigned. Not even rudimentary civilization was yet conceived by most
-races. Writing wasn't invented and songs were known but to the
-cleverest of race.
+The game is set in the world deep in the past in which magic reigned.
+Not even rudimentary civilization was yet conceived by most races.
+Writing wasn't invented and songs were known but to the cleverest of
+race.
 
 In the age of Third Sailing, the brinks of the world saw tempests and
 havoc that, devastating the surface, uncovered the depths that nobody
@@ -126,7 +126,7 @@ bent.
 Dark elves are the most mysterious of the lot. Seeing their innate
 stats, it is difficult to foresee where they would thrive and where
 they would perish. They can be outstanding ranged combatants with
-their mastery of archery and spells singing. They are, however, hated
+their mastery of archery and spell singing. They are, however, hated
 by many creatures and feared by yet more.
 
 ## Dwarf ##
@@ -297,12 +297,26 @@ Resistance skill, but the following, independent skills:
 ### Poison Resistance
 
 ### Mutation Resistance
+Mutation comes into play later in the game. If other threats are more
+deadly to you the weaker you are, the lower your HP, XP, etc, to this
+particular effect you are the more vulnerable the *larger* you are.
 
 ## Throwing
+The game offers a rather limited selection of ranged weapons, and even
+these are hard to come by. Instead of ranged weapons, though, you will
+more often rely on throwing various objects. 
+
+This skill affects your ability to throw items accurately, to do damage
+if hit, the maximum distance you can reach, the size of items you can
+throw with reasonable accuracy. 
 
 ## Petrification
 
 It is an active skill. It is a skill of looking scarier than you are.
+Usually you will want to activate this effect when you want to get to
+some destination fast without being distracting monsters that are well
+weaker than you and wouldn't pose a challenge to you anyway. When
+activated, such monsters get out of your way. 
 
 ## Foresting
 
@@ -325,14 +339,14 @@ the _Religion_ section.
 
 ## Weapons
 
-## Armory
+## Armoruy
 
 # Religion
 
 Religion is important in the game not only in providing more advanced
 mechanics and diversity, but also as the most crucial area of the game
 as the goal is directly determined by what god you worship. More
-advanced spells also are learned by practicing religion. This becomes
+advanced spells also are learned by practising religion. This becomes
 even more important as the world is in its early days and magic-less
 races haven't yet learned enough technology, and but the crudest and
 simplest weapons are easily available.
@@ -342,9 +356,9 @@ simplest weapons are easily available.
 ### Aronkhar
 
 Aronkhar is the god of tribal warfare and barbarism. Until the most
-recent ages, his grip on the world was undisputed. It favors bravery
-and honor, and his reign over the world is remembered as The Golden
-Age of Heroes where the honourable thrived.
+recent ages, his grip on the world was undisputed. It favours bravery
+and honour, and his reign over the world is remembered as The Golden Age
+of Heroes where the honourable thrived.
 
 The untainted domain of Aronkhar has known little of darkness and
 corruption that is brewing in the farthest rims of the world and fast
@@ -370,7 +384,7 @@ servitude and contempt to the world.
 
 Sazanas is said to be generous in granting brilliance and knowledge of
 different machinery to his followers. His first coming showed the
-world primitive form of town settlements that were centered around
+world primitive form of town settlements that were centred around
 High Temples. Such areas indulged inhabitants with powers unheard of
 in the older, Aronkhar domain.
 
