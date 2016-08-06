@@ -23,6 +23,7 @@
 #include "engine.h"
 #include "player.h"
 #include "stairs.h"
+#include "parser.h"
 
 extern void clean(void);
 
@@ -41,6 +42,12 @@ void send_to_back(struct engine *engine, struct actor *actor)
 
 struct engine *engine_init(int w, int h, const char *title)
 {
+
+    /* TESTS */
+    parse_jar("data/monsters.txt", NULL);
+    exit(EXIT_SUCCESS);
+    /* END TESTS */
+
     TCOD_console_init_root(w, h, title, false, TCOD_RENDERER_OPENGL);
     struct engine *engine = malloc(sizeof *engine);
 
@@ -70,6 +77,7 @@ struct engine *engine_init(int w, int h, const char *title)
     /* Add a map to the engine */
     init_map(engine, 80, 43);
     engine->gui->message(engine, TCOD_red, WELCOME_MSG);
+
     return engine;
 }
 

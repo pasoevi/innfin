@@ -301,12 +301,12 @@ struct actor *make_kindzal(int x, int y)
 /* AI */
 struct ai *make_confused_ai(struct actor *actor, int num_turns)
 {
-    struct ai *tmp = malloc(sizeof *tmp);
-    tmp->update = confused_update;
-    tmp->move_or_attack = actor->ai->move_or_attack;
-    tmp->num_turns = num_turns;
-    tmp->old_ai = actor->ai;
-    return tmp;
+    struct ai *ai = malloc(sizeof *ai);
+    ai->update = confused_update;
+    ai->move_or_attack = actor->ai->move_or_attack;
+    ai->num_turns = num_turns;
+    ai->old_ai = actor->ai;
+    return ai;
 }
 
 /************************** Actor identifying functions ***********************/
@@ -465,7 +465,8 @@ struct message get_hunger_status(struct actor *actor)
     return status;
 }
 
-float calc_hit_power(struct engine *engine, struct actor *dealer, struct actor *target)
+float calc_hit_power(struct engine *engine, struct actor *dealer,
+                     struct actor *target)
 {
     float power;
     float skill_base_value;
@@ -476,14 +477,15 @@ float calc_hit_power(struct engine *engine, struct actor *dealer, struct actor *
     else
         power = dealer->attacker->power;
 
-    skill_base_value = (dealer->ai->skills.strength / 2) * dealer->ai->skills.fighting;
+    skill_base_value =
+            (dealer->ai->skills.strength / 2) * dealer->ai->skills.fighting;
 
     /*
      * Use the weapon/fist power as a base value and calculate the final
      * hit power honoring your strength, fighting and other skills.
      */
     power *= skill_base_value * 0.02f;
-    
+
     return power;
 }
 
@@ -590,9 +592,8 @@ bool drop(struct engine *engine, struct actor *actor, struct actor *item)
         TCOD_list_push(engine->actors, item);
         item->x = actor->x;
         item->y = actor->y;
-        engine->gui->message(engine, TCOD_light_grey,
-                             "%s drops a %s.\n", actor->name,
-                             item->name);
+        engine->gui->message(engine, TCOD_light_grey, "%s drops a %s.\n",
+                             actor->name, item->name);
         return true;
     }
     return false;
@@ -1061,26 +1062,23 @@ void confused_update(struct engine *engine, struct actor *actor)
     int dx = TCOD_random_get_int(rng, -1, 1);
     int dy = TCOD_random_get_int(rng, -1, 1);
     if (dx != 0 || dy != 0) {
-        int destx = actor->x + dx;
-        int desty = actor->y + dy;
-        if (can_walk(engine, destx, desty)) {
-            actor->x = destx;
-            actor->y = desty;
+        int dest_x = actor->x + dx;
+        int dest_y = actor->y + dy;
+        if (can_walk(engine, dest_x, dest_y)) {
+            actor->x = dest_x;
+            actor->y = dest_y;
         } else {
-            struct actor *target =
-                    get_actor(engine, destx, desty);
-            if (target) {
-                actor->attacker->attack(engine, actor,
-                                        target);
-            }
+            struct actor *target = get_actor(engine, dest_x, dest_y);
+            if (target)
+                actor->attacker->attack(engine, actor, target);
         }
     }
 
     actor->ai->num_turns--;
     if (actor->ai->num_turns == 0) {
-        struct ai *tmp = actor->ai;
+        struct ai *ai = actor->ai;
         actor->ai = actor->ai->old_ai;
-        free(tmp);
+        free(ai);
     }
 }
 
