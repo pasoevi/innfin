@@ -144,7 +144,7 @@ struct pickable {
 
 /* 
  * Capacity is currently counted by the number of items and *not* by
- * weight or other quality of the items.
+ * weight or other qualities of items.
  */
 struct container {
     int capacity;

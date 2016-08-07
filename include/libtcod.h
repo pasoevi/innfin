@@ -122,7 +122,7 @@ typedef unsigned long uintptr;
 #define TCOD_STRVERSION "1.5.1"
 #define TCOD_TECHVERSION 0x01050103
 
-/* bool support for C */
+/* bool support for C
 #ifndef __cplusplus
 #ifndef bool
 typedef uint8 bool;
@@ -130,9 +130,12 @@ typedef uint8 bool;
 #define true ((bool)1)
 #endif
 #else
-/* in C++ all C functions prototypes should use uint8 instead of bool */
+/* in C++ all C functions prototypes should use uint8 instead of bool
 #define bool uint8
 #endif
+ */
+
+#include <stdbool.h>
 
 /* DLL export */
 #ifdef TCOD_WINDOWS

@@ -25,8 +25,8 @@ struct actor *make_monster(int x, int y, const char ch, char *name,
     monster->attacker = init_attacker(power, attack);
 
     /* Init life */
-    monster->life = init_life(max_hp, hp, defence, corpse_name,
-                              take_damage, monster_die);
+    monster->life = init_life(max_hp, hp, defence, corpse_name, take_damage,
+                              monster_die);
 
     return monster;
 }
