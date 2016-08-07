@@ -35,7 +35,7 @@ bool unwield_weapon(struct engine *engine, struct actor *actor,
 void render_actor(struct actor *actor);
 
 /***************** Actor creation & destruction functions *********************/
-struct actor *init_actor(int x, int y, char ch, const char *name,
+struct actor *init_actor(int x, int y, char ch, char *name,
                          TCOD_color_t col)
 {
     struct actor *actor = malloc(sizeof *actor);
@@ -116,7 +116,7 @@ void free_ai(struct ai *ai)
 struct life *init_life(
         float max_hp,
         float hp, float defence,
-        const char *corpse_name,
+        char *corpse_name,
         float (*take_damage)(struct engine *engine, struct actor *dealer,
                              struct actor *target, float damage),
         void (*die)(struct engine *engine, struct actor *actor,
@@ -201,7 +201,7 @@ void free_pickable(struct pickable *pickable)
  * function
  */
 struct actor *make_item(int x, int y, float power, float range,
-                        const char ch, const char *name, TCOD_color_t col,
+                        const char ch, char *name, TCOD_color_t col,
                         bool(*use)(struct engine *engine,
                                    struct actor *actor,
                                    struct actor *item))
@@ -276,7 +276,7 @@ struct actor *make_confusion_wand(int x, int y)
 
 /*********************** Weapons *****************/
 struct actor *make_weapon(int x, int y, float power,
-                          const char ch, const char *name, TCOD_color_t col,
+                          const char ch, char *name, TCOD_color_t col,
                           bool(*wield)(struct engine *engine,
                                        struct actor *actor,
                                        struct actor *item),

@@ -97,7 +97,7 @@ struct life {
     /* current health points */
     float defence;
     /* hit points deflected */
-    const char *corpse_name;
+    char *corpse_name;
 
     /* the actor's name once dead/destroyed */
     float (*take_damage)(struct engine *engine, struct actor *dealer,
@@ -165,7 +165,7 @@ struct actor {
     struct ai *ai;
     struct pickable *pickable;
     struct container *inventory;
-    const char *name;
+    char *name;
     TCOD_color_t col;
     void (*update)(struct engine *engine, struct actor *actor);
     /* Draw an actor to the screen */
@@ -181,7 +181,7 @@ struct actor {
    NOTE: this is a low level function, intended to be used ONLY by
    wrapper functions e.g. make_orc, make_player, etc.
 */
-struct actor *init_actor(int w, int h, char ch, const char *name,
+struct actor *init_actor(int w, int h, char ch, char *name,
                          TCOD_color_t col);
 
 void free_actor(struct actor *actor);
@@ -196,7 +196,7 @@ struct ai *init_ai(void (*update)(struct engine *engine, struct actor *actor),
 void free_ai(struct ai *ai);
 
 struct life *init_life(float max_hp, float hp, float defence,
-                       const char *corpse_name,
+                       char *corpse_name,
                        float (*take_damage)(struct engine *engine,
                                             struct actor *dealer,
                                             struct actor *target, float damage),
@@ -220,7 +220,7 @@ struct pickable *init_pickable(float power, float range,
                                           struct actor *item));
 
 struct actor *make_item(int x, int y, float power, float range,
-                        const char ch, const char *name, TCOD_color_t col,
+                        const char ch, char *name, TCOD_color_t col,
                         bool(*use)(struct engine *engine,
                                    struct actor *actor,
                                    struct actor *item));

@@ -1,46 +1,60 @@
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
 #include "parser.h"
-#include "actor.h"
+#include "monsters.h"
 
 #define MAX_LINE_LEN 80
 
-/* read a line into s. return length */
-int readline(char s[], int len)
+/*
+ * Pick a random actor from a file containing monsters, items, spells, etc. 
+ * @param filename - an info file to parse, in Record-Jar format, described
+ * in The Art of Unix Programming.
+ * @param learm_id - the dungeon level, portal id, or id of a place. This is
+ * used to calculate the chance of a monster/item/spell/etc appearing in this
+ * realm.
+ * @param used to return the lucky actor parsed from the file. 
+ */
+int parse_jar(char *filename, int realm_id, struct actor **actor)
 {
-    int c, i;
-    for (i = 0; i < len-1 && (c = getchar()) != EOF && c != '\n'; ++i)
-        s[i] = c;
-    
-    if (c == '\n') {
-        s[i] = c;
-        i++;
-    }
-
-    s[i] = '\0';
-    return i;
-}
-
-int parse_jar(char *filename, void*(*listener)(void))
-{
-    FILE *file;
-    file = fopen(filename, "r");
+    FILE *file = fopen(filename, "r");
     int len = 0;
     char line[MAX_LINE_LEN];
-    int n_read = readline(line, len);
 
-    while (len = fgets(line, MAX_LINE_LEN, file)) {
+    /* Picking any monster, doesn't matter which, as it will be overwritten */
+    struct actor *tmp_actor = make_troll(0, 0);
+
+    while (fgets(line, MAX_LINE_LEN, file)) {
         char key[MAX_LINE_LEN];
         char val[MAX_LINE_LEN];
+        int dice;
         char colon;
 
         /* % separates separate items, monsters, spells, etc. */
-        if (starts_with_c(line, '%'))
-            printf("An object created\n");
+        if (starts_with_c(line, '%')) {
+            *actor = tmp_actor;
+        }
+
 
         if (!starts_with_c(line, '#')) {
             sscanf(line, "%[^:] %c %s", key, &colon, val);
-            printf("%s = %s\n", key, val);
+            if (!strcmp(key, "name")) {
+                char *tmp = malloc(80);
+                if (strlen(tmp_actor->name) < strlen(val)) {
+                    tmp_actor->name = realloc(tmp_actor->name, sizeof(val) + 1);
+                }
+                strcpy(tmp, val);
+            } else if (!strcmp(key, "ch")) {
+                tmp_actor->ch = val[0];
+            } else if (!strcmp(key, "strength")) {
+                tmp_actor->ai->skills.strength = atoi(val);
+            } else if (!strcmp(key, "intelligence")) {
+                tmp_actor->ai->skills.intelligence = atoi(val);
+            } else if (!strcmp(key, "dexterity")) {
+                tmp_actor->ai->skills.agility = atoi(val);
+            } else if (!strcmp(key, "power")) {
+                tmp_actor->attacker->power = atoi(val);
+            }
         }
     }
     

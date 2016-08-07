@@ -44,7 +44,8 @@ struct engine *engine_init(int w, int h, const char *title)
 {
 
     /* TESTS */
-    parse_jar("data/monsters.txt", NULL);
+    struct actor *test;
+    parse_jar("data/monsters.txt", 1, &test);
     exit(EXIT_SUCCESS);
     /* END TESTS */
 

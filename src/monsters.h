@@ -24,10 +24,9 @@
 #ifndef INNFIN_MONSTERS_H
 #define INNFIN_MONSTERS_H
 
-struct actor *make_monster(int x, int y, const char ch, const char *name,
+struct actor *make_monster(int x, int y, const char ch, char *name,
                            TCOD_color_t col, float power, float max_hp,
-                           float hp, float defence,
-                           const char *corpse_name,
+                           float hp, float defence, char *corpse_name,
                            void (*update)(struct engine *engine,
                                           struct actor *actor));
 
