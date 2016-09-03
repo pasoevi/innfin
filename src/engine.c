@@ -44,9 +44,9 @@ struct engine *engine_init(int w, int h, const char *title)
 {
 
     /* TESTS */
-    struct actor *test;
+ /*   struct actor *test;
     parse_jar("data/monsters.txt", 1, &test);
-    exit(EXIT_SUCCESS);
+    exit(EXIT_SUCCESS);*/
     /* END TESTS */
 
     TCOD_console_init_root(w, h, title, false, TCOD_RENDERER_OPENGL);
