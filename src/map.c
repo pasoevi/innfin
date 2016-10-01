@@ -169,8 +169,8 @@ bool can_walk(struct engine *engine, int x, int y)
         return false;
 
     struct actor **iter;
-    for (iter = (struct actor **)TCOD_list_begin(engine->actors);
-         iter != (struct actor **)TCOD_list_end(engine->actors);
+    for (iter = (struct actor **) TCOD_list_begin(engine->actors);
+         iter != (struct actor **) TCOD_list_end(engine->actors);
          iter++) {
         struct actor *actor = *iter;
         if (actor->blocking && actor->x == x && actor->y == y)
@@ -242,7 +242,7 @@ void add_item(struct engine *engine, int x, int y)
         item = make_healer_potion(x, y);
     else
         item = make_food(x, y);
-    
+
     TCOD_list_push(engine->actors, item);
 }
 

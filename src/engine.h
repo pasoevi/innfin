@@ -28,11 +28,11 @@
 
 enum {
     /* Configuration options */
-    WINDOW_W = 80,
+            WINDOW_W = 80,
     WINDOW_H = 50,
 
     /* Levels, dungeons, portals, places */
-    LVL_DUNGEON_1,
+            LVL_DUNGEON_1,
     LVL_DUNGEON_2,
     LVL_DUNGEON_3,
     LVL_DUNGEON_4,
@@ -85,6 +85,8 @@ struct engine *engine_init(int w, int h, const char *title);
 int load_level(struct engine *engine, int level_id);
 
 void free_engine(struct engine *engine);
+
+static int parse_datafiles();
 
 void send_to_back(struct engine *engine, struct actor *actor);
 

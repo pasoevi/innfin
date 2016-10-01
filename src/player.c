@@ -59,7 +59,8 @@ struct actor *make_player(int x, int y)
     player->attacker = init_attacker(10, attack);
 
     /* Init life */
-    player->life = init_life(100, 100, 6, "your dead body", take_damage, player_die);
+    player->life = init_life(100, 100, 6, "your dead body", take_damage,
+                             player_die);
     player->life->regen = regen_hp;
 
     player->life->max_stomach = 500;
@@ -79,8 +80,7 @@ bool descend(struct engine *engine, struct actor *actor, struct actor *stairs)
     if (actor->x == stairs->x && actor->y == stairs->y) {
         load_level(engine, engine->level + 1);
         return true;
-    }
-    else {
+    } else {
         engine->gui->message(engine, TCOD_gray,
                              "You can't climb down here. Try on stairs.");
         return false;
@@ -122,7 +122,8 @@ bool player_move_or_attack(struct engine *engine, struct actor *player,
          iter != (struct actor **) TCOD_list_end(engine->actors);
          iter++) {
         struct actor *actor = *iter;
-        bool corpse_or_item = (actor->life && is_dead(actor)) || actor->pickable;
+        bool corpse_or_item =
+                (actor->life && is_dead(actor)) || actor->pickable;
         if (corpse_or_item && actor->x == target_x
             && actor->y == target_y)
             engine->gui->message(engine, TCOD_light_gray,
@@ -353,7 +354,8 @@ void player_update(struct engine *engine, struct actor *actor)
 float regen_hp(struct engine *engine, struct actor *actor)
 {
     float hp_gained = 0.1f;
-    if (is_dead(actor) || !actor->life || actor->life->hp >= actor->life->max_hp)
+    if (is_dead(actor) || !actor->life ||
+        actor->life->hp >= actor->life->max_hp)
         return 0.f;
 
     actor->life->hp += hp_gained;

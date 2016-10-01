@@ -52,8 +52,8 @@ struct ai {
 
     void (*update)(struct engine *engine, struct actor *actor);
 
-    bool(*move_or_attack)(struct engine *engine, struct actor *actor,
-                          int target_x, int target_y);
+    bool (*move_or_attack)(struct engine *engine, struct actor *actor,
+                           int target_x, int target_y);
 
     struct ai *old_ai;
     /* confused actors have their previous minds saved here. */
@@ -102,9 +102,11 @@ struct life {
     /* the actor's name once dead/destroyed */
     float (*take_damage)(struct engine *engine, struct actor *dealer,
                          struct actor *target, float damage);
+
     float (*regen)(struct engine *engine, struct actor *actor);
 
-    void (*die)(struct engine *engine, struct actor *actor, struct actor *killer);
+    void
+    (*die)(struct engine *engine, struct actor *actor, struct actor *killer);
 };
 
 /*
@@ -130,16 +132,18 @@ struct pickable {
     /* damage dealt if an attacker item, hit_points restored if a healer */
     float power;
 
-    bool(*use)(struct engine *engine, struct actor *actor, struct actor *item);
+    bool (*use)(struct engine *engine, struct actor *actor, struct actor *item);
     /*
      * Some items have lasting effect, so you don't just use them once, but
      * "wear" (in case of clothes, jewelry, etc), or "wield" them (in case of
      * weapons, etc). Use this function to "stop using" such items.
      */
-    bool(*unuse)(struct engine *engine, struct actor *actor, struct actor *item);
+    bool
+    (*unuse)(struct engine *engine, struct actor *actor, struct actor *item);
 
-    bool(*blow)(struct engine *engine, struct actor *actor, struct actor *weapon,
-                struct actor *target);
+    bool
+    (*blow)(struct engine *engine, struct actor *actor, struct actor *weapon,
+            struct actor *target);
 };
 
 /* 
@@ -167,7 +171,9 @@ struct actor {
     struct container *inventory;
     char *name;
     TCOD_color_t col;
+
     void (*update)(struct engine *engine, struct actor *actor);
+
     /* Draw an actor to the screen */
     void (*render)(struct actor *actor);
 };

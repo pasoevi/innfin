@@ -60,6 +60,7 @@ void wandering_update(struct engine *engine, struct actor *actor);
 bool monster_move_or_attack(struct engine *engine, struct actor *actor,
                             int target_x, int target_y);
 
-void monster_die(struct engine *engine, struct actor *actor, struct actor *killer);
+void
+monster_die(struct engine *engine, struct actor *actor, struct actor *killer);
 
 #endif //INNFIN_MONSTERS_H

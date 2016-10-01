@@ -19,16 +19,26 @@
 */
 
 #include <stdlib.h>
-#include <stdio.h>
 #include "engine.h"
 #include "player.h"
 #include "stairs.h"
-#include "parser.h"
 
 extern void clean(void);
 
 static const char *WELCOME_MSG =
         "Welcome stranger!\nPrepare to perish in the Tombs of the Ancient Kings.";
+
+/*
+ * Use Libtcod's configuration file parser to read monster, item, etc data
+ * definitions.
+ */
+static int parse_datafiles()
+{
+    TCOD_parser_t parser = TCOD_parser_new();
+    TCOD_parser_struct_t actor = TCOD_parser_new_struct(parser, "item_type");
+
+    return 0;
+}
 
 /*
  * Move the dead actor at the back of the list, so that it doesn't
@@ -44,10 +54,12 @@ struct engine *engine_init(int w, int h, const char *title)
 {
 
     /* TESTS */
- /*   struct actor *test;
-    parse_jar("data/monsters.txt", 1, &test);
-    exit(EXIT_SUCCESS);*/
+    /*   struct actor *test;
+       parse_jar("data/monsters.txt", 1, &test);
+       exit(EXIT_SUCCESS);*/
     /* END TESTS */
+
+    // parse_datafiles();
 
     TCOD_console_init_root(w, h, title, false, TCOD_RENDERER_OPENGL);
     struct engine *engine = malloc(sizeof *engine);
@@ -98,7 +110,8 @@ int load_level(struct engine *engine, int level_id)
         struct actor *actor = *iter;
         if (actor != engine->player && actor != engine->stairs) {
             free_actor(actor);
-            iter = (struct actor **)TCOD_list_remove_iterator(engine->actors, (void **)iter);
+            iter = (struct actor **) TCOD_list_remove_iterator(engine->actors,
+                                                               (void **) iter);
         }
     }
 
@@ -106,7 +119,8 @@ int load_level(struct engine *engine, int level_id)
     engine->game_status = STARTUP;
 
     /* Display the dungeon level */
-    engine->gui->message(engine, TCOD_white, "Dungeon level %d\n", engine->level);
+    engine->gui->message(engine, TCOD_white, "Dungeon level %d\n",
+                         engine->level);
 
     return engine->level;
 }

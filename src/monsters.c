@@ -45,7 +45,8 @@ struct actor *make_orc(int x, int y)
 struct actor *make_goblin(int x, int y)
 {
     struct actor *goblin = make_monster(x, y, 'g', "a goblin", TCOD_green, 10,
-                                        14, 14, 2, "a dead goblin", monster_update);
+                                        14, 14, 2, "a dead goblin",
+                                        monster_update);
     goblin->ai->xp_level = 1;
     goblin->ai->skills.strength = 5;
     goblin->ai->skills.fighting = 20;
@@ -66,13 +67,14 @@ struct actor *make_troll(int x, int y)
 struct actor *make_dragon(int x, int y)
 {
     struct actor *dragon = make_monster(x, y, 'D', "a dragon", TCOD_dark_green,
-                                        16, 25, 25, 10, "dragon scales and flesh",
+                                        16, 25, 25, 10,
+                                        "dragon scales and flesh",
                                         dragon_update);
     dragon->fov_only = false;
     dragon->ai->xp_level = 4;
     dragon->ai->skills.strength = 25;
     dragon->ai->skills.fighting = 5;
-    
+
     return dragon;
 }
 
@@ -137,7 +139,7 @@ void dragon_update(struct engine *engine, struct actor *actor)
 {
     if (actor->life && is_dead(actor))
         return;
-    
+
 
     if (!is_in_fov(engine->map, actor->x, actor->y))
         return;
@@ -155,7 +157,8 @@ void dragon_update(struct engine *engine, struct actor *actor)
 /*
  * Transform a monster into an edible corpse.
  */
-void monster_die(struct engine *engine, struct actor *actor, struct actor *killer)
+void
+monster_die(struct engine *engine, struct actor *actor, struct actor *killer)
 {
     /* Transform this dead body into an edible corpse */
     actor->pickable = init_pickable(0, 0, eat);

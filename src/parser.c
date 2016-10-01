@@ -39,7 +39,7 @@ int parse_jar(char *filename, int realm_id, struct actor **actor)
             sscanf(line, "%[^:] %c %s", key, &colon, val);
             if (!strcmp(key, "name")) {
                 char *tmp = malloc(80);
-                if (strlen(tmp_actor->name) < strlen(val)) 
+                if (strlen(tmp_actor->name) < strlen(val))
                     tmp_actor->name = realloc(tmp_actor->name, sizeof(val) + 1);
                 strcpy(tmp, val);
             } else if (!strcmp(key, "ch")) {
@@ -55,7 +55,7 @@ int parse_jar(char *filename, int realm_id, struct actor **actor)
             }
         }
     }
-    
+
     return 0;
 }
 
@@ -71,10 +71,10 @@ int find_blnk(char s[], int start, int n)
 
     /* if searching backwards, move cursor to the last character before
        '\0' */
-    if (n < 0){
+    if (n < 0) {
         if (s[start] == '\0')
             --start;
-        if (s[start] == '\n') 
+        if (s[start] == '\n')
             --start;
     } else {
         /* 
@@ -85,7 +85,7 @@ int find_blnk(char s[], int start, int n)
             start = 0;
     }
 
-    while (s[start] != '\0' &&  s[start] != '\n' && s[start] != EOF) {
+    while (s[start] != '\0' && s[start] != '\n' && s[start] != EOF) {
         if (start < 0)
             printf("searching in vain: %d\n", start);
 
@@ -105,7 +105,8 @@ int find_blnk(char s[], int start, int n)
  * find the last non-blank character in s. return -1 if no
  * non-whitespace characters found
  */
-int find_last_nonblnk(char s[]){
+int find_last_nonblnk(char s[])
+{
     int pos = -1; /* position of the last non-blank character */
     // int len = strlen(s); /* length of s */
     int len = 10;
@@ -116,7 +117,7 @@ int find_last_nonblnk(char s[]){
         i--;
     }
 
-    if (pos > 0){
+    if (pos > 0) {
         while (s[pos] == ' ')
             pos--;
     }
@@ -128,12 +129,12 @@ int starts_with_c(char s[], char ch)
 {
     if (strlen(s) < 0)
         return 0;
-    
+
     return s[0] == ch;
 }
 
 int read_key_val(char *str, char *key, char *val)
 {
     int i;
-    
+
 }
