@@ -106,8 +106,7 @@ static void render_fixed_text(TCOD_console_t *con, int x, int y,
                               TCOD_color_t col, const char *text)
 {
     TCOD_console_set_default_foreground(con, col);
-    TCOD_console_print_ex(con, x, y, TCOD_BKGND_NONE, TCOD_LEFT,
-                          "%s", text);
+    TCOD_console_print_ex(con, x, y, TCOD_BKGND_NONE, TCOD_LEFT, "%s", text);
 }
 
 static void render_status(TCOD_console_t *con, int x, int y,

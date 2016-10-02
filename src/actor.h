@@ -23,6 +23,7 @@
 
 #include "libtcod.h"
 #include "engine.h"
+#include "quest.h"
 
 enum {
     TRACKING_TURNS = 3,

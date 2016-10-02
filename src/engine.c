@@ -178,9 +178,9 @@ void engine_render(struct engine *engine)
 }
 
 /*
-* Free all memory directly or indirectly allocated by the
-* engine.
-*/
+ * Free all memory directly or indirectly allocated by the
+ * engine.
+ */
 void free_engine(struct engine *engine)
 {
     free_gui(engine->gui);

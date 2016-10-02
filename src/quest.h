@@ -1,0 +1,3 @@
+struct quest {
+    char *name;
+};

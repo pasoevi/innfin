@@ -163,6 +163,7 @@
     <ClCompile Include="..\src\monsters.c" />
     <ClCompile Include="..\src\parser.c" />
     <ClCompile Include="..\src\player.c" />
+    <ClCompile Include="..\src\quest.c" />
     <ClCompile Include="..\src\stairs.c" />
     <ClCompile Include="..\src\util.c" />
   </ItemGroup>
@@ -174,6 +175,7 @@
     <ClInclude Include="..\src\map.h" />
     <ClInclude Include="..\src\monsters.h" />
     <ClInclude Include="..\src\player.h" />
+    <ClInclude Include="..\src\quest.h" />
     <ClInclude Include="..\src\stairs.h" />
     <ClInclude Include="..\src\util.h" />
   </ItemGroup>

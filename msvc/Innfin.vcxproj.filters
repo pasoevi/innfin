@@ -48,6 +48,9 @@
     <ClCompile Include="..\src\player.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\quest.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\actor.h">
@@ -75,6 +78,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\src\player.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\quest.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
