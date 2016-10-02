@@ -26,6 +26,8 @@ set(SOURCE_FILES
         src/monsters.h
         src/player.c
         src/player.h
+        src/quest.h
+        src/quest.c
         src/parser.h
         src/parser.c)
 

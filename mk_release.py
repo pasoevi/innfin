@@ -3,7 +3,7 @@ import shutil
 import tarfile
 import zipfile
 
-version_number_str = "0.0.1"
+version_number_str = "0.0.2"
 version_name = "innfin" + "_" + version_number_str
 
 def ignore(dir, contents):
