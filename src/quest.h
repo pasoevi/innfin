@@ -18,6 +18,8 @@ Written by Sergi Pasoev <s.pasoev@gmail.com>
 
 */
 
+#ifndef ACTOR_H
+#define ACTOR_H
 #include "actor.h"
 
 enum operation_type {
@@ -38,3 +40,5 @@ struct quest {
     enum operation_type operation_type;
 
 };
+
+#endif

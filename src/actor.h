@@ -43,6 +43,7 @@ struct skills {
 };
 
 struct ai {
+    TCOD_list_t quests;
     int move_count;
     /* allow monsters to track the player */
     struct skills skills;
