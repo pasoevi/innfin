@@ -65,13 +65,13 @@ int parse_jar(char *filename, int realm_id, struct actor **actor)
             } else if (!strcmp(key, "ch")) {
                 tmp_actor->ch = val[0];
             } else if (!strcmp(key, "strength")) {
-                tmp_actor->ai->skills.strength = atoi(val);
+                tmp_actor->ai->skills.strength = atof(val);
             } else if (!strcmp(key, "intelligence")) {
-                tmp_actor->ai->skills.intelligence = atoi(val);
+                tmp_actor->ai->skills.intelligence = atof(val);
             } else if (!strcmp(key, "dexterity")) {
-                tmp_actor->ai->skills.agility = atoi(val);
+                tmp_actor->ai->skills.agility = atof(val);
             } else if (!strcmp(key, "power")) {
-                tmp_actor->attacker->power = atoi(val);
+                tmp_actor->attacker->power = atof(val);
             }
         }
     }

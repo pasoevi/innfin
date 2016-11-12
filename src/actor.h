@@ -34,12 +34,12 @@ struct engine;
 struct actor;
 
 struct skills {
-    int strength;
-    int intelligence;
-    int agility;
-    int providence;
-    int prudence;
-    int fighting;
+    float strength;
+    float intelligence;
+    float agility;
+    float providence;
+    float prudence;
+    float fighting;
 };
 
 struct ai {

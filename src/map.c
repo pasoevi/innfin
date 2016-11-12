@@ -132,6 +132,9 @@ bool visit_node(TCOD_bsp_t *node, void *user_data)
 void init_map(struct engine *engine, int w, int h)
 {
     engine->map = malloc(sizeof(struct map));
+    if (engine->map == NULL)
+        return;
+
     engine->map->w = w;
     engine->map->h = h;
 

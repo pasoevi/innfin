@@ -40,6 +40,9 @@ struct actor *init_actor(int x, int y, char ch, char *name,
 {
     struct actor *actor = malloc(sizeof *actor);
 
+    if (actor == NULL)
+        return actor;
+
     actor->x = x;
     actor->y = y;
     actor->ch = ch;
@@ -145,6 +148,9 @@ struct attacker *init_attacker(float power,
                                               struct actor *target))
 {
     struct attacker *attacker = malloc(sizeof *attacker);
+    if (attacker == NULL)
+        return attacker;
+
     attacker->attack = attack;
     attacker->power = power;
     attacker->calc_hit_power = calc_hit_power;
@@ -166,6 +172,9 @@ void free_attacker(struct attacker *attacker)
 struct container *init_container(int capacity)
 {
     struct container *container = malloc(sizeof *container);
+    if (container == NULL)
+        return container;
+
     container->capacity = capacity;
     container->items = TCOD_list_new();
 
@@ -303,6 +312,9 @@ struct actor *make_kindzal(int x, int y)
 struct ai *make_confused_ai(struct actor *actor, int num_turns)
 {
     struct ai *ai = malloc(sizeof *ai);
+    if (ai == NULL)
+        return NULL;
+
     ai->update = confused_update;
     ai->move_or_attack = actor->ai->move_or_attack;
     ai->num_turns = num_turns;
@@ -970,8 +982,8 @@ void common_attack(struct engine *engine, struct actor *dealer,
         target->life->take_damage(engine, dealer, target, power);
 
         if (dealer->ai) {
-            dealer->ai->skills.strength += 0.05;
-            dealer->ai->skills.fighting += 0.1;
+            dealer->ai->skills.strength += 0.05f;
+            dealer->ai->skills.fighting += 0.1f;
         }
     } else {
         engine->gui->message(engine, TCOD_light_grey,

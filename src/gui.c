@@ -30,9 +30,11 @@ static void init_message(struct message **message, const char *text,
     struct message *tmp = malloc(sizeof *tmp);
 
     tmp->text = malloc(strlen(text) + 1);
-    strcpy(tmp->text, text); /* TODO: free every message->text! */
-    tmp->col = col;
-    *message = tmp;
+    if (tmp->text) {
+        strcpy(tmp->text, text); /* TODO: free every message->text! */
+        tmp->col = col;
+        *message = tmp;
+    }
 }
 
 void free_message(struct message *message)

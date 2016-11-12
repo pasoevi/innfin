@@ -63,6 +63,8 @@ struct engine *engine_init(int w, int h, const char *title)
 
     TCOD_console_init_root(w, h, title, false, TCOD_RENDERER_OPENGL);
     struct engine *engine = malloc(sizeof *engine);
+    if (engine == NULL)
+        return engine;
 
     engine->level = 1;
 

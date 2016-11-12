@@ -73,21 +73,29 @@
     <IncludePath>C:\sdl\msvc\include;C:\projects\gamedev\rogue\innfin\include;$(IncludePath)</IncludePath>
     <LibraryPath>C:\projects\gamedev\rogue\innfin\lib;$(LibraryPath)</LibraryPath>
     <SourcePath>C:\projects\gamedev\rogue\innfin\src;$(SourcePath)</SourcePath>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <RunCodeAnalysis>true</RunCodeAnalysis>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <IncludePath>C:\sdl\msvc\include;C:\projects\gamedev\rogue\innfin\include;$(IncludePath)</IncludePath>
     <LibraryPath>C:\projects\gamedev\rogue\innfin\lib;$(LibraryPath)</LibraryPath>
     <SourcePath>C:\projects\gamedev\rogue\innfin\src;$(SourcePath)</SourcePath>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <RunCodeAnalysis>true</RunCodeAnalysis>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <IncludePath>C:\sdl\msvc\include;C:\projects\gamedev\rogue\innfin\include;$(IncludePath)</IncludePath>
     <LibraryPath>C:\projects\gamedev\rogue\innfin\lib;$(LibraryPath)</LibraryPath>
     <SourcePath>C:\projects\gamedev\rogue\innfin\src;$(SourcePath)</SourcePath>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <RunCodeAnalysis>true</RunCodeAnalysis>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <IncludePath>C:\sdl\msvc\include;C:\projects\gamedev\rogue\innfin\include;$(IncludePath)</IncludePath>
     <LibraryPath>C:\projects\gamedev\rogue\innfin\lib;$(LibraryPath)</LibraryPath>
     <SourcePath>C:\projects\gamedev\rogue\innfin\src;$(SourcePath)</SourcePath>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <RunCodeAnalysis>true</RunCodeAnalysis>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -95,6 +103,7 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <EnablePREfast>true</EnablePREfast>
     </ClCompile>
     <Link>
       <AdditionalLibraryDirectories>C:\projects\gamedev\innfin\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
@@ -109,6 +118,7 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <EnablePREfast>true</EnablePREfast>
     </ClCompile>
     <Link>
       <AdditionalLibraryDirectories>C:\projects\gamedev\innfin\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
@@ -125,6 +135,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <EnablePREfast>true</EnablePREfast>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -143,6 +154,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <EnablePREfast>true</EnablePREfast>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
