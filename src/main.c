@@ -18,7 +18,7 @@
 
 */
 
-#include "libtcod.h"
+#include "libtcod/libtcod.h"
 #include <stdlib.h>
 #include "engine.h"
 

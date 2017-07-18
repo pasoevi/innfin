@@ -21,7 +21,7 @@
 #ifndef MAP_H
 #define MAP_H
 
-#include "libtcod.h"
+#include "libtcod\libtcod.h"
 #include "engine.h"
 
 static const int ROOM_MAX_SIZE = 12;

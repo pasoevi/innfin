@@ -21,7 +21,7 @@
 #ifndef ENGINE_H
 #define ENGINE_H
 
-#include "libtcod.h"
+#include "libtcod/libtcod.h"
 #include "actor.h"
 #include "map.h"
 #include "gui.h"
