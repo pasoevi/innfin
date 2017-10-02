@@ -132,7 +132,7 @@ static void render_log(struct engine *engine, int start_x, int start_y)
          iter != (struct message **) TCOD_list_end(log);
          iter++) {
         struct message *message = *iter;
-//        TCOD_color_t col = TCOD_color_multiply_scalar(message->col, color_coef);
+		// TCOD_color_t col = TCOD_color_multiply_scalar(message->col, color_coef);
         TCOD_console_set_default_foreground(engine->gui->con, message->col);
         TCOD_console_print(engine->gui->con, start_x, y,
                            message->text);
