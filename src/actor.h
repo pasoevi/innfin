@@ -21,7 +21,8 @@
 #ifndef ACTOR_H
 #define ACTOR_H
 
-#include "libtcod.h"
+#include <stdbool.h>
+#include "libtcod\libtcod.h"
 #include "engine.h"
 #include "quest.h"
 

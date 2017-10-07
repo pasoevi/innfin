@@ -18,7 +18,7 @@
 
 */
 
-#include <libtcod.h>
+#include "libtcod/libtcod.h"
 #include "monsters.h"
 #include <math.h>
 

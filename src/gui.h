@@ -21,7 +21,7 @@
 #ifndef GUI_H
 #define GUI_H
 
-#include "libtcod.h"
+#include "libtcod/libtcod.h"
 #include "engine.h"
 
 enum {
