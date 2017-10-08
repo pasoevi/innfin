@@ -224,7 +224,6 @@ void invoke_command(struct engine *engine,
 
 void handle_action_key(struct engine *engine, struct actor *actor)
 {
-    /* */
     switch (engine->key.c) {
         case ',':
         case 'g':

@@ -168,7 +168,7 @@ void engine_render(struct engine *engine)
          iter++) {
         struct actor *actor = *iter;
 
-        if (actor != engine->player &&
+        if ((actor != engine->player) &&
             /* will be rendered later as the last item */
             (!actor->fov_only &&
              is_explored(engine->map, actor->x, actor->y)) ||
