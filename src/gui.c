@@ -227,17 +227,17 @@ void free_gui(struct gui *gui)
 struct gui *mkgui(int w, int h)
 {
     struct gui *gui = malloc(sizeof *gui);
-        if (gui != NULL) {
-                gui->con = TCOD_console_new(w, h);
-                gui->inventory_con =
-                        TCOD_console_new(INVENTORY_WIDTH, INVENTORY_HEIGHT);
-                gui->render_bar = render_bar;
-                gui->render_log = render_log;
-                gui->render_mouse_look = render_mouse_look;
-                gui->render = gui_render;
-                gui->message = message;
-                gui->log = TCOD_list_new();
-        }
+    if (gui) {
+        gui->con = TCOD_console_new(w, h);
+        gui->inventory_con =
+                   TCOD_console_new(INVENTORY_WIDTH, INVENTORY_HEIGHT);
+        gui->render_bar = render_bar;
+        gui->render_log = render_log;
+        gui->render_mouse_look = render_mouse_look;
+        gui->render = gui_render;
+        gui->message = message;
+        gui->log = TCOD_list_new();
+    }
 
     return gui;
 }

@@ -99,16 +99,16 @@ struct ai *init_ai(void (*update)(struct engine *engine, struct actor *actor),
                                          int target_y))
 {
     struct ai *tmp = malloc(sizeof *tmp);
-	if (tmp) {
-		tmp->quests = TCOD_list_new();
-		tmp->update = update;
-		tmp->move_or_attack = move_or_attack;
-		tmp->level_up = level_up;
-		tmp->xp_level = 1;
-		tmp->xp = 0.f;
-		tmp->skills.strength = 10;
-		tmp->skills.intelligence = 10;
-	}
+        if (tmp) {
+                tmp->quests = TCOD_list_new();
+                tmp->update = update;
+                tmp->move_or_attack = move_or_attack;
+                tmp->level_up = level_up;
+                tmp->xp_level = 1;
+                tmp->xp = 0.f;
+                tmp->skills.strength = 10;
+                tmp->skills.intelligence = 10;
+        }
     return tmp;
 }
 
@@ -129,14 +129,14 @@ struct life *mklife(
                     struct actor *killer))
 {
     struct life *life = malloc(sizeof *life);
-	if (life) {
-		life->die = die;
-		life->defense = defense;
-		life->corpse_name = corpse_name;
-		life->take_damage = take_damage;
-		life->max_hp = max_hp;
-		life->hp = hp;
-	}
+        if (life) {
+                life->die = die;
+                life->defense = defense;
+                life->corpse_name = corpse_name;
+                life->take_damage = take_damage;
+                life->max_hp = max_hp;
+                life->hp = hp;
+        }
     return life;
 }
 
@@ -152,14 +152,14 @@ struct attacker *init_attacker(double power,
                                               struct actor *target))
 {
     struct attacker *attacker = malloc(sizeof *attacker);
-    if (attacker == NULL)
-        return attacker;
+    if (attacker) {
+        attacker->attack = attack;
+        attacker->power = power;
+        attacker->calc_hit_power = calc_hit_power;
+        attacker->weapon = NULL;
+        attacker->current_target = NULL;
+    }
 
-    attacker->attack = attack;
-    attacker->power = power;
-    attacker->calc_hit_power = calc_hit_power;
-    attacker->weapon = NULL;
-    attacker->current_target = NULL;
     return attacker;
 }
 
@@ -197,12 +197,12 @@ struct pickable *init_pickable(double power, double range,
                                           struct actor *item))
 {
     struct pickable *pickable = malloc(sizeof *pickable);
-	if (pickable) {
-		pickable->power = power;
-		pickable->range = range;
-		pickable->use = use;
-		pickable->unuse = NULL;
-	}
+        if (pickable) {
+                pickable->power = power;
+                pickable->range = range;
+                pickable->use = use;
+                pickable->unuse = NULL;
+        }
 
     return pickable;
 }
