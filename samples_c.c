@@ -11,7 +11,7 @@
 #include <string.h>
 #include <stdio.h>
 #include <math.h>
-#include "libtcod.h"
+#include "include/libtcod/libtcod.h"
 
 #define _SDL_main_h
 #if defined (__HAIKU__) || defined(__ANDROID__)
