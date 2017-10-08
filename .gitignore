@@ -4,6 +4,7 @@
 *.obj
 *.elf
 
+libs_linux.tar.gz
 lib
 lib32
 lib64
