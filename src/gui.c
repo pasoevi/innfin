@@ -24,7 +24,7 @@
 #include <stdio.h>
 #include <string.h>
 
-static void init_message(struct message **message, const char *text,
+static void mkmessage(struct message **message, const char *text,
                          TCOD_color_t col)
 {
     struct message *tmp = malloc(sizeof *tmp);
@@ -75,7 +75,7 @@ static void message(struct engine *engine, const TCOD_color_t col,
             *line_end = '\0';
         // add a new message to the log
         struct message *msg;
-        init_message(&msg, line_begin, col);
+        mkmessage(&msg, line_begin, col);
         TCOD_list_push(log, msg);
         /* go to next line */
         line_begin = line_end + 1;
@@ -134,7 +134,7 @@ static void render_log(struct engine *engine, int start_x, int start_y)
          iter != (struct message **) TCOD_list_end(log);
          iter++) {
         struct message *message = *iter;
-		// TCOD_color_t col = TCOD_color_multiply_scalar(message->col, color_coef);
+        // TCOD_color_t col = TCOD_color_multiply_scalar(message->col, color_coef);
         TCOD_console_set_default_foreground(engine->gui->con, message->col);
         TCOD_console_print(engine->gui->con, start_x, y,
                            message->text);
@@ -227,17 +227,17 @@ void free_gui(struct gui *gui)
 struct gui *mkgui(int w, int h)
 {
     struct gui *gui = malloc(sizeof *gui);
-	if (gui != NULL) {
-		gui->con = TCOD_console_new(w, h);
-		gui->inventory_con =
-			TCOD_console_new(INVENTORY_WIDTH, INVENTORY_HEIGHT);
-		gui->render_bar = render_bar;
-		gui->render_log = render_log;
-		gui->render_mouse_look = render_mouse_look;
-		gui->render = gui_render;
-		gui->message = message;
-		gui->log = TCOD_list_new();
-	}
-    
+        if (gui != NULL) {
+                gui->con = TCOD_console_new(w, h);
+                gui->inventory_con =
+                        TCOD_console_new(INVENTORY_WIDTH, INVENTORY_HEIGHT);
+                gui->render_bar = render_bar;
+                gui->render_log = render_log;
+                gui->render_mouse_look = render_mouse_look;
+                gui->render = gui_render;
+                gui->message = message;
+                gui->log = TCOD_list_new();
+        }
+
     return gui;
 }
