@@ -29,14 +29,14 @@ static void init_message(struct message **message, const char *text,
 {
     struct message *tmp = malloc(sizeof *tmp);
 
-	if (tmp) {
-		tmp->text = malloc(strlen(text) + 1);
-		if (tmp->text) {
-			strcpy(tmp->text, text); /* TODO: free every message->text! */
-			tmp->col = col;
-			*message = tmp;
-		}
-	}
+    if (tmp) {
+        tmp->text = malloc(strlen(text) + 1);
+        if (tmp->text) {
+            strcpy(tmp->text, text); /* TODO: free every message->text! */
+            tmp->col = col;
+            *message = tmp;
+        }
+    }
 }
 
 void free_message(struct message *message)
