@@ -22,7 +22,7 @@
 #define ACTOR_H
 
 #include <stdbool.h>
-#include "libtcod\libtcod.h"
+#include "libtcod/libtcod.h"
 #include "engine.h"
 #include "quest.h"
 
