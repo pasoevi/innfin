@@ -40,7 +40,6 @@ int main()
         engine->update(engine);
         engine->render(engine);
         TCOD_console_flush();
-		printf("Update");
     }
 
     clean();
