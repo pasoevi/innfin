@@ -21,7 +21,7 @@
 #include "player.h"
 
 /* Writes a memorial file */
-static void make_memorial(struct actor *actor)
+static void mkmemorial(struct actor *actor)
 {
 
 }
@@ -40,7 +40,7 @@ void player_die(struct engine *engine, struct actor *actor,
     engine->gui->message(engine, TCOD_red, "You die.\n");
     /* Call the common death function */
     die(engine, actor, NULL);
-    make_memorial(actor);
+    mkmemorial(actor);
     engine->game_status = DEFEAT;
 
 }
