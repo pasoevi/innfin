@@ -21,7 +21,7 @@
 #include "player.h"
 
 /* Writes a memorial file */
-static void make_memorial(struct actor *actor)
+static void mkmemorial(struct actor *actor)
 {
 
 }
@@ -40,7 +40,7 @@ void player_die(struct engine *engine, struct actor *actor,
     engine->gui->message(engine, TCOD_red, "You die.\n");
     /* Call the common death function */
     die(engine, actor, NULL);
-    make_memorial(actor);
+    mkmemorial(actor);
     engine->game_status = DEFEAT;
 
 }
@@ -55,10 +55,8 @@ struct actor *make_player(int x, int y)
     player->ai->skills.intelligence = 9;
     player->ai->skills.fighting = 12;
 
-    /* Init attacker */
     player->attacker = init_attacker(10, attack);
 
-    /* Init life */
     player->life = init_life(100, 100, 6, "your dead body", take_damage,
                              player_die);
     player->life->regen = regen_hp;
@@ -66,7 +64,6 @@ struct actor *make_player(int x, int y)
     player->life->max_stomach = 500;
     player->life->stomach = player->life->max_stomach;
 
-    /* Init items */
     player->inventory = init_container(26);
 
     return player;
@@ -88,7 +85,7 @@ bool descend(struct engine *engine, struct actor *actor, struct actor *stairs)
 }
 
 bool player_move_or_attack(struct engine *engine, struct actor *player,
-                           int target_x, int target_y)
+                           int targetx, int targety)
 {
     /* Consume energy from stomach and kill the player if beyond
      * starvation.
@@ -100,7 +97,7 @@ bool player_move_or_attack(struct engine *engine, struct actor *player,
         return false;
     }
 
-    if (is_wall(engine->map, target_x, target_y))
+    if (is_wall(engine->map, targetx, targety))
         return false;
 
     /* Look for actors to attack */
@@ -110,7 +107,7 @@ bool player_move_or_attack(struct engine *engine, struct actor *player,
          iter++) {
         struct actor *actor = *iter;
         if (actor->life && !is_dead(actor) &&
-            actor->x == target_x && actor->y == target_y) {
+            actor->x == targetx && actor->y == targety) {
             /* There is an actor there, cat't walk */
             player->attacker->attack(engine, player, actor);
             return false;
@@ -124,15 +121,15 @@ bool player_move_or_attack(struct engine *engine, struct actor *player,
         struct actor *actor = *iter;
         bool corpse_or_item =
                 (actor->life && is_dead(actor)) || actor->pickable;
-        if (corpse_or_item && actor->x == target_x
-            && actor->y == target_y)
+        if (corpse_or_item && actor->x == targetx
+            && actor->y == targety)
             engine->gui->message(engine, TCOD_light_gray,
                                  "There's %s here\n",
                                  (*iter)->name);
     }
 
-    player->x = target_x;
-    player->y = target_y;
+    player->x = targetx;
+    player->y = targety;
 
     return true;
 }
@@ -155,7 +152,7 @@ struct actor *choose_from_inventory(struct engine *engine,
      * items with their respective shortcuts.
      */
     TCOD_console_set_default_foreground(con, TCOD_white);
-    int num_items = 0;
+    int nitems = 0;
     int shortcut = 'a';
     int y = 1;
     struct actor **iter;
@@ -166,7 +163,7 @@ struct actor *choose_from_inventory(struct engine *engine,
         if (predicate(item)) {
             TCOD_console_print(con, 2, y, "(%c) %s", shortcut, item->name);
             y++;
-            num_items++;
+            nitems++;
         }
         shortcut++;
 
