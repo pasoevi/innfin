@@ -32,7 +32,9 @@ libdirs = [
 libpath = [p for p in libdirs if os.path.exists(p)]
 
 includedirs = [
-   'src/libtcod',
+   'src',
+   'include',
+   'src/libtcod'
    ]
 
 cpppath = [p for p in includedirs if os.path.exists(p)]
