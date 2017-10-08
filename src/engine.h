@@ -80,7 +80,7 @@ struct engine {
     void (*render)(struct engine *);
 };
 
-struct engine *engine_init(int w, int h, const char *title);
+struct engine *mkengine(int w, int h, const char *title);
 
 int load_level(struct engine *engine, int level_id);
 

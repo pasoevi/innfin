@@ -50,7 +50,7 @@ void send_to_back(struct engine *engine, struct actor *actor)
     TCOD_list_insert_before(engine->actors, actor, 0);
 }
 
-struct engine *engine_init(int w, int h, const char *title)
+struct engine *mkengine(int w, int h, const char *title)
 {
 
     /* TESTS */
@@ -68,7 +68,7 @@ struct engine *engine_init(int w, int h, const char *title)
 
     engine->level = 1;
 
-    engine->gui = init_gui(WINDOW_W, PANEL_H);
+    engine->gui = mkgui(WINDOW_W, PANEL_H);
     engine->window_w = WINDOW_W;
     engine->window_h = WINDOW_H;
     engine->update = engine_update;
@@ -81,7 +81,7 @@ struct engine *engine_init(int w, int h, const char *title)
     engine->actors = TCOD_list_new();
 
     /* Create a player */
-    engine->player = make_player(40, 25);
+    engine->player = mkplayer(40, 25);
     engine->player->update = player_update;
     TCOD_list_push(engine->actors, (const void *) engine->player);
 
@@ -90,7 +90,7 @@ struct engine *engine_init(int w, int h, const char *title)
     TCOD_list_push(engine->actors, (const void *) engine->stairs);
 
     /* Add a map to the engine */
-    init_map(engine, 80, 43);
+    mkmap(engine, 80, 43);
     engine->gui->message(engine, TCOD_red, WELCOME_MSG);
 
     return engine;
@@ -117,7 +117,7 @@ int load_level(struct engine *engine, int level_id)
         }
     }
 
-    init_map(engine, 80, 43);
+    mkmap(engine, 80, 43);
     engine->game_status = STARTUP;
 
     /* Display the dungeon level */

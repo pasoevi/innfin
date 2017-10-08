@@ -46,7 +46,7 @@ void dig(struct map *map, int x1, int y1, int x2, int y2)
                                     true, true);
 }
 
-void create_room(struct engine *engine, bool first, int x1, int y1, int x2,
+void mkroom(struct engine *engine, bool first, int x1, int y1, int x2,
                  int y2)
 {
     dig(engine->map, x1, y1, x2, y2);
@@ -112,7 +112,7 @@ bool visit_node(TCOD_bsp_t *node, void *user_data)
                                 node->x + node->w - w - 1);
         y = TCOD_random_get_int(rng, node->y + 1,
                                 node->y + node->h - h - 1);
-        create_room(engine, room_num == 0, x, y, x + w - 1,
+        mkroom(engine, room_num == 0, x, y, x + w - 1,
                     y + h - 1);
 
         if (room_num != 0) {
@@ -129,7 +129,7 @@ bool visit_node(TCOD_bsp_t *node, void *user_data)
     return true;
 }
 
-void init_map(struct engine *engine, int w, int h)
+void mkmap(struct engine *engine, int w, int h)
 {
     engine->map = malloc(sizeof(struct map));
     if (engine->map == NULL)
@@ -214,13 +214,13 @@ void add_monster(struct engine *engine, int x, int y)
     struct actor *actor;
     int dice = TCOD_random_get_int(rng, 0, 100);
     if (dice < 50)
-        actor = make_orc(x, y);
+        actor = mkorc(x, y);
     else if (dice < 60)
-        actor = make_goblin(x, y);
+        actor = mkgoblin(x, y);
     else if (dice < 85)
-        actor = make_dragon(x, y);
+        actor = mkdragon(x, y);
     else
-        actor = make_troll(x, y);
+        actor = mktroll(x, y);
 
     TCOD_list_push(engine->actors, actor);
 }
@@ -249,7 +249,7 @@ void add_item(struct engine *engine, int x, int y)
     TCOD_list_push(engine->actors, item);
 }
 
-bool pick_tile(struct engine *engine, int *x, int *y, float max_range)
+bool pick_tile(struct engine *engine, int *x, int *y, double max_range)
 {
     while (!TCOD_console_is_window_closed()) {
         engine->render(engine);

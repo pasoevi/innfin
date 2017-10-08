@@ -34,7 +34,7 @@ void clean()
 
 int main()
 {
-    engine = engine_init(WINDOW_W, WINDOW_H, PROGRAM_NAME);
+    engine = mkengine(WINDOW_W, WINDOW_H, PROGRAM_NAME);
 
     while (!TCOD_console_is_window_closed()) {
         engine->update(engine);

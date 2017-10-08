@@ -29,12 +29,14 @@ static void init_message(struct message **message, const char *text,
 {
     struct message *tmp = malloc(sizeof *tmp);
 
-    tmp->text = malloc(strlen(text) + 1);
-    if (tmp->text) {
-        strcpy(tmp->text, text); /* TODO: free every message->text! */
-        tmp->col = col;
-        *message = tmp;
-    }
+	if (tmp) {
+		tmp->text = malloc(strlen(text) + 1);
+		if (tmp->text) {
+			strcpy(tmp->text, text); /* TODO: free every message->text! */
+			tmp->col = col;
+			*message = tmp;
+		}
+	}
 }
 
 void free_message(struct message *message)
@@ -81,7 +83,7 @@ static void message(struct engine *engine, const TCOD_color_t col,
 }
 
 static void render_bar(struct engine *engine, int x, int y, int w,
-                       const char *name, float value, const float max_value,
+                       const char *name, double value, const double max_value,
                        TCOD_color_t bar_col, TCOD_color_t back_col)
 {
     TCOD_console_set_default_background(engine->gui->con, back_col);
@@ -122,7 +124,7 @@ static void render_status(TCOD_console_t *con, int x, int y,
 static void render_log(struct engine *engine, int start_x, int start_y)
 {
     /* draw the message log */
-    float color_coef = 0.4f;
+    double color_coef = 0.4f;
     int y = start_y;
 
     TCOD_list_t *log = engine->gui->log;
@@ -186,7 +188,7 @@ static void gui_render(struct engine *engine)
                             TCOD_white, TCOD_lighter_gray);
 
     /* Render XP bar */
-    float next_level_xp = calc_next_level_xp(engine, engine->player);
+    double next_level_xp = calc_next_level_xp(engine, engine->player);
     char xp_txt[20];
     sprintf(xp_txt, "level %d XP", engine->player->ai->xp_level);
     engine->gui->render_bar(engine, 1, 2, BAR_W, xp_txt, engine->player->ai->xp,
@@ -222,17 +224,20 @@ void free_gui(struct gui *gui)
     free(gui);
 }
 
-struct gui *init_gui(int w, int h)
+struct gui *mkgui(int w, int h)
 {
     struct gui *gui = malloc(sizeof *gui);
-    gui->con = TCOD_console_new(w, h);
-    gui->inventory_con =
-            TCOD_console_new(INVENTORY_WIDTH, INVENTORY_HEIGHT);
-    gui->render_bar = render_bar;
-    gui->render_log = render_log;
-    gui->render_mouse_look = render_mouse_look;
-    gui->render = gui_render;
-    gui->message = message;
-    gui->log = TCOD_list_new();
+	if (gui != NULL) {
+		gui->con = TCOD_console_new(w, h);
+		gui->inventory_con =
+			TCOD_console_new(INVENTORY_WIDTH, INVENTORY_HEIGHT);
+		gui->render_bar = render_bar;
+		gui->render_log = render_log;
+		gui->render_mouse_look = render_mouse_look;
+		gui->render = gui_render;
+		gui->message = message;
+		gui->log = TCOD_list_new();
+	}
+    
     return gui;
 }

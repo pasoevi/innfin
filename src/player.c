@@ -45,9 +45,9 @@ void player_die(struct engine *engine, struct actor *actor,
 
 }
 
-struct actor *make_player(int x, int y)
+struct actor *mkplayer(int x, int y)
 {
-    struct actor *player = init_actor(x, y, '@', "you", TCOD_white);
+    struct actor *player = mkactor(x, y, '@', "you", TCOD_white);
 
     /* Artificial intelligence */
     player->ai = init_ai(player_update, player_move_or_attack);
@@ -57,7 +57,7 @@ struct actor *make_player(int x, int y)
 
     player->attacker = init_attacker(10, attack);
 
-    player->life = init_life(100, 100, 6, "your dead body", take_damage,
+    player->life = mklife(100, 100, 6, "your dead body", take_damage,
                              player_die);
     player->life->regen = regen_hp;
 
@@ -222,7 +222,7 @@ void invoke_command(struct engine *engine,
     }
 }
 
-void handle_action_key(struct engine *engine, struct actor *actor)
+void handle_key(struct engine *engine, struct actor *actor)
 {
     /* */
     switch (engine->key.c) {
@@ -325,7 +325,7 @@ void player_update(struct engine *engine, struct actor *actor)
                 engine->game_status = NEW_TURN;
                 break;
             case TCODK_CHAR:
-                handle_action_key(engine, actor);
+                handle_key(engine, actor);
                 break;
             case TCODK_ENTER:
                 if (engine->key.lalt)
@@ -344,20 +344,20 @@ void player_update(struct engine *engine, struct actor *actor)
         }
     }
 
-    if (engine->game_status == NEW_TURN)
+    if (engine->game_status == NEW_TURN && actor->life)
         actor->life->regen(engine, actor);
 }
 
-float regen_hp(struct engine *engine, struct actor *actor)
+double regen_hp(struct engine *engine, struct actor *actor)
 {
-    float hp_gained = 0.1f;
+    double hp_gained = 0.1f;
     if (is_dead(actor) || !actor->life ||
         actor->life->hp >= actor->life->max_hp)
         return 0.f;
 
     actor->life->hp += hp_gained;
 
-    float hp_overflow = actor->life->hp - actor->life->max_hp;
+    double hp_overflow = actor->life->hp - actor->life->max_hp;
 
     if (hp_overflow > 0) {
         hp_gained = hp_gained - hp_overflow;

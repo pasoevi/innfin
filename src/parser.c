@@ -42,7 +42,7 @@ int parse_jar(char *filename, int realm_id, struct actor **actor)
     char line[MAX_LINE_LEN];
 
     /* Picking any monster, doesn't matter which, as it will be overwritten */
-    struct actor *tmp_actor = make_troll(0, 0);
+    struct actor *tmp_actor = mktroll(0, 0);
 
     while (fgets(line, MAX_LINE_LEN, file)) {
         char key[MAX_LINE_LEN];

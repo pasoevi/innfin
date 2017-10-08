@@ -45,8 +45,8 @@ struct gui {
     void (*render)(struct engine *engine);
 
     void (*render_bar)(struct engine *engine, int x, int y, int w,
-                       const char *name, const float value,
-                       const float max_value,
+                       const char *name, const double value,
+                       const double max_value,
                        const TCOD_color_t bar_col,
                        const TCOD_color_t back_col);
 
@@ -63,6 +63,6 @@ struct gui {
 
 void free_gui(struct gui *gui);
 
-struct gui *init_gui(int w, int h);
+struct gui *mkgui(int w, int h);
 
 #endif

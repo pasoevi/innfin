@@ -35,12 +35,12 @@ struct engine;
 struct actor;
 
 struct skills {
-    float strength;
-    float intelligence;
-    float agility;
-    float providence;
-    float prudence;
-    float fighting;
+    double strength;
+    double intelligence;
+    double agility;
+    double providence;
+    double prudence;
+    double fighting;
 };
 
 struct ai {
@@ -49,7 +49,7 @@ struct ai {
     /* allow monsters to track the player */
     struct skills skills;
     int xp_level;
-    float xp;
+    double xp;
 
     bool (*level_up)(struct engine *engine, struct actor *actor);
 
@@ -73,11 +73,11 @@ struct ai {
  */
 struct attacker {
     struct actor *weapon;
-    float power;
+    double power;
 
     struct actor *current_target;
 
-    float (*calc_hit_power)(struct engine *engine, struct actor *dealer,
+    double (*calc_hit_power)(struct engine *engine, struct actor *dealer,
                             struct actor *target);
 
     void (*attack)(struct engine *engine, struct actor *dealer,
@@ -90,23 +90,23 @@ struct attacker {
  * to sustain himself.
  */
 struct life {
-    float stomach;
+    double stomach;
     /* number of food units eaten */
-    float max_stomach;
+    double max_stomach;
     /* max number of units the actor can eat */
-    float max_hp;
+    double max_hp;
     /* maximum health points */
-    float hp;
+    double hp;
     /* current health points */
-    float defence;
+    double defense;
     /* hit points deflected */
     char *corpse_name;
 
     /* the actor's name once dead/destroyed */
-    float (*take_damage)(struct engine *engine, struct actor *dealer,
-                         struct actor *target, float damage);
+    double (*take_damage)(struct engine *engine, struct actor *dealer,
+                         struct actor *target, double damage);
 
-    float (*regen)(struct engine *engine, struct actor *actor);
+    double (*regen)(struct engine *engine, struct actor *actor);
 
     void
     (*die)(struct engine *engine, struct actor *actor, struct actor *killer);
@@ -119,21 +119,21 @@ struct life {
 struct pickable {
     bool auto_pickup;
     /* desired by every actor, they pick it without pressing 'g' */
-    float targeting_range;
+    double targeting_range;
 
     /* range at which the target can be selected */
-    float (*calc_food_cost)(struct actor *actor,
+    double (*calc_food_cost)(struct actor *actor,
                             struct actor *item);
 
     /*
      * The amount by which hunger increases. *DO NOT* access this directly,
      * use the calculate_food_cost function
      **/
-    float default_food_cost;
+    double default_food_cost;
     /* range the item has effect starting from the target tile */
-    float range;
+    double range;
     /* damage dealt if an attacker item, hit_points restored if a healer */
-    float power;
+    double power;
 
     bool (*use)(struct engine *engine, struct actor *actor, struct actor *item);
     /*
@@ -190,7 +190,7 @@ struct actor {
    NOTE: this is a low level function, intended to be used ONLY by
    wrapper functions e.g. make_orc, make_player, etc.
 */
-struct actor *init_actor(int w, int h, char ch, char *name,
+struct actor *mkactor(int w, int h, char ch, char *name,
                          TCOD_color_t col);
 
 void free_actor(struct actor *actor);
@@ -204,17 +204,17 @@ struct ai *init_ai(void (*update)(struct engine *engine, struct actor *actor),
 
 void free_ai(struct ai *ai);
 
-struct life *init_life(float max_hp, float hp, float defence,
+struct life *mklife(double max_hp, double hp, double defence,
                        char *corpse_name,
-                       float (*take_damage)(struct engine *engine,
+                       double (*take_damage)(struct engine *engine,
                                             struct actor *dealer,
-                                            struct actor *target, float damage),
+                                            struct actor *target, double damage),
                        void (*die)(struct engine *engine, struct actor *actor,
                                    struct actor *killer));
 
 void free_life(struct life *life);
 
-struct attacker *init_attacker(float power,
+struct attacker *init_attacker(double power,
                                void (*attack)(struct engine *engine,
                                               struct actor *dealer,
                                               struct actor *target));
@@ -223,12 +223,12 @@ void free_attacker(struct attacker *attacker);
 
 struct container *init_container(int capacity);
 
-struct pickable *init_pickable(float power, float range,
+struct pickable *init_pickable(double power, double range,
                                bool(*use)(struct engine *engine,
                                           struct actor *actor,
                                           struct actor *item));
 
-struct actor *make_item(int x, int y, float power, float range,
+struct actor *make_item(int x, int y, double power, double range,
                         const char ch, char *name, TCOD_color_t col,
                         bool(*use)(struct engine *engine,
                                    struct actor *actor,
@@ -273,18 +273,18 @@ bool is_usable(struct actor *actor);
 /***************************** Utility functions ******************************/
 
 /* Get distance between the actor and the point specified by x and y. */
-float get_distance(struct actor *actor, int x, int y);
+double get_distance(struct actor *actor, int x, int y);
 
 /* Get actor at specified location */
 struct actor *get_actor(struct engine *engine, int x, int y);
 /*** Two related functions. ***/
 /* Get monster closest to the (x, y) point within range. Excluding player. */
 struct actor *get_closest_monster(struct engine *engine, int x, int y,
-                                  float range);
+                                  double range);
 
 /* Get actor closest to the *actor* within range, including player. */
 struct actor *get_closest_actor(struct engine *engine, struct actor *actor,
-                                float range);
+                                double range);
 
 /*
  * Calculate the amount by which to increase hunger upon using a certain
@@ -292,10 +292,10 @@ struct actor *get_closest_actor(struct engine *engine, struct actor *actor,
  * an item pickable will have a pointer to his own calculating
  * function. Call that function instead of this.
  */
-float calc_food_cost(struct actor *actor, struct actor *item);
+double calc_food_cost(struct actor *actor, struct actor *item);
 
 /* Returns -1 if inedible */
-float calc_food_value(struct actor *food);
+double calc_food_value(struct actor *food);
 
 /*
  * Returns message structure that contains the text (hungry, starving,
@@ -306,16 +306,16 @@ struct message get_hunger_status(struct actor *actor);
 /*
  * Calculate the actual damage dealt to the target.
  */
-float calc_hit_power(struct engine *engine, struct actor *dealer,
+double calc_hit_power(struct engine *engine, struct actor *dealer,
                      struct actor *target);
 
 /*
  * Calculate the experience points earned by killing a monster.
  **/
-float calc_kill_reward(struct engine *engine, struct actor *actor,
+double calc_kill_reward(struct engine *engine, struct actor *actor,
                        struct actor *target);
 
-float calc_next_level_xp(struct engine *engine, struct actor *actor);
+double calc_next_level_xp(struct engine *engine, struct actor *actor);
 
 bool should_level_up(struct engine *engine, struct actor *actor);
 
@@ -395,9 +395,9 @@ bool blow_kindzal(struct engine *engine, struct actor *actor,
  */
 bool eat(struct engine *engine, struct actor *actor, struct actor *food);
 
-bool make_hungry(struct actor *actor, float amount);
+bool make_hungry(struct actor *actor, double amount);
 
-float reward_kill(struct engine *engine, struct actor *actor,
+double reward_kill(struct engine *engine, struct actor *actor,
                   struct actor *target);
 
 bool level_up(struct engine *engine, struct actor *actor);
@@ -408,10 +408,10 @@ void common_attack(struct engine *engine, struct actor *dealer,
 void attack(struct engine *engine, struct actor *dealer,
             struct actor *target);
 
-float take_damage(struct engine *engine, struct actor *dealer,
-                  struct actor *target, float damage);
+double take_damage(struct engine *engine, struct actor *dealer,
+                  struct actor *target, double damage);
 
-float heal(struct actor *actor, float amount);
+double heal(struct actor *actor, double amount);
 
 /* 
    A common function that is called when ANY actor dies. NOTE: Do not

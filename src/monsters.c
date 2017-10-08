@@ -23,13 +23,13 @@
 #include <math.h>
 
 /** Factory functions **/
-struct actor *make_monster(int x, int y, const char ch, char *name,
-                           TCOD_color_t col, float power, float max_hp,
-                           float hp, float defence, char *corpse_name,
+struct actor *mkmonster(int x, int y, const char ch, char *name,
+                           TCOD_color_t col, double power, double max_hp,
+                           double hp, double defence, char *corpse_name,
                            void (*update)(struct engine *engine,
                                           struct actor *actor))
 {
-    struct actor *monster = init_actor(x, y, ch, name, col);
+    struct actor *monster = mkactor(x, y, ch, name, col);
     monster->blocking = true;
 
     /* Artificial intelligence */
@@ -45,15 +45,15 @@ struct actor *make_monster(int x, int y, const char ch, char *name,
     monster->attacker = init_attacker(power, attack);
 
     /* Init life */
-    monster->life = init_life(max_hp, hp, defence, corpse_name, take_damage,
+    monster->life = mklife(max_hp, hp, defence, corpse_name, take_damage,
                               monster_die);
 
     return monster;
 }
 
-struct actor *make_orc(int x, int y)
+struct actor *mkorc(int x, int y)
 {
-    struct actor *orc = make_monster(x, y, 'o', "an orc",
+    struct actor *orc = mkmonster(x, y, 'o', "an orc",
                                      TCOD_desaturated_green, 11,
                                      15, 15, 4, "a dead orc", monster_update);
     orc->ai->xp_level = 2;
@@ -62,9 +62,9 @@ struct actor *make_orc(int x, int y)
     return orc;
 }
 
-struct actor *make_goblin(int x, int y)
+struct actor *mkgoblin(int x, int y)
 {
-    struct actor *goblin = make_monster(x, y, 'g', "a goblin", TCOD_green, 10,
+    struct actor *goblin = mkmonster(x, y, 'g', "a goblin", TCOD_green, 10,
                                         14, 14, 2, "a dead goblin",
                                         monster_update);
     goblin->ai->xp_level = 1;
@@ -73,9 +73,9 @@ struct actor *make_goblin(int x, int y)
     return goblin;
 }
 
-struct actor *make_troll(int x, int y)
+struct actor *mktroll(int x, int y)
 {
-    struct actor *troll = make_monster(x, y, 'T', "a troll", TCOD_lighter_green,
+    struct actor *troll = mkmonster(x, y, 'T', "a troll", TCOD_lighter_green,
                                        12, 20, 20, 3, "a troll carcass",
                                        monster_update);
     troll->ai->xp_level = 2;
@@ -84,9 +84,9 @@ struct actor *make_troll(int x, int y)
     return troll;
 }
 
-struct actor *make_dragon(int x, int y)
+struct actor *mkdragon(int x, int y)
 {
-    struct actor *dragon = make_monster(x, y, 'D', "a dragon", TCOD_dark_green,
+    struct actor *dragon = mkmonster(x, y, 'D', "a dragon", TCOD_dark_green,
                                         16, 25, 25, 10,
                                         "dragon scales and flesh",
                                         dragon_update);
@@ -105,7 +105,7 @@ bool monster_move_or_attack(struct engine *engine, struct actor *actor,
     int dy = target_y - actor->y;
     int step_dx = (dx > 0 ? 1 : -1);
     int step_dy = (dy > 0 ? 1 : -1);
-    float distance = sqrtf(dx * dx + dy * dy);
+    double distance = sqrt(dx * dx + dy * dy);
 
     if (distance >= 2) {
         dx = (int) (round(dx / distance));

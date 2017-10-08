@@ -58,7 +58,7 @@ struct map {
  * @param w
  * @param h
  */
-void init_map(struct engine *engine, int w, int h);
+void mkmap(struct engine *engine, int w, int h);
 
 void free_map(struct map *map);
 
@@ -81,7 +81,7 @@ bool can_walk(struct engine *engine, int x, int y);
 
 void set_wall(struct map *map, int x, int y);
 
-bool pick_tile(struct engine *engine, int *x, int *y, float max_range);
+bool pick_tile(struct engine *engine, int *x, int *y, double max_range);
 
 /*
  * Compute the field of view for the map. You pass the engine

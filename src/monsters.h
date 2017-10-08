@@ -24,19 +24,19 @@
 #ifndef INNFIN_MONSTERS_H
 #define INNFIN_MONSTERS_H
 
-struct actor *make_monster(int x, int y, const char ch, char *name,
-                           TCOD_color_t col, float power, float max_hp,
-                           float hp, float defence, char *corpse_name,
+struct actor *mkmonster(int x, int y, const char ch, char *name,
+                           TCOD_color_t col, double power, double max_hp,
+                           double hp, double defence, char *corpse_name,
                            void (*update)(struct engine *engine,
                                           struct actor *actor));
 
-struct actor *make_orc(int x, int y);
+struct actor *mkorc(int x, int y);
 
-struct actor *make_goblin(int x, int y);
+struct actor *mkgoblin(int x, int y);
 
-struct actor *make_troll(int x, int y);
+struct actor *mktroll(int x, int y);
 
-struct actor *make_dragon(int x, int y);
+struct actor *mkdragon(int x, int y);
 
 void monster_update(struct engine *engine, struct actor *actor);
 
