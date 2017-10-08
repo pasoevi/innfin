@@ -1,7 +1,7 @@
 ~NOTE: This is a detailed game manual. For _Downloads_, or the _Quick
 Starting Guide_, please visit the game website.~~
 
-[Download](https://github.com/pasoev/innfin/releases/download/0.0.1/innfin_0.0.1.tar.gz)
+[Download](https://github.com/pasoev/innfin/releases/latest)
 alpha version.
 
 *Innfin - Innere Finsternis* is a horror-themed fantasy role-playing
