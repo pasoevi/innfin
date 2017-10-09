@@ -69,11 +69,11 @@ int parse_jar(char *filename, int realm_id, struct actor **actor)
             } else if (!strcmp(key, "ch")) {
                 tmp_actor->ch = val[0];
             } else if (!strcmp(key, "strength")) {
-                tmp_actor->ai->skills.strength = atof(val);
+                tmp_actor->ai->skills[SKILL_STRENGTH].val = atof(val);
             } else if (!strcmp(key, "intelligence")) {
-                tmp_actor->ai->skills.intelligence = atof(val);
+                tmp_actor->ai->skills[SKILL_INTELL].val = atof(val);
             } else if (!strcmp(key, "dexterity")) {
-                tmp_actor->ai->skills.agility = atof(val);
+                tmp_actor->ai->skills[SKILL_AGILITY].val = atof(val);
             } else if (!strcmp(key, "power")) {
                 tmp_actor->attacker->power = atof(val);
             }

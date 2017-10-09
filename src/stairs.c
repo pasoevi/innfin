@@ -24,6 +24,9 @@
 struct actor *init_stairs(int x, int y, char ch)
 {
     struct actor *actor = mkactor(x, y, ch, "stairs", TCOD_red);
-    actor->blocking = false;
-    actor->fov_only = false;
+	if (actor) {
+		actor->blocking = false;
+		actor->fov_only = false;
+	}
+	return actor;
 }

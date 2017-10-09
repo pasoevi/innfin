@@ -106,8 +106,10 @@ struct ai *init_ai(void (*update)(struct engine *engine, struct actor *actor),
                 tmp->level_up = level_up;
                 tmp->xp_level = 1;
                 tmp->xp = 0.f;
-                tmp->skills.strength = 10;
-                tmp->skills.intelligence = 10;
+				tmp->skills[SKILL_STRENGTH].val = 10;
+				tmp->skills[SKILL_STRENGTH].name = "strength";
+				tmp->skills[SKILL_INTELL].val = 10;
+				tmp->skills[SKILL_INTELL].name = "intelligence";
         }
     return tmp;
 }
@@ -498,7 +500,7 @@ double calc_hit_power(struct engine *engine, struct actor *dealer,
         power = dealer->attacker->power;
 
     skill_base_value =
-            (dealer->ai->skills.strength / 2) * dealer->ai->skills.fighting;
+            (dealer->ai->skills[SKILL_STRENGTH].val/ 2) * dealer->ai->skills[SKILL_FIGHTING].val;
 
     /*
      * Use the weapon/fist power as a base value and calculate the final
@@ -949,7 +951,7 @@ bool level_up(struct engine *engine, struct actor *actor)
         actor->ai->xp = 0;
 
         /* increase strength stat */
-        actor->ai->skills.strength += 1;
+        actor->ai->skills[SKILL_STRENGTH].val+= 1;
         engine->gui->message(engine, TCOD_light_grey,
                              "You advance to level %d!", actor->ai->xp_level);
         return true;
@@ -988,8 +990,8 @@ void common_attack(struct engine *engine, struct actor *dealer,
         target->life->take_damage(engine, dealer, target, power);
 
         if (dealer->ai) {
-            dealer->ai->skills.strength += 0.05f;
-            dealer->ai->skills.fighting += 0.1f;
+            dealer->ai->skills[SKILL_STRENGTH].val += 0.05f;
+            dealer->ai->skills[SKILL_FIGHTING].val += 0.1f;
         }
     } else {
         engine->gui->message(engine, TCOD_light_grey,

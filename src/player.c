@@ -48,12 +48,20 @@ void player_die(struct engine *engine, struct actor *actor,
 struct actor *mkplayer(int x, int y)
 {
     struct actor *player = mkactor(x, y, '@', "you", TCOD_white);
+	if (!player) {
+		return player;
+	}
 
     /* Artificial intelligence */
     player->ai = init_ai(player_update, player_move_or_attack);
-    player->ai->skills.strength = 10;
-    player->ai->skills.intelligence = 9;
-    player->ai->skills.fighting = 12;
+	player->ai->skills[SKILL_STRENGTH].val = 10;
+	player->ai->skills[SKILL_STRENGTH].name = "strength";
+	player->ai->skills[SKILL_INTELL].val = 9;
+	player->ai->skills[SKILL_INTELL].name = "intelligence";
+	player->ai->skills[SKILL_AGILITY].val = 9;
+	player->ai->skills[SKILL_AGILITY].name = "agility";
+	player->ai->skills[SKILL_FIGHTING].val = 12;
+	player->ai->skills[SKILL_FIGHTING].name = "fighting";
 
     player->attacker = init_attacker(10, attack);
 
@@ -150,10 +158,12 @@ void display_stats(struct engine *engine, struct actor *actor)
      */
     TCOD_console_set_default_foreground(con, TCOD_white);
     int y = 0;
-    TCOD_console_print(con, 2, ++y, "(%c) strength %.f", 's', engine->player->ai->skills.strength);
-    TCOD_console_print(con, 2, ++y, "(%c) intelligence %.f", 'i', engine->player->ai->skills.intelligence);
-    TCOD_console_print(con, 2, ++y, "(%c) agility %.f", 'a', engine->player->ai->skills.strength);
-
+	for (int i = 0; i < MAX_SKILS; i++) {
+		if (actor->ai->skills[i].val > 0) {
+			TCOD_console_print(con, 2, ++y, "(%c) %s %.f", 's', actor->ai->skills[i].name, actor->ai->skills[i].val);
+		}
+	}
+    
 
         /* Blit the items console to the root console. */
     TCOD_console_blit(con, 0, 0, INVENTORY_WIDTH, INVENTORY_HEIGHT,

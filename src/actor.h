@@ -34,6 +34,23 @@ enum {
 struct engine;
 struct actor;
 
+/* Skills */
+#define SKILL_STRENGTH 0
+#define SKILL_INTELL 1
+#define SKILL_AGILITY 2
+#define SKILL_PROVIDENCE 3
+#define SKILL_PRUDENCE 4
+#define SKILL_FIGHTING 5
+#define SKILL_DODGING 6
+#define MAX_SKILS 11
+
+
+struct skill {
+    char *name;
+    double val;
+};
+
+/*
 struct skills {
     double strength;
     double intelligence;
@@ -42,12 +59,13 @@ struct skills {
     double prudence;
     double fighting;
 };
+*/
 
 struct ai {
     TCOD_list_t quests;
     int move_count;
     /* allow monsters to track the player */
-    struct skills skills;
+    struct skill skills[11];
     int xp_level;
     double xp;
 

@@ -37,8 +37,8 @@ struct actor *mkmonster(int x, int y, const char ch, char *name,
     if (monster->ai != NULL) {
         monster->ai->xp = max_hp / 2;
         monster->ai->xp_level = 1;
-        monster->ai->skills.strength = 10;
-        monster->ai->skills.fighting = 4;
+        monster->ai->skills[SKILL_STRENGTH].val = 10;
+        monster->ai->skills[SKILL_FIGHTING].val = 4;
     }
 
     /* Init attacker */
@@ -57,8 +57,8 @@ struct actor *mkorc(int x, int y)
                                      TCOD_desaturated_green, 11,
                                      15, 15, 4, "a dead orc", monster_update);
     orc->ai->xp_level = 2;
-    orc->ai->skills.strength = 8;
-    orc->ai->skills.fighting = 13;
+    orc->ai->skills[SKILL_STRENGTH].val = 8;
+    orc->ai->skills[SKILL_FIGHTING].val = 13;
     return orc;
 }
 
@@ -68,8 +68,8 @@ struct actor *mkgoblin(int x, int y)
                                         14, 14, 2, "a dead goblin",
                                         monster_update);
     goblin->ai->xp_level = 1;
-    goblin->ai->skills.strength = 5;
-    goblin->ai->skills.fighting = 20;
+    goblin->ai->skills[SKILL_STRENGTH].val = 5;
+    goblin->ai->skills[SKILL_FIGHTING].val = 20;
     return goblin;
 }
 
@@ -79,8 +79,8 @@ struct actor *mktroll(int x, int y)
                                        12, 20, 20, 3, "a troll carcass",
                                        monster_update);
     troll->ai->xp_level = 2;
-    troll->ai->skills.strength = 20;
-    troll->ai->skills.fighting = 7;
+    troll->ai->skills[SKILL_STRENGTH].val = 20;
+    troll->ai->skills[SKILL_FIGHTING].val = 7;
     return troll;
 }
 
@@ -92,8 +92,8 @@ struct actor *mkdragon(int x, int y)
                                         dragon_update);
     dragon->fov_only = false;
     dragon->ai->xp_level = 4;
-    dragon->ai->skills.strength = 25;
-    dragon->ai->skills.fighting = 5;
+    dragon->ai->skills[SKILL_STRENGTH].val = 25;
+    dragon->ai->skills[SKILL_FIGHTING].val = 5;
 
     return dragon;
 }
