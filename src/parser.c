@@ -47,7 +47,6 @@ int parse_jar(char *filename, int realm_id, struct actor **actor)
     while (fgets(line, MAX_LINE_LEN, file)) {
         char key[MAX_LINE_LEN];
         char val[MAX_LINE_LEN];
-        int dice;
         char colon;
 
         /* % separates separate items, monsters, spells, etc. */
@@ -56,9 +55,14 @@ int parse_jar(char *filename, int realm_id, struct actor **actor)
         }
 
         if (!starts_with_c(line, '#')) {
-            sscanf(line, "%[^:] %c %s", key, &colon, val);
+			if (sscanf(line, "%[^:] %c %s", key, &colon, val) != 3) {
+				return -1;
+			}
             if (!strcmp(key, "name")) {
                 char *tmp = malloc(80);
+				if (!tmp) {
+					return -1;
+				}
                 if (strlen(tmp_actor->name) < strlen(val))
                     tmp_actor->name = realloc(tmp_actor->name, sizeof(val) + 1);
                 strcpy(tmp, val);
@@ -155,6 +159,5 @@ int starts_with_c(char s[], char ch)
 
 int read_key_val(char *str, char *key, char *val)
 {
-    int i;
-
+	return 0;
 }

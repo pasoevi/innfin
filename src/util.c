@@ -22,11 +22,11 @@
 #include <math.h>
 
 /* Geometry helper functions */
-double get_distance_btwn_points(int x1, int y1, int x2, int y2)
+double distance(int x1, int y1, int x2, int y2)
 {
     int dx = x1 - x2;
     int dy = y1 - y2;
-    return sqrtf(dx * dx + dy * dy);
+    return sqrt(dx * dx + dy * dy);
 }
 
 void each_actor(struct engine *engine, TCOD_list_t lst,

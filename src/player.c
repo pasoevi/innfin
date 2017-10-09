@@ -150,9 +150,9 @@ void display_stats(struct engine *engine, struct actor *actor)
      */
     TCOD_console_set_default_foreground(con, TCOD_white);
     int y = 0;
-    TCOD_console_print(con, 2, ++y, "(%c) strength %.f", engine->player->ai->skills.strength);
-    TCOD_console_print(con, 2, ++y, "(%c) intelligence %.f", engine->player->ai->skills.intelligence);
-    TCOD_console_print(con, 2, ++y, "(%c) strength %.f", engine->player->ai->skills.strength);
+    TCOD_console_print(con, 2, ++y, "(%c) strength %.f", 's', engine->player->ai->skills.strength);
+    TCOD_console_print(con, 2, ++y, "(%c) intelligence %.f", 'i', engine->player->ai->skills.intelligence);
+    TCOD_console_print(con, 2, ++y, "(%c) agility %.f", 'a', engine->player->ai->skills.strength);
 
 
         /* Blit the items console to the root console. */

@@ -378,7 +378,7 @@ bool is_usable(struct actor *actor)
 /* Get distance between the actor and the (x, y) point on map */
 double get_distance(struct actor *actor, int x, int y)
 {
-    return get_distance_btwn_points(actor->x, actor->y, x, y);
+    return distance(actor->x, actor->y, x, y);
 }
 
 struct actor *get_actor(struct engine *engine, int x, int y)
