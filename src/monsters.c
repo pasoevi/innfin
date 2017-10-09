@@ -33,7 +33,7 @@ struct actor *mkmonster(int x, int y, const char ch, char *name,
     monster->blocking = true;
 
     /* Artificial intelligence */
-    monster->ai = init_ai(update, monster_move_or_attack);
+    monster->ai = mkai(update, monster_move_or_attack);
     if (monster->ai != NULL) {
         monster->ai->xp = max_hp / 2;
         monster->ai->xp_level = 1;
@@ -42,7 +42,7 @@ struct actor *mkmonster(int x, int y, const char ch, char *name,
     }
 
     /* Init attacker */
-    monster->attacker = init_attacker(power, attack);
+    monster->attacker = mkattacker(power, attack);
 
     /* Init life */
     monster->life = mklife(max_hp, hp, defence, corpse_name, take_damage,

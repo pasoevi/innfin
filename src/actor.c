@@ -93,7 +93,7 @@ void free_actors(TCOD_list_t *actors)
     TCOD_list_clear(actors);
 }
 
-struct ai *init_ai(void (*update)(struct engine *engine, struct actor *actor),
+struct ai *mkai(void (*update)(struct engine *engine, struct actor *actor),
                    bool(*move_or_attack)(struct engine *engine,
                                          struct actor *actor, int target_x,
                                          int target_y))
@@ -148,7 +148,7 @@ void free_life(struct life *life)
         free(life);
 }
 
-struct attacker *init_attacker(double power,
+struct attacker *mkattacker(double power,
                                void (*attack)(struct engine *engine,
                                               struct actor *dealer,
                                               struct actor *target))
@@ -175,7 +175,7 @@ void free_attacker(struct attacker *attacker)
     }
 }
 
-struct container *init_container(int capacity)
+struct container *mkcontainer(int capacity)
 {
     struct container *container = malloc(sizeof *container);
     if (container == NULL)

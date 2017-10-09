@@ -44,4 +44,6 @@ bool player_move_or_attack(struct engine *engine, struct actor *actor,
 void
 player_die(struct engine *engine, struct actor *actor, struct actor *killer);
 
+void win(struct engine *engine);
+
 #endif //INNFIN_PLAYER_H

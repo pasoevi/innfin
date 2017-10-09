@@ -215,7 +215,7 @@ void free_actor(struct actor *actor);
 
 void free_actors(TCOD_list_t *actors);
 
-struct ai *init_ai(void (*update)(struct engine *engine, struct actor *actor),
+struct ai *mkai(void (*update)(struct engine *engine, struct actor *actor),
                    bool(*move_or_attack)(struct engine *engine,
                                          struct actor *actor, int target_x,
                                          int target_y));
@@ -232,14 +232,14 @@ struct life *mklife(double max_hp, double hp, double defence,
 
 void free_life(struct life *life);
 
-struct attacker *init_attacker(double power,
+struct attacker *mkattacker(double power,
                                void (*attack)(struct engine *engine,
                                               struct actor *dealer,
                                               struct actor *target));
 
 void free_attacker(struct attacker *attacker);
 
-struct container *init_container(int capacity);
+struct container *mkcontainer(int capacity);
 
 struct pickable *init_pickable(double power, double range,
                                bool(*use)(struct engine *engine,

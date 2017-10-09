@@ -53,7 +53,7 @@ struct actor *mkplayer(int x, int y)
 	}
 
     /* Artificial intelligence */
-    player->ai = init_ai(player_update, player_move_or_attack);
+    player->ai = mkai(player_update, player_move_or_attack);
 	player->ai->skills[SKILL_STRENGTH].val = 10;
 	player->ai->skills[SKILL_STRENGTH].name = "strength";
 	player->ai->skills[SKILL_INTELL].val = 9;
@@ -63,7 +63,7 @@ struct actor *mkplayer(int x, int y)
 	player->ai->skills[SKILL_FIGHTING].val = 12;
 	player->ai->skills[SKILL_FIGHTING].name = "fighting";
 
-    player->attacker = init_attacker(10, attack);
+    player->attacker = mkattacker(10, attack);
 
     player->life = mklife(100, 100, 6, "your dead body", take_damage,
                              player_die);
@@ -72,7 +72,7 @@ struct actor *mkplayer(int x, int y)
     player->life->max_stomach = 500;
     player->life->stomach = player->life->max_stomach;
 
-    player->inventory = init_container(26);
+    player->inventory = mkcontainer(26);
 
     return player;
 }
@@ -142,7 +142,7 @@ bool player_move_or_attack(struct engine *engine, struct actor *player,
     return true;
 }
 
-void display_stats(struct engine *engine, struct actor *actor)
+void show_stats(struct engine *engine, struct actor *actor)
 {
     /* Display the items frame */
     TCOD_console_t *con = engine->gui->inventory_con;
@@ -319,7 +319,7 @@ void handle_key(struct engine *engine, struct actor *actor)
             unwield_current_weapon(engine, actor);
             break;
         case 's': /* Display stats */
-            display_stats(engine, engine->player);
+            show_stats(engine, engine->player);
             break;
         default:
             engine->gui->message(engine, TCOD_grey, "Unknown command: %c.\n",
@@ -425,3 +425,7 @@ double regen_hp(struct engine *engine, struct actor *actor)
     return hp_gained;
 }
 
+void win(struct engine *engine)
+{
+	engine->gui->message(engine, TCOD_red, "You win.\n");
+}
