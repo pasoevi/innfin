@@ -22,6 +22,7 @@
 #include "monsters.h"
 #include <stdlib.h>
 
+const int MAX_LEVEL = 6;
 static const int MAX_ROOM_MONSTERS = 3;
 static const int MAX_ROOM_ITEMS = 2;
 
@@ -40,10 +41,12 @@ void dig(struct map *map, int x1, int y1, int x2, int y2)
     }
 
     int tilex, tiley;
-    for (tilex = x1; tilex <= x2; tilex++)
-        for (tiley = y1; tiley <= y2; tiley++)
+    for (tilex = x1; tilex <= x2; tilex++) {
+      for (tiley = y1; tiley <= y2; tiley++) {
             TCOD_map_set_properties(map->map, tilex, tiley,
                                     true, true);
+      }
+    }
 }
 
 void mkroom(struct engine *engine, bool first, int x1, int y1, int x2,
@@ -86,6 +89,13 @@ void mkroom(struct engine *engine, bool first, int x1, int y1, int x2,
      */
     engine->stairs->x = (x1 + x2) / 2;
     engine->stairs->y = (y1 + y2) / 2;
+
+    /*
+       If on the lowest dungeon, create a portal
+    */
+    if (engine->level == MAX_LEVEL) {
+        engine->stairs->col = TCOD_blue;
+    }
 }
 
 /*
