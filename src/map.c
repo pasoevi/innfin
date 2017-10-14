@@ -42,10 +42,10 @@ void dig(struct map *map, int x1, int y1, int x2, int y2)
 
     int tilex, tiley;
     for (tilex = x1; tilex <= x2; tilex++) {
-      for (tiley = y1; tiley <= y2; tiley++) {
+	for (tiley = y1; tiley <= y2; tiley++) {
             TCOD_map_set_properties(map->map, tilex, tiley,
                                     true, true);
-      }
+	}
     }
 }
 
@@ -270,9 +270,10 @@ bool pick_tile(struct engine *engine, int *x, int *y, double max_range)
                 if (is_in_fov(engine->map, cx, cy) &&
                     (max_range == 0 ||
                      get_distance(engine->player, cx, cy) <= max_range)) {
-//                    TCOD_color_t col = TCOD_console_get_char_background(NULL, cx, cy);
-//                    col = TCOD_color_multiply_scalar(col, 1.4f);
-//                    TCOD_console_set_char_background(NULL, cx, cy, col, TCOD_BKGND_SET);
+		    /* This color manipulation crashes the program on some systems */
+                    TCOD_color_t col = TCOD_console_get_char_background(NULL, cx, cy);
+                    col = TCOD_color_multiply_scalar(col, 1.4f);
+                    TCOD_console_set_char_background(NULL, cx, cy, col, TCOD_BKGND_SET);
                 }
             }
         }
