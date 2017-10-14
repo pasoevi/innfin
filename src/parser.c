@@ -45,6 +45,7 @@ int parse_jar(char *filename, int realm_id, struct actor **actor)
     struct actor *tmp_actor = mktroll(0, 0);
 
     while (fgets(line, MAX_LINE_LEN, file)) {
+	printf("last line: %s\n", line);
         char key[MAX_LINE_LEN];
         char val[MAX_LINE_LEN];
         char colon;
