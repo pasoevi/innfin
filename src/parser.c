@@ -1,20 +1,20 @@
 /*
-    Copyright (C) 2016 Sergi Pasoev.
+  Copyright (C) 2016 Sergi Pasoev.
 
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or (at
-    your option) any later version.
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or (at
+  your option) any later version.
 
-    This program is distributed in the hope that it will be useful, but
-    WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-    General Public License for more details.
+  This program is distributed in the hope that it will be useful, but
+  WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+  General Public License for more details.
 
-    You should have received a copy of the GNU General Public License
-    along with this program. If not, see <http://www.gnu.org/licenses/>.
+  You should have received a copy of the GNU General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-    Written by Sergi Pasoev <s.pasoev@gmail.com>
+  Written by Sergi Pasoev <s.pasoev@gmail.com>
 
 */
 
@@ -43,6 +43,7 @@ int parse_jar(char *filename, int realm_id, struct actor **actor)
 
     /* Picking any monster, doesn't matter which, as it will be overwritten */
     struct actor *tmp_actor = mktroll(0, 0);
+    struct actor *debug_actor;
 
     while (fgets(line, MAX_LINE_LEN, file)) {
 	printf("last line: %s\n", line);
@@ -53,17 +54,20 @@ int parse_jar(char *filename, int realm_id, struct actor **actor)
         /* % separates separate items, monsters, spells, etc. */
         if (starts_with_c(line, '%')) {
             *actor = tmp_actor;
+	    debug_actor = *actor;
         }
 
-        if (!starts_with_c(line, '#')) {
-			if (sscanf(line, "%[^:] %c %s", key, &colon, val) != 3) {
-				return -1;
-			}
+        if (!starts_with_c(line, '#') && !starts_with_c(line, '%')) {
+	    int nread = sscanf(line, "%[^:] %c %s", key, &colon, val);
+	    printf("Valuas read: %d; line = %s\n", nread, line);
+	    if (nread != 3) {
+		return 1;
+	    }
             if (!strcmp(key, "name")) {
                 char *tmp = malloc(80);
-				if (!tmp) {
-					return -1;
-				}
+		if (!tmp) {
+		    return -1;
+		}
                 if (strlen(tmp_actor->name) < strlen(val))
                     tmp_actor->name = realloc(tmp_actor->name, sizeof(val) + 1);
                 strcpy(tmp, val);
@@ -78,10 +82,12 @@ int parse_jar(char *filename, int realm_id, struct actor **actor)
             } else if (!strcmp(key, "power")) {
                 tmp_actor->attacker->power = atof(val);
             }
-        }
+
+	    // printf("Created %s\n", tmp_actor->name);
+	}
     }
 
-	printf("Created %s\n", tmp_actor->name);
+    printf("Created %s\n", debug_actor->name);
 
     return 0;
 }
@@ -162,5 +168,5 @@ int starts_with_c(char s[], char ch)
 
 int read_key_val(char *str, char *key, char *val)
 {
-	return 0;
+    return 0;
 }

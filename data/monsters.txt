@@ -6,5 +6,4 @@ strength: 5
 intelligence: 2
 dexterity: 4
 power: 10
-
 %%

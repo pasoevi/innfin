@@ -55,9 +55,9 @@ struct engine *mkengine(int w, int h, const char *title)
 
     /* TESTS */
     struct actor *test;
-	parse_jar("data/monsters.txt", 1, &test);
-	// printf("%s\n", *test->name);
-	exit(EXIT_SUCCESS);
+    int result = parse_jar("data/monsters.txt", 1, &test);
+    // printf("%s\n", *test->name);
+    exit(result);
     /* END TESTS */
 
     parse_datafiles();
