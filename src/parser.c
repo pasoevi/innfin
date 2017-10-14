@@ -37,59 +37,64 @@
  */
 int parse_jar(char *filename, int realm_id, struct actor **actor)
 {
-    FILE *file = fopen(filename, "r");
-    int len = 0;
-    char line[MAX_LINE_LEN];
+	FILE *file = fopen(filename, "r");
+	int len = 0;
+	char line[MAX_LINE_LEN];
 
-    /* Picking any monster, doesn't matter which, as it will be overwritten */
-    struct actor *tmp_actor = mktroll(0, 0);
-    struct actor *debug_actor;
+	/* Picking any monster, doesn't matter which, as it will be overwritten */
+	struct actor *tmp_actor = mktroll(0, 0);
+	struct actor *debug_actor;
 
-    while (fgets(line, MAX_LINE_LEN, file)) {
-	printf("last line: %s\n", line);
-        char key[MAX_LINE_LEN];
-        char val[MAX_LINE_LEN];
-        char colon;
+	while (fgets(line, MAX_LINE_LEN, file)) {
+		printf("last line: %s\n", line);
+		char key[MAX_LINE_LEN];
+		char val[MAX_LINE_LEN];
+		char colon;
 
-        /* % separates separate items, monsters, spells, etc. */
-        if (starts_with_c(line, '%')) {
-            *actor = tmp_actor;
-	    debug_actor = *actor;
-        }
-
-        if (!starts_with_c(line, '#') && !starts_with_c(line, '%')) {
-	    int nread = sscanf(line, "%[^:] %c %s", key, &colon, val);
-	    printf("Valuas read: %d; line = %s\n", nread, line);
-	    if (nread != 3) {
-		return 1;
-	    }
-            if (!strcmp(key, "name")) {
-                char *tmp = malloc(80);
-		if (!tmp) {
-		    return -1;
+		/* % separates separate items, monsters, spells, etc. */
+		if (starts_with_c(line, '%')) {
+			*actor = tmp_actor;
+			debug_actor = *actor;
 		}
-                if (strlen(tmp_actor->name) < strlen(val))
-                    tmp_actor->name = realloc(tmp_actor->name, sizeof(val) + 1);
-                strcpy(tmp, val);
-            } else if (!strcmp(key, "ch")) {
-                tmp_actor->ch = val[0];
-            } else if (!strcmp(key, "strength")) {
-                tmp_actor->ai->skills[SKILL_STRENGTH].val = atof(val);
-            } else if (!strcmp(key, "intelligence")) {
-                tmp_actor->ai->skills[SKILL_INTELL].val = atof(val);
-            } else if (!strcmp(key, "dexterity")) {
-                tmp_actor->ai->skills[SKILL_AGILITY].val = atof(val);
-            } else if (!strcmp(key, "power")) {
-                tmp_actor->attacker->power = atof(val);
-            }
 
-	    // printf("Created %s\n", tmp_actor->name);
+		if (!starts_with_c(line, '#') && !starts_with_c(line, '%')) {
+			int nread = sscanf(line, "%[^:] %c %s", key, &colon, val);
+			printf("Valuas read: %d; line = %s\n", nread, line);
+			if (nread != 3) {
+				return 1;
+			}
+			if (!strcmp(key, "name")) {
+				char *tmp = malloc(80);
+				if (!tmp) {
+					return -1;
+				}
+				if (strlen(tmp_actor->name) < strlen(val))
+					tmp_actor->name = realloc(tmp_actor->name, sizeof(val) + 1);
+				strcpy(tmp, val);
+			}
+			else if (!strcmp(key, "ch")) {
+				tmp_actor->ch = val[0];
+			}
+			else if (!strcmp(key, "strength")) {
+				tmp_actor->ai->skills[SKILL_STRENGTH].val = atof(val);
+			}
+			else if (!strcmp(key, "intelligence")) {
+				tmp_actor->ai->skills[SKILL_INTELL].val = atof(val);
+			}
+			else if (!strcmp(key, "dexterity")) {
+				tmp_actor->ai->skills[SKILL_AGILITY].val = atof(val);
+			}
+			else if (!strcmp(key, "power")) {
+				tmp_actor->attacker->power = atof(val);
+			}
+
+			// printf("Created %s\n", tmp_actor->name);
+		}
 	}
-    }
 
-    printf("Created %s\n", debug_actor->name);
+	printf("Created %s\n", debug_actor->name);
 
-    return 0;
+	return 0;
 }
 
 
