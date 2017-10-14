@@ -5,7 +5,7 @@ import shutil
 import tarfile
 import zipfile
 
-version_number_str = "0.0.4"
+version_number_str = "0.0.5"
 target_os = 'win' if os.name == 'nt' else 'linux'
 version_name = "innfin" + "_" + version_number_str + "_" + target_os
 
@@ -21,7 +21,8 @@ def zipdir(path, ziph):
 if __name__ == '__main__':
     # Create the copy of the build directory
     if os.name == 'nt':
-        shutil.copy('build/Debug/innfin.exe', 'build')
+        # shutil.copy('build/Debug/innfin.exe', 'build')
+        shutil.copy('./msvc/Release/Innfin.exe', 'build')
     shutil.copytree('build', 'release/' + version_name, ignore = ignore )
 
     os.chdir('release')

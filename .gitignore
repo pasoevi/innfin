@@ -54,6 +54,7 @@ build
 
 
 release
+Release
 cmake-build-debug/
 /msvc/.vs/Innfin/v15
 /msvc/.vs/Innfin/v15/Browse.VC.opendb
