@@ -1,0 +1,10 @@
+# general
+name: orc
+ch: o
+# attributes
+strength: 5
+intelligence: 2
+dexterity: 4
+power: 10
+
+%%
