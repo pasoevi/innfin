@@ -54,12 +54,13 @@ struct engine *mkengine(int w, int h, const char *title)
 {
 
     /* TESTS */
-    /*   struct actor *test;
-       parse_jar("data/monsters.txt", 1, &test);
-       exit(EXIT_SUCCESS);*/
+    struct actor *test;
+	parse_jar("data/monsters.txt", 1, &test);
+	// printf("%s\n", *test->name);
+	exit(EXIT_SUCCESS);
     /* END TESTS */
 
-    // parse_datafiles();
+    parse_datafiles();
 
     TCOD_console_init_root(w, h, title, false, TCOD_RENDERER_OPENGL);
     struct engine *engine = malloc(sizeof *engine);

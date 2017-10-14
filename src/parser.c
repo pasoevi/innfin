@@ -80,6 +80,8 @@ int parse_jar(char *filename, int realm_id, struct actor **actor)
         }
     }
 
+	printf("Created %s\n", tmp_actor->name);
+
     return 0;
 }
 
