@@ -1,1 +1,1 @@
-struct actor *init_stairs(int x, int y, char ch);
+struct actor *mkstairs(int x, int y, char ch);

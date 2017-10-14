@@ -65,7 +65,7 @@ struct actor *mkplayer(int x, int y)
 
     player->attacker = mkattacker(10, attack);
 
-    player->life = mklife(100, 100, 6, "your dead body", take_damage,
+    player->life = mklife(1000, 1000, 6, "your dead body", take_damage,
                              player_die);
     player->life->regen = regen_hp;
 

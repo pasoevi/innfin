@@ -22,7 +22,7 @@
 #include "monsters.h"
 #include <stdlib.h>
 
-const int MAX_LEVEL = 6;
+const int MAX_LEVEL = 2;
 static const int MAX_ROOM_MONSTERS = 3;
 static const int MAX_ROOM_ITEMS = 2;
 

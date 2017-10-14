@@ -86,7 +86,7 @@ struct engine *mkengine(int w, int h, const char *title)
     TCOD_list_push(engine->actors, (const void *) engine->player);
 
     /* Create stairs */
-    engine->stairs = init_stairs(0, 0, '>');
+    engine->stairs = mkstairs(0, 0, '>');
     TCOD_list_push(engine->actors, (const void *) engine->stairs);
 
     /* Add a map to the engine */
