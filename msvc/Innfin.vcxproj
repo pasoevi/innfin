@@ -194,6 +194,9 @@
     <ClInclude Include="..\src\stairs.h" />
     <ClInclude Include="..\src\util.h" />
   </ItemGroup>
+  <ItemGroup>
+    <Text Include="..\data\monsters.txt" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
