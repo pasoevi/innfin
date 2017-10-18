@@ -46,7 +46,6 @@ int parse_jar(char *filename, int realm_id, struct actor **actor)
 	struct actor *debug_actor = *actor;
 
 	while (fgets(line, MAX_LINE_LEN, file)) {
-		printf("last line: %s\n", line);
 		char key[MAX_LINE_LEN];
 		char val[MAX_LINE_LEN];
 		char colon;
@@ -59,7 +58,6 @@ int parse_jar(char *filename, int realm_id, struct actor **actor)
 
 		if (!starts_with_c(line, '#') && !starts_with_c(line, '%')) {
 			int nread = sscanf(line, "%[^:] %c %s", key, &colon, val);
-			printf("Valuas read: %d; line = %s\n", nread, line);
 			if (nread != 3) {
 				return 1;
 			}
@@ -88,7 +86,6 @@ int parse_jar(char *filename, int realm_id, struct actor **actor)
 				tmp_actor->attacker->power = atof(val);
 			}
 
-			// printf("Created %s\n", tmp_actor->name);
 		}
 	}
 

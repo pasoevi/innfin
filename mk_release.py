@@ -1,11 +1,12 @@
 #!/usr/bin/env python3
 
 import os
+import sys
 import shutil
 import tarfile
 import zipfile
 
-version_number_str = "0.0.5"
+version_number_str = sys.argv[1]
 target_os = 'win' if os.name == 'nt' else 'linux'
 version_name = "innfin" + "_" + version_number_str + "_" + target_os
 
