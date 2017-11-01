@@ -229,8 +229,13 @@ void add_monster(struct engine *engine, int x, int y)
         actor = mkgoblin(x, y);
     else if (dice < 85)
         actor = mkdragon(x, y);
-    else
-        actor = mktroll(x, y);
+    else {
+	// struct actor *test;
+	int result = parse_jar("data/monsters.txt", 1, &actor);
+	// parse_datafiles();
+    }
+	
+    // actor = mktroll(x, y);
 
     TCOD_list_push(engine->actors, actor);
 }
