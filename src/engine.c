@@ -31,7 +31,6 @@ static const char *WELCOME_MSG =
 /*
  * Use Libtcod's configuration file parser to read monster, item, etc data
  * definitions.
- */
 static int parse_datafiles()
 {
     TCOD_parser_t parser = TCOD_parser_new();
@@ -39,6 +38,7 @@ static int parse_datafiles()
 
     return 0;
 }
+*/
 
 /*
  * Move the dead actor at the back of the list, so that it doesn't
