@@ -11,15 +11,14 @@ w = ' -Wall -Wstrict-prototypes -Wshadow -Wwrite-strings -Wold-style-definition 
 cc = "gcc"
 
 libs = Split('tcod m')
-ccflags = '-g -O0'
+ccflags = '-g -O0 -rpath .'
 
 if platform == 'win32':
    ccflags += " -mwindows"
 
 VariantDir(build_dir, 'src', duplicate=0)
-env = Environment(CC = cc, 
+env = Environment(CC = cc,
                   CCFLAGS = ccflags,
-                  RPATH = os.path.abspath('./build'),
                   tools=['default', 'mingw'],
                   TARFLAGS = '-c -z')
 

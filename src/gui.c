@@ -106,14 +106,14 @@ static void render_bar(struct engine *engine, int x, int y, int w,
                           name, value, max_value);
 }
 
-static void render_fixed_text(TCOD_console_t *con, int x, int y,
+static void render_fixed_text(TCOD_console_t con, int x, int y,
                               TCOD_color_t col, const char *text)
 {
     TCOD_console_set_default_foreground(con, col);
     TCOD_console_print_ex(con, x, y, TCOD_BKGND_NONE, TCOD_LEFT, "%s", text);
 }
 
-static void render_status(TCOD_console_t *con, int x, int y,
+static void render_status(TCOD_console_t con, int x, int y,
                           struct actor *actor)
 {
     struct message status = get_hunger_status(actor);
@@ -127,7 +127,7 @@ static void render_log(struct engine *engine, int start_x, int start_y)
     double color_coef = 0.4f;
     int y = start_y;
 
-    TCOD_list_t *log = engine->gui->log;
+    TCOD_list_t log = engine->gui->log;
 
     struct message **iter;
     for (iter = (struct message **) TCOD_list_begin(log);
@@ -205,7 +205,7 @@ static void gui_render(struct engine *engine)
                       1.f, 1.f);
 }
 
-void free_log(TCOD_list_t *log)
+void free_log(TCOD_list_t log)
 {
     struct message **iter;
     for (iter = (struct message **) TCOD_list_begin(log);

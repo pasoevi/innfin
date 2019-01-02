@@ -58,7 +58,7 @@ void mkroom(struct engine *engine, bool first, int x1, int y1, int x2,
         engine->player->x = (x1 + x2) / 2;
         engine->player->y = (y1 + y2) / 2;
     } else {
-        TCOD_random_t *rng = TCOD_random_get_instance();
+        TCOD_random_t rng = TCOD_random_get_instance();
         int num_monsters =
                 TCOD_random_get_int(rng, 0, MAX_ROOM_MONSTERS);
         /* Add items */
@@ -115,7 +115,7 @@ bool visit_node(TCOD_bsp_t *node, void *user_data)
     if (TCOD_bsp_is_leaf(node)) {
         int x, y, w, h;
         /* dig a room */
-        TCOD_random_t *rng = TCOD_random_get_instance();
+        TCOD_random_t rng = TCOD_random_get_instance();
         w = TCOD_random_get_int(rng, ROOM_MIN_SIZE, node->w - 2);
         h = TCOD_random_get_int(rng, ROOM_MIN_SIZE, node->h - 2);
         x = TCOD_random_get_int(rng, node->x + 1,
@@ -220,7 +220,7 @@ void compute_fov(struct engine *engine)
 
 void add_monster(struct engine *engine, int x, int y)
 {
-    TCOD_random_t *rng = TCOD_random_get_instance();
+    TCOD_random_t rng = TCOD_random_get_instance();
     struct actor *actor;
     int dice = TCOD_random_get_int(rng, 0, 100);
     if (dice < 50)
@@ -231,10 +231,10 @@ void add_monster(struct engine *engine, int x, int y)
         actor = mkdragon(x, y);
     else {
 	// struct actor *test;
-	int result = parse_jar("data/monsters.txt", 1, &actor);
+	// int result = parse_jar("data/monsters.txt", 1, &actor);
 	// parse_datafiles();
     }
-	
+
     // actor = mktroll(x, y);
 
     TCOD_list_push(engine->actors, actor);
@@ -242,7 +242,7 @@ void add_monster(struct engine *engine, int x, int y)
 
 void add_item(struct engine *engine, int x, int y)
 {
-    TCOD_random_t *rng = TCOD_random_get_instance();
+    TCOD_random_t rng = TCOD_random_get_instance();
     struct actor *item;
 
     int dice = TCOD_random_get_int(rng, 0, 100);

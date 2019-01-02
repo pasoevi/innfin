@@ -39,8 +39,8 @@ struct message {
 };
 
 struct gui {
-    TCOD_console_t *con;
-    TCOD_console_t *inventory_con;
+    TCOD_console_t con;
+    TCOD_console_t inventory_con;
 
     void (*render)(struct engine *engine);
 
@@ -58,7 +58,7 @@ struct gui {
 
     void (*render_mouse_look)(struct engine *engine);
 
-    TCOD_list_t *log;
+    TCOD_list_t log;
 };
 
 void free_gui(struct gui *gui);

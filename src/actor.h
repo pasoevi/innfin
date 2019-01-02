@@ -167,7 +167,7 @@ struct pickable {
             struct actor *target);
 };
 
-/* 
+/*
  * Capacity is currently counted by the number of items and *not* by
  * weight or other qualities of items.
  */
@@ -213,7 +213,7 @@ struct actor *mkactor(int w, int h, char ch, char *name,
 
 void free_actor(struct actor *actor);
 
-void free_actors(TCOD_list_t *actors);
+void free_actors(TCOD_list_t actors);
 
 struct ai *mkai(void (*update)(struct engine *engine, struct actor *actor),
                    bool(*move_or_attack)(struct engine *engine,
@@ -353,13 +353,13 @@ bool drop(struct engine *engine, struct actor *actor, struct actor *item);
 
 bool drop_last(struct engine *engine, struct actor *actor);
 
-/* 
+/*
  * A common function to all usable items. All item-specific *_use
  * functions should call this as the last statemunt.
  */
 bool use(struct actor *actor, struct actor *item);
 /*
- * Deals huge damage to the nearest monster. 
+ * Deals huge damage to the nearest monster.
  */
 bool lightning_wand_use(struct engine *engine, struct actor *actor,
                         struct actor *item);
@@ -380,12 +380,12 @@ bool transfiguration_wand_use(struct engine *engine, struct actor *actor,
 bool fireball_wand_use(struct engine *engine, struct actor *actor,
                        struct actor *item);
 
-/* 
+/*
  * Heals with a fixed amount of hit points.
  */
 bool healer_use(struct engine *engine, struct actor *actor,
                 struct actor *item);
-/* 
+/*
  * Cures poisoning and similar effects of ill health and then heals by
  * a random number of hit points. Usually heals by less number than
  * the health potion.
@@ -407,7 +407,7 @@ bool unwield_current_weapon(struct engine *engine, struct actor *actor);
 
 bool blow_kindzal(struct engine *engine, struct actor *actor,
                   struct actor *item, struct actor *target);
-/* 
+/*
  * A generic eating function. Units eaten will be equal to the 50% of
  * the max_hp of the corpse, *not* of the actor eating it.
  */
@@ -431,7 +431,7 @@ double take_damage(struct engine *engine, struct actor *dealer,
 
 double heal(struct actor *actor, double amount);
 
-/* 
+/*
    A common function that is called when ANY actor dies. NOTE: Do not
    use this function directly. Use functions assigned with specific
    actor structures instead, like monster_die, player_die. They call

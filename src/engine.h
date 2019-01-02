@@ -61,7 +61,7 @@ enum game_status {
 };
 
 struct engine {
-    TCOD_list_t *actors;
+    TCOD_list_t actors;
     struct actor *player;
     struct actor *stairs;
     struct map *map;

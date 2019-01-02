@@ -81,7 +81,7 @@ void free_actor(struct actor *actor)
     free(actor);
 }
 
-void free_actors(TCOD_list_t *actors)
+void free_actors(TCOD_list_t actors)
 {
     struct actor **iter;
     for (iter = (struct actor **) TCOD_list_begin(actors);
@@ -1079,7 +1079,7 @@ void confused_update(struct engine *engine, struct actor *actor)
         return;
     }
 
-    TCOD_random_t *rng = TCOD_random_get_instance();
+    TCOD_random_t rng = TCOD_random_get_instance();
     int dx = TCOD_random_get_int(rng, -1, 1);
     int dy = TCOD_random_get_int(rng, -1, 1);
     if (dx != 0 || dy != 0) {

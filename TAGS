@@ -353,7 +353,7 @@ include/lex.h,1613
 	bool savept;75,2760
 } TCOD_lex_t;76,2833
 
-include/libtcod.h,1523
+include/libtcod/libtcod.h,1523
 #define _TCODLIB_H29,1555
 #  define TCOD_VISUAL_STUDIO56,2242
 #  define TCOD_WINDOWS57,2272

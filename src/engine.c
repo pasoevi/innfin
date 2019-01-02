@@ -53,7 +53,7 @@ void send_to_back(struct engine *engine, struct actor *actor)
 struct engine *mkengine(int w, int h, const char *title)
 {
 
-    TCOD_console_init_root(w, h, title, false, TCOD_RENDERER_OPENGL);
+    TCOD_console_init_root(w, h, title, false, TCOD_RENDERER_SDL);
     struct engine *engine = malloc(sizeof *engine);
     if (engine == NULL)
         return engine;
@@ -162,9 +162,9 @@ void engine_render(struct engine *engine)
 
         if ((actor != engine->player) &&
             /* will be rendered later as the last item */
-            (!actor->fov_only &&
+            ((!actor->fov_only &&
              is_explored(engine->map, actor->x, actor->y)) ||
-            is_in_fov(engine->map, actor->x, actor->y))
+            is_in_fov(engine->map, actor->x, actor->y)))
             actor->render(actor);
     }
 

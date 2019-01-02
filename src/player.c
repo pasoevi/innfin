@@ -145,7 +145,7 @@ bool player_move_or_attack(struct engine *engine, struct actor *player,
 void show_stats(struct engine *engine, struct actor *actor)
 {
     /* Display the items frame */
-    TCOD_console_t *con = engine->gui->inventory_con;
+    TCOD_console_t con = engine->gui->inventory_con;
     TCOD_color_t color = (TCOD_color_t) {200, 180, 50};
     TCOD_console_set_default_foreground(con, color);
     TCOD_console_print_frame(con, 0, 0, INVENTORY_WIDTH,
@@ -163,7 +163,7 @@ void show_stats(struct engine *engine, struct actor *actor)
 			TCOD_console_print(con, 2, ++y, "(%c) %s %.f", 's', actor->ai->skills[i].name, actor->ai->skills[i].val);
 		}
 	}
-    
+
 
         /* Blit the items console to the root console. */
     TCOD_console_blit(con, 0, 0, INVENTORY_WIDTH, INVENTORY_HEIGHT,
@@ -196,7 +196,7 @@ struct actor *choose_from_inventory(struct engine *engine,
                                     bool(*predicate)(struct actor *actor))
 {
     /* Display the items frame */
-    TCOD_console_t *con = engine->gui->inventory_con;
+    TCOD_console_t con = engine->gui->inventory_con;
     TCOD_color_t color = (TCOD_color_t) {200, 180, 50};
     TCOD_console_set_default_foreground(con, color);
     TCOD_console_print_frame(con, 0, 0, INVENTORY_WIDTH,
