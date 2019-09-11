@@ -21,6 +21,7 @@
 #include "map.h"
 #include "monsters.h"
 #include <stdlib.h>
+#include <stdio.h>
 
 const int MAX_LEVEL = 2;
 static const int MAX_ROOM_MONSTERS = 3;
@@ -222,6 +223,9 @@ void compute_fov(struct engine *engine)
 
 void add_monster(struct engine *engine, int x, int y)
 {
+    if (x > engine->window_w || y > engine->window_h) {
+        fprintf(stderr, "Created actor with inconsistent data: x=%d, y=%d", x, y);
+    }
     TCOD_random_t rng = TCOD_random_get_instance();
     struct actor *actor;
     int dice = TCOD_random_get_int(rng, 0, 100);
@@ -232,9 +236,8 @@ void add_monster(struct engine *engine, int x, int y)
     else if (dice < 85)
         actor = mkdragon(x, y);
     else {
-	// struct actor *test;
-	// int result = parse_jar("data/monsters.txt", 1, &actor);
-	// parse_datafiles();
+    int result = parse_jar("data/monsters.txt", 1, &actor);
+	//parse_datafiles();
     }
 
     // actor = mktroll(x, y);
@@ -246,6 +249,10 @@ void add_item(struct engine *engine, int x, int y)
 {
     TCOD_random_t rng = TCOD_random_get_instance();
     struct actor *item;
+
+    if (x > engine->window_w || y > engine->window_h) {
+        fprintf(stderr, "Created item with inconsistent data: x=%d, y=%d", x, y);
+    }
 
     int dice = TCOD_random_get_int(rng, 0, 100);
     if (dice < 10)
@@ -263,6 +270,7 @@ void add_item(struct engine *engine, int x, int y)
     else
         item = make_food(x, y);
 
+    printf("Adding item: x:%d, y:%d", item->x, item->y);
     TCOD_list_push(engine->actors, item);
 }
 

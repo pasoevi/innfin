@@ -240,6 +240,9 @@ struct actor *make_food(int x, int y)
             mkmonster(x, y, '%', "food", TCOD_orange, 8, 50, 0, 2,
                          "food", monster_update);
     food->pickable = init_pickable(0, 0, eat);
+    if (food->x > 80 || food->y > 80) {
+        fprintf(stderr, "Created food item with inconsistent data: x=%d, y=%d", x, y);
+    }
     return food;
 }
 
