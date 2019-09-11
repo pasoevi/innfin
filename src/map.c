@@ -20,6 +20,7 @@
 
 #include "map.h"
 #include "monsters.h"
+#include "parser.h"
 #include <stdlib.h>
 #include <stdio.h>
 
@@ -236,8 +237,10 @@ void add_monster(struct engine *engine, int x, int y)
     else if (dice < 85)
         actor = mkdragon(x, y);
     else {
-    int result = parse_jar("data/monsters.txt", 1, &actor);
-	//parse_datafiles();
+        int result = parse_jar("monsters.txt", 1, &actor);
+        if (result != 0) {
+            fprintf(stderr, "Error parsing data file: %d\n", result);
+        }
     }
 
     // actor = mktroll(x, y);

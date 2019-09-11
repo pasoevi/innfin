@@ -27,13 +27,13 @@
 #define MAX_LINE_LEN 80
 
 /*
- * Pick a random actor from a file containing monsters, items, spells, etc. 
+ * Pick a random actor from a file containing monsters, items, spells, etc.
  * @param filename - an info file to parse, in Record-Jar format, described
  * in The Art of Unix Programming.
  * @param realm_id - the dungeon level, portal id, or id of a place. This is
  * used to calculate the chance of a monster/item/spell/etc appearing in this
  * realm.
- * @param used to return the lucky actor parsed from the file. 
+ * @param used to return the lucky actor parsed from the file.
  */
 int parse_jar(char *filename, int realm_id, struct actor **actor)
 {
@@ -59,30 +59,29 @@ int parse_jar(char *filename, int realm_id, struct actor **actor)
 	if (!starts_with_c(line, '#') && !starts_with_c(line, '%')) {
 	    int nread = sscanf(line, "%[^:] %c %s", key, &colon, val);
 	    if (nread != 3) {
-		return 1;
-	    }
-	    
-	    if (!strcmp(key, "name")) {
-		char *tmp = malloc(80);
-		if (!tmp) {
-		    return -1;
-		}
-		if (strlen(tmp_actor->name) < strlen(val))
-		    tmp_actor->name = realloc(tmp_actor->name, sizeof(val) + 1);
-		strcpy(tmp, val);
-	    } else if (!strcmp(key, "ch")) {
-		tmp_actor->ch = val[0];
-	    } else if (!strcmp(key, "strength")) {
-		tmp_actor->ai->skills[SKILL_STRENGTH].val = atof(val);
-	    } else if (!strcmp(key, "intelligence")) {
-		tmp_actor->ai->skills[SKILL_INTELL].val = atof(val);
-	    } else if (!strcmp(key, "dexterity")) {
-		tmp_actor->ai->skills[SKILL_AGILITY].val = atof(val);
-	    } else if (!strcmp(key, "power")) {
-		tmp_actor->attacker->power = atof(val);
+		    return 1;
 	    }
 
-	}
+	    if (!strcmp(key, "name")) {
+		    char *tmp = malloc(80);
+		    if (!tmp) {
+		        return -1;
+		    }
+		    if (strlen(tmp_actor->name) < strlen(val))
+		        tmp_actor->name = realloc(tmp_actor->name, sizeof(val) + 1);
+		    strcpy(tmp, val);
+	        } else if (!strcmp(key, "ch")) {
+		    tmp_actor->ch = val[0];
+	        } else if (!strcmp(key, "strength")) {
+		    tmp_actor->ai->skills[SKILL_STRENGTH].val = atof(val);
+	        } else if (!strcmp(key, "intelligence")) {
+		    tmp_actor->ai->skills[SKILL_INTELL].val = atof(val);
+	        } else if (!strcmp(key, "dexterity")) {
+		    tmp_actor->ai->skills[SKILL_AGILITY].val = atof(val);
+	        } else if (!strcmp(key, "power")) {
+		    tmp_actor->attacker->power = atof(val);
+	        }
+	    }
     }
 
     printf("Created %s\n", debug_actor->name);
@@ -108,7 +107,7 @@ int find_blnk(char s[], int start, int n)
         if (s[start] == '\n')
             --start;
     } else {
-        /* 
+        /*
          * correct improper start, but leave it as it is if searching
          * backwards
          **/
