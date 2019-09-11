@@ -11,7 +11,7 @@ w = ' -Wall -Wstrict-prototypes -Wshadow -Wwrite-strings -Wold-style-definition 
 cc = "gcc"
 
 libs = Split('tcod m')
-ccflags = '-g -O0 -rpath .'
+ccflags = '-g -O0 -Wl,-rpath=. -Wall'
 
 if platform == 'win32':
    ccflags += " -mwindows"

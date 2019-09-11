@@ -212,10 +212,12 @@ bool is_explored(struct map *map, int x, int y)
 
 void compute_fov(struct engine *engine)
 {
-    TCOD_map_compute_fov(engine->map->map,
-                         engine->player->x,
-                         engine->player->y,
-                         engine->fov_radius, true, FOV_BASIC);
+    TCOD_map_compute_fov(
+        engine->map->map,
+        engine->player->x,
+        engine->player->y,
+        engine->fov_radius, true, FOV_BASIC
+        );
 }
 
 void add_monster(struct engine *engine, int x, int y)
