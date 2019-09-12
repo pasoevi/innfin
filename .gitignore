@@ -5,6 +5,7 @@
 *.elf
 
 libs_linux.tar.gz
+libs_*.*
 lib
 lib32
 lib64
