@@ -1,0 +1,28 @@
+[1mdiff --git a/SConstruct b/SConstruct[m
+[1mindex 7a62d15..3a5c6b6 100644[m
+[1m--- a/SConstruct[m
+[1m+++ b/SConstruct[m
+[36m@@ -11,10 +11,21 @@[m [mw = ' -Wall -Wstrict-prototypes -Wshadow -Wwrite-strings -Wold-style-definition[m
+ cc = "gcc"[m
+ [m
+ libs = Split('tcod m')[m
+[31m-ccflags = '-g -O0 -Wl,-rpath=. -Wall'[m
+[32m+[m[32mccflags = '-g -O0'[m
+[32m+[m[32mccflags_win = ' -mwindows'[m
+[32m+[m[32mccflags_osx = ' -Wl,-rpath=. -Wall'[m
+[32m+[m[32mccflags_linux = ' -Wl,-rpath=. -Wall'[m
+[32m+[m
+[32m+[m[32mprint(platform)[m
+ [m
+ if platform == 'win32':[m
+[31m-   ccflags += " -mwindows"[m
+[32m+[m[32m   ccflags += ccflags_win[m
+[32m+[m[32melif platform == 'linux' or platform == 'linux2':[m
+[32m+[m[32m   ccflags += ccflags_linux[m
+[32m+[m[32melif platform == 'darwin':[m
+[32m+[m[32m   ccflags += ccflags_linux[m
+[32m+[m
+[32m+[m[32mprint(ccflags)[m
+ [m
+ VariantDir(build_dir, 'src', duplicate=0)[m
+ env = Environment(CC = cc,[m

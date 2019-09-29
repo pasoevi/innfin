@@ -11,10 +11,21 @@ w = ' -Wall -Wstrict-prototypes -Wshadow -Wwrite-strings -Wold-style-definition 
 cc = "gcc"
 
 libs = Split('tcod m')
-ccflags = '-g -O0 -Wl,-rpath=. -Wall'
+ccflags = '-g -O0  -Wall'
+ccflags_win = ' -mwindows'
+ccflags_osx = ' -Wl,-rpath=.'
+ccflags_linux = ' -Wl,-rpath=.'
+
+print(platform)
 
 if platform == 'win32':
-   ccflags += " -mwindows"
+   ccflags += ccflags_win
+elif platform == 'linux' or platform == 'linux2':
+   ccflags += ccflags_linux
+elif platform == 'darwin':
+   ccflags += ccflags_linux
+
+print(ccflags)
 
 VariantDir(build_dir, 'src', duplicate=0)
 env = Environment(CC = cc,
