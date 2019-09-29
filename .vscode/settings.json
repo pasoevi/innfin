@@ -1,0 +1,6 @@
+{
+    "files.associations": {
+        "engine.h": "c",
+        "libtcod.h": "c"
+    }
+}

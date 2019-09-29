@@ -22,6 +22,7 @@
 #include "engine.h"
 #include "player.h"
 #include "stairs.h"
+#include "console.h"
 
 extern void clean(void);
 
@@ -55,6 +56,7 @@ struct engine *mkengine(int w, int h, const char *title)
 
     TCOD_console_init_root(w, h, title, false, TCOD_RENDERER_SDL);
     struct engine *engine = malloc(sizeof *engine);
+    TCOD_console_set_custom_font("TiledFont.png", TCOD_FONT_TYPE_GREYSCALE  | TCOD_FONT_LAYOUT_TCOD, 32, 12);
     if (engine == NULL)
         return engine;
 

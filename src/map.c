@@ -44,10 +44,10 @@ void dig(struct map *map, int x1, int y1, int x2, int y2)
 
     int tilex, tiley;
     for (tilex = x1; tilex <= x2; tilex++) {
-	for (tiley = y1; tiley <= y2; tiley++) {
-            TCOD_map_set_properties(map->map, tilex, tiley,
-                                    true, true);
-	}
+        for (tiley = y1; tiley <= y2; tiley++) {
+                TCOD_map_set_properties(map->map, tilex, tiley,
+                                        true, true);
+        }
     }
 }
 
