@@ -56,7 +56,20 @@ struct engine *mkengine(int w, int h, const char *title)
 
     TCOD_console_init_root(w, h, title, false, TCOD_RENDERER_SDL);
     struct engine *engine = malloc(sizeof *engine);
-    TCOD_console_set_custom_font("TiledFont.png", TCOD_FONT_TYPE_GREYSCALE  | TCOD_FONT_LAYOUT_TCOD, 32, 12);
+    TCOD_console_set_custom_font(
+        "TiledFont.png",
+        TCOD_FONT_TYPE_GREYSCALE  | TCOD_FONT_LAYOUT_TCOD,
+        32,
+        10
+    );
+    int a = 256;
+
+    // The "y" is the row index, here we load the sixth row in the font file. Increase the "6" to load any new rows from the file
+    for (int y = 5; y < 6; y++) {
+        TCOD_console_map_ascii_codes_to_font(a, 32, 0, y);
+        a += 32;
+    }
+
     if (engine == NULL)
         return engine;
 

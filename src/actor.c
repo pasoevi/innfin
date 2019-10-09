@@ -35,10 +35,11 @@ bool unwield_weapon(struct engine *engine, struct actor *actor,
 void render_actor(struct actor *actor);
 
 /***************** Actor creation & destruction functions *********************/
-struct actor *mkactor(int x, int y, char ch, char *name,
+struct actor *mkactor(int x, int y, int ch, char *name,
                          TCOD_color_t col)
 {
     struct actor *actor = malloc(sizeof *actor);
+    // printf("Make Actor: %d %c", ch, ch);
 
     if (actor == NULL)
         return actor;
@@ -1115,6 +1116,7 @@ void ally_update(struct engine *engine, struct actor *actor);
 
 void render_actor(struct actor *actor)
 {
-    TCOD_console_set_char(NULL, actor->x, actor->y, actor->ch);
-    TCOD_console_set_char_foreground(NULL, actor->x, actor->y, actor->col);
+    printf("%d", actor->ch);
+    TCOD_console_put_char_ex(NULL, actor->x, actor->y, actor->ch, actor->col, TCOD_dark_blue);
+    // TCOD_console_set_char_foreground(NULL, actor->x, actor->y, actor->col);
 }

@@ -180,7 +180,7 @@ struct container {
 struct actor {
     int x;
     int y;
-    char ch;
+    int ch;
     /* can we walk on this actor? */
     bool blocking;
     /* display only when in field of view */
@@ -208,7 +208,7 @@ struct actor {
    NOTE: this is a low level function, intended to be used ONLY by
    wrapper functions e.g. make_orc, make_player, etc.
 */
-struct actor *mkactor(int w, int h, char ch, char *name,
+struct actor *mkactor(int w, int h, int ch, char *name,
                          TCOD_color_t col);
 
 void free_actor(struct actor *actor);

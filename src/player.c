@@ -19,6 +19,7 @@
 */
 
 #include "player.h"
+#include "tiles.h"
 
 /* Writes a memorial file */
 static void mkmemorial(struct actor *actor)
@@ -47,7 +48,7 @@ void player_die(struct engine *engine, struct actor *actor,
 
 struct actor *mkplayer(int x, int y)
 {
-    struct actor *player = mkactor(x, y, '@', "you", TCOD_white);
+    struct actor *player = mkactor(x, y, PLAYER_TILE, "you", TCOD_white);
 	if (!player) {
 		return player;
 	}

@@ -21,6 +21,7 @@
 #include "map.h"
 #include "monsters.h"
 #include "parser.h"
+#include "tiles.h"
 #include <stdlib.h>
 #include <stdio.h>
 
@@ -317,7 +318,7 @@ bool pick_tile(struct engine *engine, int *x, int *y, double max_range)
             return false;
         }
 
-        TCOD_console_flush();
+        //TCOD_console_flush();
     }
 
     return false;
@@ -341,12 +342,19 @@ void map_render(struct map *map)
     int x, y;
     for (x = 0; x < map->w; x++) {
         for (y = 0; y < map->h; y++) {
-            if (is_in_fov(map, x, y))
-                TCOD_console_set_default_foreground(NULL, TCOD_white);
-            else
-                TCOD_console_set_default_foreground(NULL, TCOD_gray);
-            if (is_wall(map, x, y))
-                TCOD_console_put_char(NULL, x, y, '#', TCOD_BKGND_SET);
+            if (is_in_fov(map, x, y)) {
+                if (is_wall(map, x, y)) {
+                    TCOD_console_put_char_ex(NULL, x, y, WALL_TILE, TCOD_white, TCOD_black);
+                } else {
+                    TCOD_console_put_char_ex(NULL, x, y, FLOOR_TILE, TCOD_white, TCOD_black);
+                }
+            } else {
+                if (is_wall(map, x, y)) {
+                    TCOD_console_put_char_ex(NULL, x, y, WALL_TILE, TCOD_gray, TCOD_black);
+                } else {
+                    TCOD_console_put_char_ex(NULL, x, y, FLOOR_TILE, TCOD_gray, TCOD_black);
+                }
+            }
         }
     }
 }

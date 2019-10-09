@@ -1,0 +1,11 @@
+#define WALL_TILE  256
+#define FLOOR_TILE  257
+#define PLAYER_TILE  258
+#define ORC_TILE  259
+#define TROLL_TILE  260
+#define SCROLL_TILE  261
+#define HEALINGPOTION_TILE  262
+#define SWORD_TILE  263
+#define SHIELD_TILE  264
+#define STAIRSDOWN_TILE  265
+#define DAGGER_TILE  266
