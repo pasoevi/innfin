@@ -1,7 +1,8 @@
 {
     "files.associations": {
         "engine.h": "c",
-        "libtcod.h": "c"
+        "libtcod.h": "c",
+        "monsters.h": "c"
     },
     "deepcode.review.results.hideInformationIssues": false
 }

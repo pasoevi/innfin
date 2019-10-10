@@ -266,9 +266,16 @@ void invoke_command(struct engine *engine,
                     bool (*item_chooser)(struct actor *actor),
                     const char *window_title)
 {
-    struct actor *item =
-            choose_from_inventory(engine, engine->player, window_title,
-                                  item_chooser);
+    if (engine == NULL) {
+        // Exit with error
+        exit(1);
+    }
+
+    if (is_dead(engine->player)) {
+        return;
+    }
+
+    struct actor *item = choose_from_inventory(engine, engine->player,  window_title,  item_chooser);
     if (item) {
         if (command)
             command(engine, engine->player, item);

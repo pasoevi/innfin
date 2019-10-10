@@ -247,7 +247,7 @@ struct pickable *init_pickable(double power, double range,
                                           struct actor *item));
 
 struct actor *make_item(int x, int y, double power, double range,
-                        const char ch, char *name, TCOD_color_t col,
+                        const int ch, char *name, TCOD_color_t col,
                         bool(*use)(struct engine *engine,
                                    struct actor *actor,
                                    struct actor *item));
