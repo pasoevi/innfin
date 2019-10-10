@@ -155,7 +155,7 @@ int find_last_nonblnk(char s[])
     return pos;
 }
 
-int starts_with_c(char s[], char ch)
+int starts_with_c(char s[], int ch)
 {
     if (strlen(s) < 0)
         return 0;

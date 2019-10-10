@@ -22,6 +22,7 @@
 #include "engine.h"
 #include "player.h"
 #include "stairs.h"
+#include "tiles.h"
 #include "console.h"
 
 extern void clean(void);
@@ -93,7 +94,7 @@ struct engine *mkengine(int w, int h, const char *title)
     TCOD_list_push(engine->actors, (const void *) engine->player);
 
     /* Create stairs */
-    engine->stairs = mkstairs(0, 0, '>');
+    engine->stairs = mkstairs(0, 0, STAIRSDOWN_TILE);
     TCOD_list_push(engine->actors, (const void *) engine->stairs);
 
     /* Add a map to the engine */

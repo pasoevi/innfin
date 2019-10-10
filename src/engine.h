@@ -32,7 +32,7 @@ enum {
     WINDOW_H = 50,
 
     /* Levels, dungeons, portals, places */
-            LVL_DUNGEON_1,
+    LVL_DUNGEON_1,
     LVL_DUNGEON_2,
     LVL_DUNGEON_3,
     LVL_DUNGEON_4,

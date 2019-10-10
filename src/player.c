@@ -34,6 +34,46 @@ static void make_player_ghost(struct engine *engine, struct actor *player)
      */
 }
 
+static void show_game_summary(struct engine *engine)
+{
+    struct actor *player = engine->player;
+    /* Display the items frame */
+    TCOD_console_t con = engine->gui->inventory_con;
+    TCOD_color_t color = (TCOD_color_t) {200, 180, 50};
+    TCOD_console_set_default_foreground(con, color);
+    TCOD_console_print_frame(con, 0, 0, INVENTORY_WIDTH,
+                             INVENTORY_HEIGHT, true,
+                             TCOD_BKGND_DEFAULT, "Your journey ends here");
+
+    /*
+     * Count the items that specify the predicate and display the
+     * items with their respective shortcuts.
+     */
+    TCOD_console_set_default_foreground(con, TCOD_white);
+    TCOD_console_print(con, 2, 2, "You died at the age of 80 years, 10 days and five hours old");
+
+
+    /* Blit the items console to the root console. */
+    TCOD_console_blit(con, 0, 0, INVENTORY_WIDTH, INVENTORY_HEIGHT,
+                      NULL, engine->window_w / 2 - INVENTORY_WIDTH / 2,
+                      engine->window_h / 2 - INVENTORY_HEIGHT / 2, 1.f,
+                      1.f);
+    TCOD_console_flush();
+
+    /* wait for a key press */
+    TCOD_key_t key;
+    TCOD_sys_wait_for_event(TCOD_EVENT_KEY_PRESS, &key, NULL, true);
+    if (key.vk == TCODK_CHAR) {
+        int actor_index = key.c - 'a';
+        if (actor_index >= 0
+            && actor_index <
+               TCOD_list_size(player->inventory->items)) {
+            struct actor *tmp =
+                    TCOD_list_get(player->inventory->items, actor_index);
+        }
+    }
+}
+
 /* Transform the actor into a decaying corpse */
 void player_die(struct engine *engine, struct actor *actor,
                 struct actor *killer)
@@ -43,7 +83,7 @@ void player_die(struct engine *engine, struct actor *actor,
     die(engine, actor, NULL);
     mkmemorial(actor);
     engine->game_status = DEFEAT;
-
+    show_game_summary(engine);
 }
 
 struct actor *mkplayer(int x, int y)
@@ -159,7 +199,7 @@ void show_stats(struct engine *engine, struct actor *actor)
      */
     TCOD_console_set_default_foreground(con, TCOD_white);
     int y = 0;
-	for (int i = 0; i < MAX_SKILS; i++) {
+	for (int i = 0; i < 3; i++) {
 		if (actor->ai->skills[i].val > 0) {
 			TCOD_console_print(con, 2, ++y, "(%c) %s %.f", 's', actor->ai->skills[i].name, actor->ai->skills[i].val);
 		}
@@ -173,9 +213,7 @@ void show_stats(struct engine *engine, struct actor *actor)
                       1.f);
     TCOD_console_flush();
 
-
-
-        /* wait for a key press */
+    /* wait for a key press */
     TCOD_key_t key;
     TCOD_sys_wait_for_event(TCOD_EVENT_KEY_PRESS, &key, NULL, true);
     if (key.vk == TCODK_CHAR) {
@@ -187,8 +225,6 @@ void show_stats(struct engine *engine, struct actor *actor)
                     TCOD_list_get(actor->inventory->items, actor_index);
         }
     }
-
-
 }
 
 struct actor *choose_from_inventory(struct engine *engine,
@@ -266,9 +302,16 @@ void invoke_command(struct engine *engine,
                     bool (*item_chooser)(struct actor *actor),
                     const char *window_title)
 {
-    struct actor *item =
-            choose_from_inventory(engine, engine->player, window_title,
-                                  item_chooser);
+    if (engine == NULL) {
+        // Exit with error
+        exit(1);
+    }
+
+    if (is_dead(engine->player)) {
+        return;
+    }
+
+    struct actor *item = choose_from_inventory(engine, engine->player,  window_title,  item_chooser);
     if (item) {
         if (command)
             command(engine, engine->player, item);
@@ -287,6 +330,7 @@ void handle_key(struct engine *engine, struct actor *actor)
             try_pick(engine);
             break;
         case '>':
+        case '.':
             descend(engine, engine->player, engine->stairs);
             break;
         case '<':
@@ -317,7 +361,9 @@ void handle_key(struct engine *engine, struct actor *actor)
             invoke_command(engine, NULL, is_wieldable, "wield");
             break;
         case 'W': /* Unield */
-            unwield_current_weapon(engine, actor);
+            if (engine->key.shift) {
+                unwield_current_weapon(engine, actor);
+            }
             break;
         case 's': /* Display stats */
             show_stats(engine, engine->player);

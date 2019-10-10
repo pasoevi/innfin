@@ -21,7 +21,7 @@
 #include "stairs.h"
 #include "actor.h"
 
-struct actor *mkstairs(int x, int y, char ch)
+struct actor *mkstairs(int x, int y, int ch)
 {
     struct actor *actor = mkactor(x, y, ch, "stairs", TCOD_red);
     if (actor) {

@@ -342,17 +342,18 @@ void map_render(struct map *map)
     int x, y;
     for (x = 0; x < map->w; x++) {
         for (y = 0; y < map->h; y++) {
+            int tile = ' ';
+            if (is_explored(map, x, y)) {
+                tile = is_wall(map, x, y) ? WALL_TILE : FLOOR_TILE;
+            }
+
             if (is_in_fov(map, x, y)) {
-                if (is_wall(map, x, y)) {
-                    TCOD_console_put_char_ex(NULL, x, y, WALL_TILE, TCOD_white, TCOD_black);
-                } else {
-                    TCOD_console_put_char_ex(NULL, x, y, FLOOR_TILE, TCOD_white, TCOD_black);
-                }
+                    TCOD_console_put_char_ex(NULL, x, y, tile, TCOD_white, TCOD_black);
             } else {
-                if (is_wall(map, x, y)) {
-                    TCOD_console_put_char_ex(NULL, x, y, WALL_TILE, TCOD_gray, TCOD_black);
+                if (is_explored(map, x, y)) {
+                        TCOD_console_put_char_ex(NULL, x, y, tile, TCOD_gray, TCOD_black);
                 } else {
-                    TCOD_console_put_char_ex(NULL, x, y, FLOOR_TILE, TCOD_gray, TCOD_black);
+                    TCOD_console_put_char_ex(NULL, x, y, ' ', TCOD_black,  TCOD_black);
                 }
             }
         }

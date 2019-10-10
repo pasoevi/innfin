@@ -20,10 +20,11 @@
 
 #include "libtcod/libtcod.h"
 #include "monsters.h"
+#include "tiles.h"
 #include <math.h>
 
 /** Factory functions **/
-struct actor *mkmonster(int x, int y, const char ch, char *name,
+struct actor *mkmonster(int x, int y, const int ch, char *name,
                            TCOD_color_t col, double power, double max_hp,
                            double hp, double defence, char *corpse_name,
                            void (*update)(struct engine *engine,
@@ -53,8 +54,8 @@ struct actor *mkmonster(int x, int y, const char ch, char *name,
 
 struct actor *mkorc(int x, int y)
 {
-    struct actor *orc = mkmonster(x, y, 'o', "an orc",
-                                     TCOD_desaturated_green, 11,
+    struct actor *orc = mkmonster(x, y, ORC_TILE, "an orc",
+                                     TCOD_green, 11,
                                      15, 15, 4, "a dead orc", monster_update);
     orc->ai->xp_level = 2;
     orc->ai->skills[SKILL_STRENGTH].val = 8;
@@ -64,7 +65,7 @@ struct actor *mkorc(int x, int y)
 
 struct actor *mkgoblin(int x, int y)
 {
-    struct actor *goblin = mkmonster(x, y, 'g', "a goblin", TCOD_green, 10,
+    struct actor *goblin = mkmonster(x, y, ORC_TILE, "a goblin", TCOD_gray, 10,
                                         14, 14, 2, "a dead goblin",
                                         monster_update);
     goblin->ai->xp_level = 1;
@@ -75,7 +76,7 @@ struct actor *mkgoblin(int x, int y)
 
 struct actor *mktroll(int x, int y)
 {
-    struct actor *troll = mkmonster(x, y, 'T', "a troll", TCOD_lighter_green,
+    struct actor *troll = mkmonster(x, y, TROLL_TILE, "a troll", TCOD_lighter_green,
                                        12, 20, 20, 3, "a troll carcass",
                                        monster_update);
     troll->ai->xp_level = 2;

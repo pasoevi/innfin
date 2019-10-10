@@ -22,6 +22,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "monsters.h"
+#include "tiles.h"
 #include "util.h"
 
 extern void compute_fov(struct engine *engine);
@@ -221,7 +222,7 @@ void free_pickable(struct pickable *pickable)
  * function
  */
 struct actor *make_item(int x, int y, double power, double range,
-                        const char ch, char *name, TCOD_color_t col,
+                        const int ch, char *name, TCOD_color_t col,
                         bool(*use)(struct engine *engine,
                                    struct actor *actor,
                                    struct actor *item))
@@ -250,21 +251,19 @@ struct actor *make_food(int x, int y)
 /* Potions */
 struct actor *make_healer_potion(int x, int y)
 {
-    return make_item(x, y, 10, 0, '!', "a health potion", TCOD_violet,
-                     healer_use);
+    return make_item(x, y, 10, 0, HEALINGPOTION_TILE, "a health potion", TCOD_gray, healer_use);
 }
 
 struct actor *make_curing_potion(int x, int y)
 {
     double amount = 5;    /* TODO: this needs to be made random. */
-    return make_item(x, y, amount, 0, '!', "a curing potion", TCOD_violet,
-                     curing_use);
+    return make_item(x, y, amount, 0, HEALINGPOTION_TILE, "a curing potion", TCOD_gray, curing_use);
 }
 
 struct actor *make_posioning_potion(int x, int y)
 {
-    return make_item(x, y, 10, 0, '6', "a potion of poisoning",
-                     TCOD_violet, potion_of_poison_use);
+    return make_item(x, y, 10, 0, HEALINGPOTION_TILE, "a potion of poisoning",
+                     TCOD_gray, potion_of_poison_use);
 }
 
 /* Wands */
@@ -299,7 +298,7 @@ struct actor *make_confusion_wand(int x, int y)
 
 /*********************** Weapons *****************/
 struct actor *make_weapon(int x, int y, double power,
-                          const char ch, char *name, TCOD_color_t col,
+                          const int ch, char *name, TCOD_color_t col,
                           bool(*wield)(struct engine *engine,
                                        struct actor *actor,
                                        struct actor *item),
@@ -317,7 +316,7 @@ struct actor *make_weapon(int x, int y, double power,
 
 struct actor *make_kindzal(int x, int y)
 {
-    return make_weapon(x, y, 20, '|', "a Kindzal", TCOD_silver, wield_weapon,
+    return make_weapon(x, y, 20, DAGGER_TILE, "a Kindzal", TCOD_silver, wield_weapon,
                        blow_kindzal);
 }
 
@@ -356,7 +355,7 @@ bool is_edible(struct actor *actor)
 bool is_drinkable(struct actor *actor)
 {
     bool is_drinkable = false;
-    if (actor->pickable && !actor->life && actor->ch == '!')
+    if (actor->pickable && !actor->life && actor->ch == HEALINGPOTION_TILE)
         is_drinkable = true;
     return is_drinkable;
 }
@@ -364,7 +363,7 @@ bool is_drinkable(struct actor *actor)
 bool is_wieldable(struct actor *actor)
 {
     bool is_wieldable = false;
-    if (actor->pickable && !actor->life && actor->ch == '|')
+    if (actor->pickable && !actor->life && actor->ch == DAGGER_TILE)
         is_wieldable = true;
     return is_wieldable;
 }
@@ -626,7 +625,7 @@ bool drop(struct engine *engine, struct actor *actor, struct actor *item)
 
 bool drop_last(struct engine *engine, struct actor *actor)
 {
-    if (!actor->inventory)
+    if (!actor->inventory || is_dead(actor))
         return false;
 
     if (TCOD_list_is_empty(actor->inventory->items)) {
@@ -1116,7 +1115,5 @@ void ally_update(struct engine *engine, struct actor *actor);
 
 void render_actor(struct actor *actor)
 {
-    printf("%d", actor->ch);
     TCOD_console_put_char_ex(NULL, actor->x, actor->y, actor->ch, actor->col, TCOD_dark_blue);
-    // TCOD_console_set_char_foreground(NULL, actor->x, actor->y, actor->col);
 }

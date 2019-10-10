@@ -3,7 +3,7 @@
 
 #include "actor.h"
 
-int starts_with_c(char s[], char ch);
+int starts_with_c(char s[], int ch);
 
 int parse_jar(char *filename, int realm_id, struct actor **actor);
 

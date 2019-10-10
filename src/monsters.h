@@ -24,7 +24,7 @@
 #ifndef INNFIN_MONSTERS_H
 #define INNFIN_MONSTERS_H
 
-struct actor *mkmonster(int x, int y, const char ch, char *name,
+struct actor *mkmonster(int x, int y, const int ch, char *name,
                            TCOD_color_t col, double power, double max_hp,
                            double hp, double defence, char *corpse_name,
                            void (*update)(struct engine *engine,
