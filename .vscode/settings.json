@@ -3,7 +3,8 @@
         "engine.h": "c",
         "libtcod.h": "c",
         "monsters.h": "c",
-        "map.h": "c"
+        "map.h": "c",
+        "gui.h": "c"
     },
     "deepcode.review.results.hideInformationIssues": false
 }

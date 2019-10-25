@@ -71,6 +71,9 @@ struct engine *mkengine(int w, int h, const char *title)
         a += 32;
     }
 
+    TCOD_console_set_default_background(NULL, TCOD_light_grey);
+    // TCOD_console_set_default_foreground(NULL, TCOD_light_grey);
+
     if (engine == NULL)
         return engine;
 

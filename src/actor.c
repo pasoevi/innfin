@@ -1115,5 +1115,5 @@ void ally_update(struct engine *engine, struct actor *actor);
 
 void render_actor(struct actor *actor)
 {
-    TCOD_console_put_char_ex(NULL, actor->x, actor->y, actor->ch, actor->col, TCOD_dark_blue);
+    TCOD_console_put_char(NULL, actor->x, actor->y, actor->ch, TCOD_BKGND_BURN);
 }

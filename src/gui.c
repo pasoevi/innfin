@@ -178,7 +178,7 @@ static void render_mouse_look(struct engine *engine)
 static void gui_render(struct engine *engine)
 {
     /* Clear the gui console */
-    TCOD_console_set_default_background(engine->gui->con, TCOD_black);
+    TCOD_console_set_default_background(engine->gui->con, TCOD_darkest_gray);
     TCOD_console_clear(engine->gui->con);
 
     /* Render health bar */

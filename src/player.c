@@ -187,10 +187,12 @@ void show_stats(struct engine *engine, struct actor *actor)
 {
     /* Display the items frame */
     TCOD_console_t con = engine->gui->inventory_con;
-    TCOD_color_t color = (TCOD_color_t) {200, 180, 50};
+    TCOD_color_t color = (TCOD_color_t) {200, 110, 150};
+    TCOD_console_set_default_background(con, TCOD_white);
     TCOD_console_set_default_foreground(con, color);
+    //TCOD_console_rect(con, 5, 5, INVENTORY_WIDTH - 5, INVENTORY_HEIGHT - 5,         true, TCOD_BKGND_SET);
     TCOD_console_print_frame(con, 0, 0, INVENTORY_WIDTH,
-                             INVENTORY_HEIGHT, true,
+                             INVENTORY_HEIGHT, false,
                              TCOD_BKGND_DEFAULT, "Stats");
 
     /*
@@ -206,11 +208,12 @@ void show_stats(struct engine *engine, struct actor *actor)
 	}
 
 
+    TCOD_console_set_key_color(con, TCOD_white);
         /* Blit the items console to the root console. */
     TCOD_console_blit(con, 0, 0, INVENTORY_WIDTH, INVENTORY_HEIGHT,
                       NULL, engine->window_w / 2 - INVENTORY_WIDTH / 2,
                       engine->window_h / 2 - INVENTORY_HEIGHT / 2, 1.f,
-                      1.f);
+                      0.8f);
     TCOD_console_flush();
 
     /* wait for a key press */
@@ -244,7 +247,7 @@ struct actor *choose_from_inventory(struct engine *engine,
      * Count the items that specify the predicate and display the
      * items with their respective shortcuts.
      */
-    TCOD_console_set_default_foreground(con, TCOD_white);
+    TCOD_console_set_default_foreground(NULL, TCOD_white);
     int nitems = 0;
     int shortcut = 'a';
     int y = 1;
@@ -265,8 +268,8 @@ struct actor *choose_from_inventory(struct engine *engine,
     /* Blit the items console to the root console. */
     TCOD_console_blit(con, 0, 0, INVENTORY_WIDTH, INVENTORY_HEIGHT,
                       NULL, engine->window_w / 2 - INVENTORY_WIDTH / 2,
-                      engine->window_h / 2 - INVENTORY_HEIGHT / 2, 1.f,
-                      1.f);
+                      engine->window_h / 2 - INVENTORY_HEIGHT / 2, 0.1f,
+                      0.6f);
     TCOD_console_flush();
 
     /* wait for a key press */
@@ -354,7 +357,11 @@ void handle_key(struct engine *engine, struct actor *actor)
             invoke_command(engine, NULL, is_usable, "items");
             break;
         case 'q': /* Quaff */
-            invoke_command(engine, NULL, is_drinkable, "quaff");
+            if (engine->key.lctrl) {
+                exit(0);
+            } else {
+                invoke_command(engine, NULL, is_drinkable, "quaff");
+            }
             break;
 
         case 'w': /* Wield */
