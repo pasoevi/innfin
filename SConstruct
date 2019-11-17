@@ -47,7 +47,8 @@ cpppath = [p for p in includedirs if os.path.exists(p)]
 
 src_files = Glob('build/*.c')
 #Command("build/graphics", "assets/graphics", Copy("build/${SOURCE.file}", "$SOURCE"))
-Command("build/terminal.png", "assets/fonts/terminal.png", Copy("build/${SOURCE.file}", "$SOURCE"))
+Command("build/terminal.png", "data/fonts/terminal.png", Copy("build/${SOURCE.file}", "$SOURCE"))
+Command("build/TiledFont.png", "data/fonts/TiledFont.png", Copy("build/${SOURCE.file}", "$SOURCE"))
 Command("build/monsters.txt", "data/monsters.txt", Copy("build/${SOURCE.file}", "$SOURCE"))
 Command("build/libtcod.cfg", "data/cfg/libtcod.cfg", Copy("build/${SOURCE.file}", "$SOURCE"))
 #Command("build/levels", "assets/levels", Copy("build/${SOURCE.file}", "$SOURCE"))
