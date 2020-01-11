@@ -6,5 +6,6 @@
         "map.h": "c",
         "gui.h": "c"
     },
-    "deepcode.review.results.hideInformationIssues": false
+    "deepcode.review.results.hideInformationIssues": false,
+    "git.ignoreLimitWarning": true
 }
