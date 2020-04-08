@@ -1,15 +1,7 @@
 import sys
 import os.path
 import os
-# env = Environment(ENV = {'PATH' : os.environ['PATH']})
 path = os.environ['PATH']
-# path = ['/bin', '/usr/bin', '/c/mingw/bin']
-# env = Environment(ENV = {'PATH' : path})
-# print(env['PATH'])
-# print(env.Dump('ENV'))
-# env = Environment(ENV = os.environ)
-# env = Environment()
-# print("CC is:", env['PATH'])
 
 program_name = "innfin"
 release_dir = 'release'
@@ -44,7 +36,6 @@ env = Environment(
                   tools=['default', 'mingw'],
                   TARFLAGS = '-c -z'
                   )
-print(env.Dump('ENV'))
 
 libdirs = [
    'lib',
