@@ -7,5 +7,6 @@
         "gui.h": "c"
     },
     "deepcode.review.results.hideInformationIssues": false,
-    "git.ignoreLimitWarning": true
+    "git.ignoreLimitWarning": true,
+    "python.pythonPath": "C:\\Users\\spaso\\AppData\\Local\\Programs\\Python\\Python37\\python.exe"
 }

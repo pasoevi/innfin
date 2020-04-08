@@ -5,7 +5,7 @@ project(innfin)
 #set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/build")
 
 if (WIN32)
-    include_directories("include" "c:\\sdl\\msvc\\include\\")
+    include_directories("include" "c:\\lib\\sdl\\msvc\\include\\")
 elseif()
     include_directories("include")
 endif()
