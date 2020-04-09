@@ -40,10 +40,10 @@ struct actor *mkactor(int x, int y, int ch, char *name,
                          TCOD_color_t col)
 {
     struct actor *actor = malloc(sizeof *actor);
-    // printf("Make Actor: %d %c", ch, ch);
 
-    if (actor == NULL)
+    if (actor == NULL) {
         return actor;
+    }
 
     actor->x = x;
     actor->y = y;
