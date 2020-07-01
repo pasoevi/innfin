@@ -6,7 +6,12 @@
         {
             "label": "scons",
             "type": "shell",
-            "command": "scons"
+            "command": "scons",
+            "problemMatcher": [],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
         }
     ]
 }

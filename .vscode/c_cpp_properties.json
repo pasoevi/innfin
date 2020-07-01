@@ -10,7 +10,7 @@
                 "/System/Library/Frameworks",
                 "/Library/Frameworks"
             ],
-            "compilerPath": "C:/Program Files/Haskell Platform/8.6.5/mingw/bin/gcc.exe",
+            "compilerPath": "C:/mingw/gcc.exe",
             "cStandard": "c11",
             "cppStandard": "c++17",
             "intelliSenseMode": "gcc-x86"
