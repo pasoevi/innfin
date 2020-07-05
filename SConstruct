@@ -12,7 +12,7 @@ platform = sys.platform
 w = ' -Wall -Wstrict-prototypes -Wshadow -Wwrite-strings -Wold-style-definition -Wredundant-decls -Wnested-externs -Wmissing-include-dirs -Wstrict-aliasing'
 cc = "gcc"
 
-libs = Split('tcod m')
+libs = Split('tcod BearLibTerminal m')
 ccflags = '-g -O0  -Wall'
 ccflags_win = ' -mwindows'
 ccflags_osx = ' -Wl,-rpath=.'
@@ -46,6 +46,7 @@ libdirs = [
 libpath = [p for p in libdirs if os.path.exists(p)]
 
 includedirs = [
+   'include/c',
    'src',
    'include',
    'src/libtcod'
@@ -55,6 +56,14 @@ cpppath = [p for p in includedirs if os.path.exists(p)]
 
 src_files = Glob('build/*.c')
 #Command("build/graphics", "assets/graphics", Copy("build/${SOURCE.file}", "$SOURCE"))
+#Command("build/media", "data/media", Install("build/${SOURCE.file}", "$SOURCE"))
+env.Install("build/media", [
+   "data/media/Tiles.png",
+   "data/media/Runic.png",
+   "data/media/fontawesome-webfont.ttf",
+   "data/media/Zodiac-S.ttf",
+   "data/media/fontawesome-codepage.txt"
+   ])
 Command("build/terminal.png", "data/fonts/terminal.png", Copy("build/${SOURCE.file}", "$SOURCE"))
 Command("build/TiledFont.png", "data/fonts/TiledFont.png", Copy("build/${SOURCE.file}", "$SOURCE"))
 Command("build/monsters.txt", "data/monsters.txt", Copy("build/${SOURCE.file}", "$SOURCE"))
