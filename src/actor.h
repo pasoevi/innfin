@@ -208,21 +208,21 @@ struct actor {
    NOTE: this is a low level function, intended to be used ONLY by
    wrapper functions e.g. make_orc, make_player, etc.
 */
-struct actor *mkactor(int w, int h, int ch, char *name,
+struct actor *create_actor(int w, int h, int ch, char *name,
                          TCOD_color_t col);
 
 void free_actor(struct actor *actor);
 
 void free_actors(TCOD_list_t actors);
 
-struct ai *mkai(void (*update)(struct engine *engine, struct actor *actor),
+struct ai *create_ai(void (*update)(struct engine *engine, struct actor *actor),
                    bool(*move_or_attack)(struct engine *engine,
                                          struct actor *actor, int target_x,
                                          int target_y));
 
 void free_ai(struct ai *ai);
 
-struct life *mklife(double max_hp, double hp, double defence,
+struct life *create_life(double max_hp, double hp, double defence,
                        char *corpse_name,
                        double (*take_damage)(struct engine *engine,
                                             struct actor *dealer,
@@ -232,14 +232,14 @@ struct life *mklife(double max_hp, double hp, double defence,
 
 void free_life(struct life *life);
 
-struct attacker *mkattacker(double power,
+struct attacker *create_attacker(double power,
                                void (*attack)(struct engine *engine,
                                               struct actor *dealer,
                                               struct actor *target));
 
 void free_attacker(struct attacker *attacker);
 
-struct container *mkcontainer(int capacity);
+struct container *create_container(int capacity);
 
 struct pickable *init_pickable(double power, double range,
                                bool(*use)(struct engine *engine,

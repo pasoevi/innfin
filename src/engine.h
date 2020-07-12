@@ -67,7 +67,7 @@ struct engine {
     struct map *map;
     int fov_radius;
     bool compute_fov;
-    TCOD_key_t key;
+    int key;
     TCOD_mouse_t mouse;
     enum game_status game_status;
     struct gui *gui;
@@ -80,7 +80,7 @@ struct engine {
     void (*render)(struct engine *);
 };
 
-struct engine *mkengine(int w, int h, const char *title);
+struct engine *create_engine(int w, int h, const char *title);
 
 int load_level(struct engine *engine, int level_id);
 

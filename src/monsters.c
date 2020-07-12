@@ -30,11 +30,11 @@ struct actor *mkmonster(int x, int y, const int ch, char *name,
                            void (*update)(struct engine *engine,
                                           struct actor *actor))
 {
-    struct actor *monster = mkactor(x, y, ch, name, col);
+    struct actor *monster = create_actor(x, y, ch, name, col);
     monster->blocking = true;
 
     /* Artificial intelligence */
-    monster->ai = mkai(update, monster_move_or_attack);
+    monster->ai = create_ai(update, monster_move_or_attack);
     if (monster->ai != NULL) {
         monster->ai->xp = max_hp / 2;
         monster->ai->xp_level = 1;
@@ -43,10 +43,10 @@ struct actor *mkmonster(int x, int y, const int ch, char *name,
     }
 
     /* Init attacker */
-    monster->attacker = mkattacker(power, attack);
+    monster->attacker = create_attacker(power, attack);
 
     /* Init life */
-    monster->life = mklife(max_hp, hp, defence, corpse_name, take_damage,
+    monster->life = create_life(max_hp, hp, defence, corpse_name, take_damage,
                               monster_die);
 
     return monster;
@@ -87,10 +87,10 @@ struct actor *mktroll(int x, int y)
 
 struct actor *mkdragon(int x, int y)
 {
-    struct actor *dragon = mkmonster(x, y, 'D', "a dragon", TCOD_dark_green,
-                                        16, 25, 25, 10,
-                                        "dragon scales and flesh",
-                                        dragon_update);
+    struct actor *dragon = mkmonster(x, y, 0xE100+2, "a dragon", TCOD_dark_green,
+                                     16, 25, 25, 10,
+                                     "dragon scales and flesh",
+                                     dragon_update);
     dragon->fov_only = false;
     dragon->ai->xp_level = 4;
     dragon->ai->skills[SKILL_STRENGTH].val = 25;

@@ -1,4 +1,4 @@
-#define WALL_TILE 256
+/* #define WALL_TILE 256
 #define FLOOR_TILE 257
 #define PLAYER_TILE 258
 #define ORC_TILE 259
@@ -9,3 +9,16 @@
 #define SHIELD_TILE 264
 #define STAIRSDOWN_TILE 265
 #define DAGGER_TILE 266
+ */
+
+#define WALL_TILE 0xE100 + 2
+#define FLOOR_TILE 0xE100 + 3
+#define PLAYER_TILE 0xE100 + 4
+#define ORC_TILE 0xE100 + 5
+#define TROLL_TILE 0xE100 + 6
+#define SCROLL_TILE 0xE100 + 7
+#define HEALINGPOTION_TILE 0xE100 + 8
+#define SWORD_TILE 0xE100 + 9
+#define SHIELD_TILE 0xE100 + 10
+#define STAIRSDOWN_TILE 0xE100 + 11
+#define DAGGER_TILE 0xE100 + 12

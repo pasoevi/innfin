@@ -58,7 +58,7 @@ struct map {
  * @param w
  * @param h
  */
-void mkmap(struct engine *engine, int w, int h);
+void create_map(struct engine *engine, int w, int h);
 
 void free_map(struct map *map);
 

@@ -23,7 +23,7 @@
 
 #include "actor.h"
 
-struct actor *mkplayer(int x, int y);
+struct actor *create_player(int x, int y);
 
 bool descend(struct engine *engine, struct actor *actor, struct actor *stairs);
 

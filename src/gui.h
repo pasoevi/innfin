@@ -63,6 +63,6 @@ struct gui {
 
 void free_gui(struct gui *gui);
 
-struct gui *mkgui(int w, int h);
+struct gui *create_gui(int w, int h);
 
 #endif

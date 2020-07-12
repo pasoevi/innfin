@@ -224,7 +224,7 @@ void free_gui(struct gui *gui)
     free(gui);
 }
 
-struct gui *mkgui(int w, int h)
+struct gui *create_gui(int w, int h)
 {
     struct gui *gui = malloc(sizeof *gui);
     if (gui) {

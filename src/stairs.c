@@ -21,9 +21,9 @@
 #include "stairs.h"
 #include "actor.h"
 
-struct actor *mkstairs(int x, int y, int ch)
+struct actor *create_stairs(int x, int y, int ch)
 {
-    struct actor *actor = mkactor(x, y, ch, "stairs", TCOD_red);
+    struct actor *actor = create_actor(x, y, ch, "stairs", TCOD_red);
     if (actor) {
       actor->blocking = false;
       actor->fov_only = false;

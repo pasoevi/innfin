@@ -18,15 +18,16 @@
 
 */
 
-#include "libtcod/libtcod.h"
-#include <stdlib.h>
 #include "engine.h"
+#include "libtcod/libtcod.h"
+#include <BearLibTerminal.h>
+#include <stdlib.h>
 
 #define PROGRAM_NAME "Innfin"
 
 struct engine *engine;
 
-void clean()
+void cleanup()
 {
     free_engine(engine);
     exit(EXIT_SUCCESS);
@@ -34,14 +35,16 @@ void clean()
 
 int main()
 {
-    engine = mkengine(WINDOW_W, WINDOW_H, PROGRAM_NAME);
+    engine = create_engine(WINDOW_W, WINDOW_H, PROGRAM_NAME);
 
-    while (!TCOD_console_is_window_closed()) {
+    while (engine->key != TK_CLOSE && engine->key != TK_ESCAPE)
+    {
+        printf("\nInteresting\n");
         engine->update(engine);
         engine->render(engine);
-        TCOD_console_flush();
+        terminal_refresh();
     }
 
-    clean();
+    cleanup();
     return 0;
 }

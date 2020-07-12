@@ -18,13 +18,13 @@
 
 */
 
+#include <BearLibTerminal.h>
 #include "player.h"
 #include "tiles.h"
 
 /* Writes a memorial file */
-static void mkmemorial(struct actor *actor)
+static void create_memorial(struct actor *actor)
 {
-
 }
 
 static void make_player_ghost(struct engine *engine, struct actor *player)
@@ -39,7 +39,7 @@ static void show_game_summary(struct engine *engine)
     struct actor *player = engine->player;
     /* Display the items frame */
     TCOD_console_t con = engine->gui->inventory_con;
-    TCOD_color_t color = (TCOD_color_t) {200, 180, 50};
+    TCOD_color_t color = (TCOD_color_t){200, 180, 50};
     TCOD_console_set_default_foreground(con, color);
     TCOD_console_print_frame(con, 0, 0, INVENTORY_WIDTH,
                              INVENTORY_HEIGHT, true,
@@ -52,7 +52,6 @@ static void show_game_summary(struct engine *engine)
     TCOD_console_set_default_foreground(con, TCOD_white);
     TCOD_console_print(con, 2, 2, "You died at the age of 80 years, 10 days and five hours old");
 
-
     /* Blit the items console to the root console. */
     TCOD_console_blit(con, 0, 0, INVENTORY_WIDTH, INVENTORY_HEIGHT,
                       NULL, engine->window_w / 2 - INVENTORY_WIDTH / 2,
@@ -63,13 +62,14 @@ static void show_game_summary(struct engine *engine)
     /* wait for a key press */
     TCOD_key_t key;
     TCOD_sys_wait_for_event(TCOD_EVENT_KEY_PRESS, &key, NULL, true);
-    if (key.vk == TCODK_CHAR) {
+    if (key.vk == TCODK_CHAR)
+    {
         int actor_index = key.c - 'a';
-        if (actor_index >= 0
-            && actor_index <
-               TCOD_list_size(player->inventory->items)) {
+        if (actor_index >= 0 && actor_index <
+                                    TCOD_list_size(player->inventory->items))
+        {
             struct actor *tmp =
-                    TCOD_list_get(player->inventory->items, actor_index);
+                TCOD_list_get(player->inventory->items, actor_index);
         }
     }
 }
@@ -81,39 +81,40 @@ void player_die(struct engine *engine, struct actor *actor,
     engine->gui->message(engine, TCOD_red, "You die.\n");
     /* Call the common death function */
     die(engine, actor, NULL);
-    mkmemorial(actor);
+    create_memorial(actor);
     engine->game_status = DEFEAT;
     show_game_summary(engine);
 }
 
-struct actor *mkplayer(int x, int y)
+struct actor *create_player(int x, int y)
 {
-    struct actor *player = mkactor(x, y, PLAYER_TILE, "you", TCOD_white);
-	if (!player) {
-		return player;
-	}
+    struct actor *player = create_actor(x, y, PLAYER_TILE, "you", TCOD_white);
+    if (!player)
+    {
+        return player;
+    }
 
     /* Artificial intelligence */
-    player->ai = mkai(player_update, player_move_or_attack);
-	player->ai->skills[SKILL_STRENGTH].val = 10;
-	player->ai->skills[SKILL_STRENGTH].name = "strength";
-	player->ai->skills[SKILL_INTELL].val = 9;
-	player->ai->skills[SKILL_INTELL].name = "intelligence";
-	player->ai->skills[SKILL_AGILITY].val = 9;
-	player->ai->skills[SKILL_AGILITY].name = "agility";
-	player->ai->skills[SKILL_FIGHTING].val = 12;
-	player->ai->skills[SKILL_FIGHTING].name = "fighting";
+    player->ai = create_ai(player_update, player_move_or_attack);
+    player->ai->skills[SKILL_STRENGTH].val = 10;
+    player->ai->skills[SKILL_STRENGTH].name = "strength";
+    player->ai->skills[SKILL_INTELL].val = 9;
+    player->ai->skills[SKILL_INTELL].name = "intelligence";
+    player->ai->skills[SKILL_AGILITY].val = 9;
+    player->ai->skills[SKILL_AGILITY].name = "agility";
+    player->ai->skills[SKILL_FIGHTING].val = 12;
+    player->ai->skills[SKILL_FIGHTING].name = "fighting";
 
-    player->attacker = mkattacker(10, attack);
+    player->attacker = create_attacker(10, attack);
 
-    player->life = mklife(1000, 1000, 6, "your dead body", take_damage,
-                             player_die);
+    player->life = create_life(1000, 1000, 6, "your dead body", take_damage,
+                               player_die);
     player->life->regen = regen_hp;
 
     player->life->max_stomach = 500;
     player->life->stomach = player->life->max_stomach;
 
-    player->inventory = mkcontainer(26);
+    player->inventory = create_container(26);
 
     return player;
 }
@@ -123,10 +124,13 @@ bool descend(struct engine *engine, struct actor *actor, struct actor *stairs)
     if (actor == NULL || is_dead(actor) || stairs == NULL)
         return false;
 
-    if (actor->x == stairs->x && actor->y == stairs->y) {
+    if (actor->x == stairs->x && actor->y == stairs->y)
+    {
         load_level(engine, engine->level + 1);
         return true;
-    } else {
+    }
+    else
+    {
         engine->gui->message(engine, TCOD_gray,
                              "You can't climb down here. Try on stairs.");
         return false;
@@ -139,7 +143,8 @@ bool player_move_or_attack(struct engine *engine, struct actor *player,
     /* Consume energy from stomach and kill the player if beyond
      * starvation.
      */
-    if (!make_hungry(player, 1)) {
+    if (!make_hungry(player, 1))
+    {
         engine->gui->message(engine, TCOD_light_grey,
                              "You starve to death.\n");
         player->life->die(engine, player, NULL);
@@ -151,12 +156,14 @@ bool player_move_or_attack(struct engine *engine, struct actor *player,
 
     /* Look for actors to attack */
     struct actor **iter;
-    for (iter = (struct actor **) TCOD_list_begin(engine->actors);
-         iter != (struct actor **) TCOD_list_end(engine->actors);
-         iter++) {
+    for (iter = (struct actor **)TCOD_list_begin(engine->actors);
+         iter != (struct actor **)TCOD_list_end(engine->actors);
+         iter++)
+    {
         struct actor *actor = *iter;
         if (actor->life && !is_dead(actor) &&
-            actor->x == targetx && actor->y == targety) {
+            actor->x == targetx && actor->y == targety)
+        {
             /* There is an actor there, cat't walk */
             player->attacker->attack(engine, player, actor);
             return false;
@@ -164,14 +171,14 @@ bool player_move_or_attack(struct engine *engine, struct actor *player,
     }
 
     /* Look for corpses or pickable items */
-    for (iter = (struct actor **) TCOD_list_begin(engine->actors);
-         iter != (struct actor **) TCOD_list_end(engine->actors);
-         iter++) {
+    for (iter = (struct actor **)TCOD_list_begin(engine->actors);
+         iter != (struct actor **)TCOD_list_end(engine->actors);
+         iter++)
+    {
         struct actor *actor = *iter;
         bool corpse_or_item =
-                (actor->life && is_dead(actor)) || actor->pickable;
-        if (corpse_or_item && actor->x == targetx
-            && actor->y == targety)
+            (actor->life && is_dead(actor)) || actor->pickable;
+        if (corpse_or_item && actor->x == targetx && actor->y == targety)
             engine->gui->message(engine, TCOD_light_gray,
                                  "There's %s here\n",
                                  (*iter)->name);
@@ -187,7 +194,7 @@ void show_stats(struct engine *engine, struct actor *actor)
 {
     /* Display the items frame */
     TCOD_console_t con = engine->gui->inventory_con;
-    TCOD_color_t color = (TCOD_color_t) {200, 110, 150};
+    TCOD_color_t color = (TCOD_color_t){200, 110, 150};
     TCOD_console_set_default_background(con, TCOD_white);
     TCOD_console_set_default_foreground(con, color);
     //TCOD_console_rect(con, 5, 5, INVENTORY_WIDTH - 5, INVENTORY_HEIGHT - 5,         true, TCOD_BKGND_SET);
@@ -201,15 +208,16 @@ void show_stats(struct engine *engine, struct actor *actor)
      */
     TCOD_console_set_default_foreground(con, TCOD_white);
     int y = 0;
-	for (int i = 0; i < 3; i++) {
-		if (actor->ai->skills[i].val > 0) {
-			TCOD_console_print(con, 2, ++y, "(%c) %s %.f", 's', actor->ai->skills[i].name, actor->ai->skills[i].val);
-		}
-	}
-
+    for (int i = 0; i < 3; i++)
+    {
+        if (actor->ai->skills[i].val > 0)
+        {
+            TCOD_console_print(con, 2, ++y, "(%c) %s %.f", 's', actor->ai->skills[i].name, actor->ai->skills[i].val);
+        }
+    }
 
     TCOD_console_set_key_color(con, TCOD_white);
-        /* Blit the items console to the root console. */
+    /* Blit the items console to the root console. */
     TCOD_console_blit(con, 0, 0, INVENTORY_WIDTH, INVENTORY_HEIGHT,
                       NULL, engine->window_w / 2 - INVENTORY_WIDTH / 2,
                       engine->window_h / 2 - INVENTORY_HEIGHT / 2, 1.f,
@@ -219,13 +227,14 @@ void show_stats(struct engine *engine, struct actor *actor)
     /* wait for a key press */
     TCOD_key_t key;
     TCOD_sys_wait_for_event(TCOD_EVENT_KEY_PRESS, &key, NULL, true);
-    if (key.vk == TCODK_CHAR) {
+    if (key.vk == TCODK_CHAR)
+    {
         int actor_index = key.c - 'a';
-        if (actor_index >= 0
-            && actor_index <
-               TCOD_list_size(actor->inventory->items)) {
+        if (actor_index >= 0 && actor_index <
+                                    TCOD_list_size(actor->inventory->items))
+        {
             struct actor *tmp =
-                    TCOD_list_get(actor->inventory->items, actor_index);
+                TCOD_list_get(actor->inventory->items, actor_index);
         }
     }
 }
@@ -233,11 +242,11 @@ void show_stats(struct engine *engine, struct actor *actor)
 struct actor *choose_from_inventory(struct engine *engine,
                                     struct actor *actor,
                                     const char *window_title,
-                                    bool(*predicate)(struct actor *actor))
+                                    bool (*predicate)(struct actor *actor))
 {
     /* Display the items frame */
     TCOD_console_t con = engine->gui->inventory_con;
-    TCOD_color_t color = (TCOD_color_t) {200, 180, 50};
+    TCOD_color_t color = (TCOD_color_t){200, 180, 50};
     TCOD_console_set_default_foreground(con, color);
     TCOD_console_print_frame(con, 0, 0, INVENTORY_WIDTH,
                              INVENTORY_HEIGHT, true,
@@ -252,17 +261,18 @@ struct actor *choose_from_inventory(struct engine *engine,
     int shortcut = 'a';
     int y = 1;
     struct actor **iter;
-    for (iter = (struct actor **) TCOD_list_begin(actor->inventory->items);
-         iter != (struct actor **) TCOD_list_end(actor->inventory->items);
-         iter++) {
+    for (iter = (struct actor **)TCOD_list_begin(actor->inventory->items);
+         iter != (struct actor **)TCOD_list_end(actor->inventory->items);
+         iter++)
+    {
         struct actor *item = *iter;
-        if (predicate(item)) {
+        if (predicate(item))
+        {
             TCOD_console_print(con, 2, y, "(%c) %s", shortcut, item->name);
             y++;
             nitems++;
         }
         shortcut++;
-
     }
 
     /* Blit the items console to the root console. */
@@ -275,13 +285,14 @@ struct actor *choose_from_inventory(struct engine *engine,
     /* wait for a key press */
     TCOD_key_t key;
     TCOD_sys_wait_for_event(TCOD_EVENT_KEY_PRESS, &key, NULL, true);
-    if (key.vk == TCODK_CHAR) {
+    if (key.vk == TCODK_CHAR)
+    {
         int actor_index = key.c - 'a';
-        if (actor_index >= 0
-            && actor_index <
-               TCOD_list_size(actor->inventory->items)) {
+        if (actor_index >= 0 && actor_index <
+                                    TCOD_list_size(actor->inventory->items))
+        {
             struct actor *tmp =
-                    TCOD_list_get(actor->inventory->items, actor_index);
+                TCOD_list_get(actor->inventory->items, actor_index);
             if (predicate(tmp))
                 return tmp;
             else
@@ -305,17 +316,20 @@ void invoke_command(struct engine *engine,
                     bool (*item_chooser)(struct actor *actor),
                     const char *window_title)
 {
-    if (engine == NULL) {
+    if (engine == NULL)
+    {
         // Exit with error
         exit(1);
     }
 
-    if (is_dead(engine->player)) {
+    if (is_dead(engine->player))
+    {
         return;
     }
 
-    struct actor *item = choose_from_inventory(engine, engine->player,  window_title,  item_chooser);
-    if (item) {
+    struct actor *item = choose_from_inventory(engine, engine->player, window_title, item_chooser);
+    if (item)
+    {
         if (command)
             command(engine, engine->player, item);
         else
@@ -327,64 +341,70 @@ void invoke_command(struct engine *engine,
 
 void handle_key(struct engine *engine, struct actor *actor)
 {
-    switch (engine->key.c) {
-        case ',':
-        case 'g':
-            try_pick(engine);
-            break;
-        case '>':
-        case '.':
-            descend(engine, engine->player, engine->stairs);
-            break;
-        case '<':
-            engine->gui->message(engine, TCOD_gray,
-                                 "You can't climb up here. Try on stairs.");
-            break;
-        case 'a':
-            engine->gui->message(engine, TCOD_gray,
-                                 "You have no special abilities.");
-            break;
-        case 'd': /* Drop item */
-            invoke_command(engine, drop, is_usable, "drop");
-            break;
-        case 'D': /* Drop the last item */
-            drop_last(engine, actor);
-            break;
-        case 'e': /* Eat */
-            invoke_command(engine, NULL, is_edible, "eat");
-            break;
-        case 'i': /* display items */
-            invoke_command(engine, NULL, is_usable, "items");
-            break;
-        case 'q': /* Quaff */
-            if (engine->key.lctrl) {
-                exit(0);
-            } else {
-                invoke_command(engine, NULL, is_drinkable, "quaff");
-            }
-            break;
+    switch (engine->key)
+    {
+    case TK_COMMA:
+    case TK_G:
+        try_pick(engine);
+        break;
+    case TK_PERIOD:
+    case '.':
+        descend(engine, engine->player, engine->stairs);
+        break;
+    case TK_ALIGN_LEFT:
+        engine->gui->message(engine, TCOD_gray,
+                             "You can't climb up here. Try on stairs.");
+        break;
+    case TK_A:
+        engine->gui->message(engine, TCOD_gray,
+                             "You have no special abilities.");
+        break;
+    case 'd': /* Drop item */
+        invoke_command(engine, drop, is_usable, "drop");
+        break;
+    case 'D': /* Drop the last item */
+        drop_last(engine, actor);
+        break;
+    case 'e': /* Eat */
+        invoke_command(engine, NULL, is_edible, "eat");
+        break;
+    case 'i': /* display items */
+        invoke_command(engine, NULL, is_usable, "items");
+        break;
+    case 'q': /* Quaff */
+        if (engine->key == TK_CONTROL)
+        {
+            exit(0);
+        }
+        else
+        {
+            invoke_command(engine, NULL, is_drinkable, "quaff");
+        }
+        break;
 
-        case 'w': /* Wield */
-            invoke_command(engine, NULL, is_wieldable, "wield");
-            break;
-        case 'W': /* Unield */
-            if (engine->key.shift) {
-                unwield_current_weapon(engine, actor);
-            }
-            break;
-        case 's': /* Display stats */
-            show_stats(engine, engine->player);
-            break;
-        default:
-            engine->gui->message(engine, TCOD_grey, "Unknown command: %c.\n",
-                                 engine->key.c);
-            break;
+    case TK_W: /* Wield */
+        invoke_command(engine, NULL, is_wieldable, "wield");
+        break;
+    case TK_U: /* Unield */
+        if (engine->key == TK_SHIFT)
+        {
+            unwield_current_weapon(engine, actor);
+        }
+        break;
+    case TK_S: /* Display stats */
+        show_stats(engine, engine->player);
+        break;
+    default:
+        engine->gui->message(engine, TCOD_grey, "Unknown command: %c.\n",
+                             engine->key);
+        break;
     }
 }
 
 void player_update(struct engine *engine, struct actor *actor)
 {
-    if (actor->life && is_dead(actor)) {
+    if (actor->life && is_dead(actor))
+    {
         return;
     }
 
@@ -392,66 +412,71 @@ void player_update(struct engine *engine, struct actor *actor)
         actor->ai->level_up(engine, actor);
 
     int dx = 0, dy = 0;
-    if (engine->key.pressed) {
-        switch (engine->key.vk) {
-            case TCODK_KP1:
-            case TCODK_1:
-                dx = -1;
-                dy = 1;
-                break;
-            case TCODK_KP4:
-            case TCODK_LEFT:
-            case TCODK_4:
-                dx = -1;
-                break;
-            case TCODK_7:
-            case TCODK_KP7:
-                dx = -1;
-                dy = -1;
-                break;
-            case TCODK_UP:
-            case TCODK_8:
-            case TCODK_KP8:
-                dy = -1;
-                break;
-            case TCODK_9:
-            case TCODK_KP9:
-                dx = 1;
-                dy = -1;
-                break;
-            case TCODK_RIGHT:
-            case TCODK_6:
-            case TCODK_KP6:
-                dx = 1;
-                break;
-            case TCODK_KP3:
-                dx = 1;
-                dy = 1;
-                break;
-            case TCODK_DOWN:
-            case TCODK_KP2:
-                dy = 1;
-                break;
-            case TCODK_KP5:
-            case TCODK_5:
-                engine->game_status = NEW_TURN;
-                break;
-            case TCODK_CHAR:
-                handle_key(engine, actor);
-                break;
-            case TCODK_ENTER:
-                if (engine->key.lalt)
-                    TCOD_console_set_fullscreen(!TCOD_console_is_fullscreen());
-                break;
-            default:
-                break;
+    int key = terminal_read();
+    if (key != 0)
+    {
+        switch (key)
+        {
+        case TCODK_KP1:
+        case TCODK_1:
+            dx = -1;
+            dy = 1;
+            break;
+        case TCODK_KP4:
+        case TCODK_LEFT:
+        case TCODK_4:
+            dx = -1;
+            break;
+        case TCODK_7:
+        case TCODK_KP7:
+            dx = -1;
+            dy = -1;
+            break;
+        case TCODK_UP:
+        case TCODK_8:
+        case TCODK_KP8:
+            dy = -1;
+            break;
+        case TCODK_9:
+        case TCODK_KP9:
+            dx = 1;
+            dy = -1;
+            break;
+        case TCODK_RIGHT:
+        case TCODK_6:
+        case TCODK_KP6:
+            dx = 1;
+            break;
+        case TCODK_KP3:
+            dx = 1;
+            dy = 1;
+            break;
+        case TCODK_DOWN:
+        case TCODK_KP2:
+            dy = 1;
+            break;
+        case TCODK_KP5:
+        case TCODK_5:
+            engine->game_status = NEW_TURN;
+            break;
+        case TCODK_CHAR:
+            handle_key(engine, actor);
+            break;
+        case TCODK_ENTER:
+            if (key == TK_ALT)
+                TCOD_console_set_fullscreen(!TCOD_console_is_fullscreen());
+            break;
+        default:
+            break;
         }
     }
 
-    if (dx != 0 || dy != 0) {
+    if (dx != 0 || dy != 0)
+    {
         engine->game_status = NEW_TURN;
         if (actor->ai->move_or_attack(engine, actor, actor->x + dx,
-                                      actor->y + dy)) {
+                                      actor->y + dy))
+        {
             compute_fov(engine);
         }
     }
@@ -471,7 +496,8 @@ double regen_hp(struct engine *engine, struct actor *actor)
 
     double hp_overflow = actor->life->hp - actor->life->max_hp;
 
-    if (hp_overflow > 0) {
+    if (hp_overflow > 0)
+    {
         hp_gained = hp_gained - hp_overflow;
         actor->life->hp = actor->life->max_hp;
     }
@@ -481,5 +507,5 @@ double regen_hp(struct engine *engine, struct actor *actor)
 
 void win(struct engine *engine)
 {
-	engine->gui->message(engine, TCOD_red, "You win.\n");
+    engine->gui->message(engine, TCOD_red, "You win.\n");
 }

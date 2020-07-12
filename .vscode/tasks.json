@@ -12,6 +12,15 @@
                 "kind": "build",
                 "isDefault": true
             }
+        },
+        {
+            "label": "run game",
+            "type": "shell",
+            "command": "${workspaceFolder}/build/innfin.exe",
+            "problemMatcher": [],
+            "options": {
+                "cwd": "${workspaceFolder}/build"
+            }
         }
     ]
 }
