@@ -64,10 +64,10 @@ create_engine(int w, int h, const char *title)
     // Printing text
     //   terminal_print(1, 1, "Hello, world!");
     terminal_clear();
-    terminal_set("window: size=80x25, cellsize=auto, title='Innfin';"
+    terminal_set("window: size=35x25, cellsize=32x32, title='Innfin';"
                  "font: default;"
                  "input: filter={keyboard,mouse}");
-    terminal_color(3);
+    // terminal_color(4);
     //   terminal_refresh();
 
     /*  terminal_set("window.title='Omni: tilesets'");
@@ -77,11 +77,11 @@ create_engine(int w, int h, const char *title)
     terminal_set("U+E100: media/Tiles.png, size=32x32, align=top-left");
 
     terminal_clear();
-    terminal_print(2 + 3,
-                   4,
-                   "Fire rune ([color=red][U+E102][/color]), "
-                   "water rune ([color=lighter blue][U+E103][/color]), "
-                   "earth rune ([color=darker green][U+E104][/color])");
+    /* terminal_print(2 + 3, */
+    /*                4, */
+    /*                "Fire rune ([color=red][U+E102][/color]), " */
+    /*                "water rune ([color=lighter blue][U+E103][/color]), " */
+    /*                "earth rune ([color=darker green][U+E104][/color])"); */
 
     terminal_refresh();
 
@@ -105,7 +105,7 @@ create_engine(int w, int h, const char *title)
     engine->actors = TCOD_list_new();
 
     /* Create a player */
-    engine->player = create_player(40, 25);
+    engine->player = create_player(WINDOW_W - 5, WINDOW_H - 5);
     engine->player->update = player_update;
     TCOD_list_push(engine->actors, (const void *)engine->player);
 
@@ -114,7 +114,7 @@ create_engine(int w, int h, const char *title)
     TCOD_list_push(engine->actors, (const void *)engine->stairs);
 
     /* Add a map to the engine */
-    create_map(engine, 80, 43);
+    create_map(engine, WINDOW_W, WINDOW_H - 5);
     engine->gui->message(engine, TCOD_red, WELCOME_MSG);
 
     return engine;
@@ -185,7 +185,6 @@ void engine_update(struct engine *engine)
 void engine_render(struct engine *engine)
 {
     // TCOD_console_clear(NULL);
-    terminal_refresh();
     map_render(engine->map);
 
     engine->gui->render(engine);
@@ -207,6 +206,8 @@ void engine_render(struct engine *engine)
     }
 
     engine->player->render(engine->player);
+    printf("Player x: %d, y: %d\n", engine->player->x, engine->player->y);
+        terminal_refresh();
 }
 
 /*

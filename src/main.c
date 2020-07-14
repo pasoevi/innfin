@@ -37,13 +37,13 @@ int main()
 {
     engine = create_engine(WINDOW_W, WINDOW_H, PROGRAM_NAME);
 
-    while (engine->key != TK_CLOSE && engine->key != TK_ESCAPE)
+    do
     {
         printf("\nInteresting\n");
         engine->update(engine);
         engine->render(engine);
-        terminal_refresh();
-    }
+        // terminal_refresh();
+    } while (engine->key != TK_CLOSE && engine->key != TK_ESCAPE);
 
     cleanup();
     return 0;

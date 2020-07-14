@@ -18,9 +18,9 @@
 
 */
 
-#include <BearLibTerminal.h>
 #include "player.h"
 #include "tiles.h"
+#include <BearLibTerminal.h>
 
 /* Writes a memorial file */
 static void create_memorial(struct actor *actor)
@@ -62,7 +62,7 @@ static void show_game_summary(struct engine *engine)
     /* wait for a key press */
     TCOD_key_t key;
     TCOD_sys_wait_for_event(TCOD_EVENT_KEY_PRESS, &key, NULL, true);
-    if (key.vk == TCODK_CHAR)
+    if (key.vk == TK_CHAR)
     {
         int actor_index = key.c - 'a';
         if (actor_index >= 0 && actor_index <
@@ -79,6 +79,7 @@ void player_die(struct engine *engine, struct actor *actor,
                 struct actor *killer)
 {
     engine->gui->message(engine, TCOD_red, "You die.\n");
+    make_player_ghost(engine, actor);
     /* Call the common death function */
     die(engine, actor, NULL);
     create_memorial(actor);
@@ -359,19 +360,19 @@ void handle_key(struct engine *engine, struct actor *actor)
         engine->gui->message(engine, TCOD_gray,
                              "You have no special abilities.");
         break;
-    case 'd': /* Drop item */
+    case TK_D: /* Drop item */
         invoke_command(engine, drop, is_usable, "drop");
         break;
-    case 'D': /* Drop the last item */
+    case TK_L: /* Drop the last item */
         drop_last(engine, actor);
         break;
-    case 'e': /* Eat */
+    case TK_E: /* Eat */
         invoke_command(engine, NULL, is_edible, "eat");
         break;
-    case 'i': /* display items */
+    case TK_I: /* display items */
         invoke_command(engine, NULL, is_usable, "items");
         break;
-    case 'q': /* Quaff */
+    case TK_Q: /* Quaff */
         if (engine->key == TK_CONTROL)
         {
             exit(0);
@@ -417,52 +418,56 @@ void player_update(struct engine *engine, struct actor *actor)
     {
         switch (key)
         {
-        case TCODK_KP1:
-        case TCODK_1:
+        case TK_KP_1:
+        case TK_1:
             dx = -1;
             dy = 1;
             break;
-        case TCODK_KP4:
-        case TCODK_LEFT:
-        case TCODK_4:
+        case TK_KP_4:
+        case TK_LEFT:
+        case TK_4:
+            printf("LEFT\n");
             dx = -1;
             break;
-        case TCODK_7:
-        case TCODK_KP7:
+        case TK_7:
+        case TK_KP_7:
             dx = -1;
             dy = -1;
             break;
-        case TCODK_UP:
-        case TCODK_8:
-        case TCODK_KP8:
+        case TK_UP:
+        case TK_8:
+        case TK_KP_8:
             dy = -1;
             break;
-        case TCODK_9:
-        case TCODK_KP9:
+        case TK_9:
+        case TK_KP_9:
             dx = 1;
             dy = -1;
             break;
-        case TCODK_RIGHT:
-        case TCODK_6:
-        case TCODK_KP6:
+        case TK_RIGHT:
+        case TK_6:
+        case TK_KP_6:
+            printf("RIGHT\n");
             dx = 1;
             break;
-        case TCODK_KP3:
+        case TK_KP_3:
             dx = 1;
             dy = 1;
             break;
-        case TCODK_DOWN:
-        case TCODK_KP2:
+        case TK_DOWN:
+        case TK_2:
+        case TK_KP_2:
+            printf("DOWN\n");
             dy = 1;
             break;
-        case TCODK_KP5:
-        case TCODK_5:
+        case TK_KP_5:
+        case TK_5:
             engine->game_status = NEW_TURN;
             break;
-        case TCODK_CHAR:
+        case TK_CHAR:
             handle_key(engine, actor);
             break;
-        case TCODK_ENTER:
+        case TK_ENTER:
             if (key == TK_ALT)
                 TCOD_console_set_fullscreen(!TCOD_console_is_fullscreen());
             break;

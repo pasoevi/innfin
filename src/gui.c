@@ -86,31 +86,31 @@ static void render_bar(struct engine *engine, int x, int y, int w,
                        const char *name, double value, const double max_value,
                        TCOD_color_t bar_col, TCOD_color_t back_col)
 {
-    TCOD_console_set_default_background(engine->gui->con, back_col);
+    /*TCOD_console_set_default_background(engine->gui->con, back_col);
     TCOD_console_rect(engine->gui->con, x, y, w, 1, false,
-                      TCOD_BKGND_SET);
+    TCOD_BKGND_SET);*/
 
     int bar_w = (int) (value / max_value * w);
     if (bar_w > 0) {
         /* Draw the bar */
-        TCOD_console_set_default_background(engine->gui->con, bar_col);
-        TCOD_console_rect(engine->gui->con, x, y, bar_w, 1, false,
-                          TCOD_BKGND_SET);
+        /* TCOD_console_set_default_background(engine->gui->con, bar_col); */
+        /* TCOD_console_rect(engine->gui->con, x, y, bar_w, 1, false, */
+        /*                   TCOD_BKGND_SET); */
     }
 
     /* Print text on top of a bar */
     TCOD_color_t hp_color = TCOD_black;
-    TCOD_console_set_default_foreground(engine->gui->con, hp_color);
-    TCOD_console_print_ex(engine->gui->con, x + w / 2, y,
-                          TCOD_BKGND_NONE, TCOD_CENTER, "%s : %.0f/%.0f",
-                          name, value, max_value);
+    /* TCOD_console_set_default_foreground(engine->gui->con, hp_color); */
+    /* TCOD_console_print_ex(engine->gui->con, x + w / 2, y, */
+    /*                       TCOD_BKGND_NONE, TCOD_CENTER, "%s : %.0f/%.0f", */
+    /*                       name, value, max_value); */
 }
 
 static void render_fixed_text(TCOD_console_t con, int x, int y,
                               TCOD_color_t col, const char *text)
 {
-    TCOD_console_set_default_foreground(con, col);
-    TCOD_console_print_ex(con, x, y, TCOD_BKGND_NONE, TCOD_LEFT, "%s", text);
+    /* TCOD_console_set_default_foreground(con, col); */
+    /* TCOD_console_print_ex(con, x, y, TCOD_BKGND_NONE, TCOD_LEFT, "%s", text); */
 }
 
 static void render_status(TCOD_console_t con, int x, int y,
@@ -135,9 +135,9 @@ static void render_log(struct engine *engine, int start_x, int start_y)
          iter++) {
         struct message *message = *iter;
         // TCOD_color_t col = TCOD_color_multiply_scalar(message->col, color_coef);
-        TCOD_console_set_default_foreground(engine->gui->con, message->col);
-        TCOD_console_print(engine->gui->con, start_x, y,
-                           message->text);
+        // TCOD_console_set_default_foreground(engine->gui->con, message->col);
+        /*TCOD_console_print(engine->gui->con, start_x, y,
+	  message->text);*/
         y++;
         if (color_coef < 1.0f)
             color_coef += 0.3f;
@@ -170,9 +170,9 @@ static void render_mouse_look(struct engine *engine)
         }
     }
     /*  display the list of actors under the mouse cursor */
-    TCOD_console_set_default_foreground(engine->gui->con,
-                                        TCOD_light_grey);
-    TCOD_console_print(engine->gui->con, 1, 0, buf);
+    /* TCOD_console_set_default_foreground(engine->gui->con, */
+    /*                                     TCOD_light_grey); */
+    /* TCOD_console_print(engine->gui->con, 1, 0, buf); */
 }
 
 static void gui_render(struct engine *engine)
@@ -200,9 +200,9 @@ static void gui_render(struct engine *engine)
     engine->gui->render_log(engine, MSG_X, 1);
     engine->gui->render_mouse_look(engine);
 
-    TCOD_console_blit(engine->gui->con, 0, 0, engine->window_w,
+    /*TCOD_console_blit(engine->gui->con, 0, 0, engine->window_w,
                       PANEL_H, NULL, 0, engine->window_h - PANEL_H,
-                      1.f, 1.f);
+                      1.f, 1.f);*/
 }
 
 void free_log(TCOD_list_t log)

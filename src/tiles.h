@@ -11,9 +11,10 @@
 #define DAGGER_TILE 266
  */
 
-#define WALL_TILE 0xE100 + 2
-#define FLOOR_TILE 0xE100 + 3
-#define PLAYER_TILE 0xE100 + 4
+#define UNEXPLORED_TILE 0xE100 + 20
+#define WALL_TILE 0xE100 + 1
+#define FLOOR_TILE 0xE100 + 0
+#define PLAYER_TILE 0xE100 + 10
 #define ORC_TILE 0xE100 + 5
 #define TROLL_TILE 0xE100 + 6
 #define SCROLL_TILE 0xE100 + 7

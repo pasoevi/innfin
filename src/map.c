@@ -223,6 +223,7 @@ bool is_explored(struct map *map, int x, int y)
 
 void compute_fov(struct engine *engine)
 {
+    printf("map_compute_fov\n");
     TCOD_map_compute_fov(engine->map->map,
                          engine->player->x,
                          engine->player->y,
@@ -344,8 +345,10 @@ bool pick_tile(struct engine *engine, int *x, int *y, double max_range)
 void explore_viewed_tiles(struct map *map)
 {
     int x, y;
-    for (x = 0, y = 0; x < map->w && y < map->h; x++, y++) {
-        if (is_in_fov(map, x, y)) {
+    for (x = 0, y = 0; x < map->w && y < map->h; x++, y++)
+    {
+        if (is_in_fov(map, x, y))
+        {
             map->tiles[x + y * (map->w)].explored = true;
         }
     }
@@ -363,32 +366,8 @@ void map_render(struct map *map)
     {
         for (y = 0; y < map->h; y++)
         {
-            int tile = ' ';
-            if (is_explored(map, x, y))
-            {
-                tile = is_wall(map, x, y) ? WALL_TILE : FLOOR_TILE;
-            }
-
-            if (is_in_fov(map, x, y))
-            {
-                terminal_put(x, y, tile);
-                // TCOD_console_put_char_ex(NULL, x, y, tile, TCOD_white, TCOD_black);
-            }
-            else
-            {
-                if (is_explored(map, x, y))
-                {
-                    terminal_put(x, y, tile);
-                    //   TCOD_console_put_char_ex(NULL, x, y, tile, TCOD_gray,
-                    //   TCOD_black);
-                }
-                else
-                {
-                    //   TCOD_console_put_char_ex(NULL, x, y, ' ', TCOD_black,
-                    //   TCOD_black);
-                    terminal_put(x, y, tile);
-                }
-            }
+            int tile = is_wall(map, x, y) ? WALL_TILE : FLOOR_TILE;
+            terminal_put(x, y, tile);
         }
     }
 }
