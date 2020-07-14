@@ -74,7 +74,7 @@ create_engine(int w, int h, const char *title)
    terminal_composition(TK_ON);
   */
     // Load tilesets
-    terminal_set("U+E100: Media/Tiles.png, size=32x32, align=top-left");
+    terminal_set("U+E100: media/Tiles.png, size=32x32, align=top-left");
 
     terminal_clear();
     terminal_print(2 + 3,
