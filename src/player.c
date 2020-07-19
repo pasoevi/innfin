@@ -413,7 +413,7 @@ void player_update(struct engine *engine, struct actor *actor)
         actor->ai->level_up(engine, actor);
 
     int dx = 0, dy = 0;
-    int key = terminal_read();
+    int key = engine->key;
     if (key != 0)
     {
         switch (key)
