@@ -19,12 +19,14 @@
 */
 
 #include "engine.h"
+
+#include <BearLibTerminal.h>
+#include <stdlib.h>
+
 #include "console.h"
 #include "player.h"
 #include "stairs.h"
 #include "tiles.h"
-#include <BearLibTerminal.h>
-#include <stdlib.h>
 
 extern void
 clean(void);
@@ -48,22 +50,20 @@ static int parse_datafiles()
  * Move the dead actor at the back of the list, so that it doesn't
  * cover the living actors.
  */
-void send_to_back(struct engine *engine, struct actor *actor)
-{
+void send_to_back(struct engine *engine, struct actor *actor) {
     TCOD_list_remove(engine->actors, actor);
     TCOD_list_insert_before(engine->actors, actor, 0);
 }
 
 struct engine *
-create_engine(int w, int h, const char *title)
-{
+create_engine(int w, int h, const char *title) {
     terminal_open();
 
-    terminal_clear();
-    terminal_set("window: size=40x27, cellsize=32x32;"
-                 "font: default;"
-                 "input: filter={keyboard,mouse}");
-    // terminal_color(4);
+    // terminal_clear();
+    /* terminal_set(
+        "window: size=40x27, cellsize=32x32;"
+        "font: default;"
+        "input: filter={keyboard,mouse}"); */
     //   terminal_refresh();
 
     /*  terminal_set("window.title='Omni: tilesets'");
@@ -73,7 +73,7 @@ create_engine(int w, int h, const char *title)
     terminal_set("U+E100: media/Tiles.png, size=32x32, align=top-left");
     terminal_composition(TK_ON);
 
-    terminal_clear();
+    // terminal_clear();
 
     terminal_refresh();
 
@@ -112,8 +112,7 @@ create_engine(int w, int h, const char *title)
     return engine;
 }
 
-int load_level(struct engine *engine, int level_id)
-{
+int load_level(struct engine *engine, int level_id) {
     if (level_id < 0)
         return level_id;
 
@@ -124,11 +123,9 @@ int load_level(struct engine *engine, int level_id)
     struct actor **iter;
     for (iter = (struct actor **)TCOD_list_begin(engine->actors);
          iter != (struct actor **)TCOD_list_end(engine->actors);
-         iter++)
-    {
+         iter++) {
         struct actor *actor = *iter;
-        if (actor != engine->player && actor != engine->stairs)
-        {
+        if (actor != engine->player && actor != engine->stairs) {
             free_actor(actor);
             iter =
                 (struct actor **)TCOD_list_remove_iterator(engine->actors, (void **)iter);
@@ -144,30 +141,25 @@ int load_level(struct engine *engine, int level_id)
     return engine->level;
 }
 
-void engine_update(struct engine *engine)
-{
+void engine_update(struct engine *engine) {
     struct actor *player = engine->player;
 
-    if (engine->game_status == STARTUP)
-    {
+    if (engine->game_status == STARTUP) {
         compute_fov(engine);
     }
 
     engine->game_status = IDLE;
 
-    // TCOD_sys_check_for_event(TCOD_EVENT_ANY, &engine->key, &engine->mouse);
     engine->key = terminal_read();
     player->update(engine, player);
 
     map_update(engine->map);
 
-    if (engine->game_status == NEW_TURN)
-    {
+    if (engine->game_status == NEW_TURN) {
         struct actor **iterator;
         for (iterator = (struct actor **)TCOD_list_begin(engine->actors);
              iterator != (struct actor **)TCOD_list_end(engine->actors);
-             iterator++)
-        {
+             iterator++) {
             struct actor *actor = *iterator;
             if (actor != player)
                 actor->update(engine, actor);
@@ -175,8 +167,7 @@ void engine_update(struct engine *engine)
     }
 }
 
-void engine_render(struct engine *engine)
-{
+void engine_render(struct engine *engine) {
     // TCOD_console_clear(NULL);
     map_render(engine->map);
 
@@ -187,8 +178,7 @@ void engine_render(struct engine *engine)
 
     for (iter = (struct actor **)TCOD_list_begin(engine->actors);
          iter != (struct actor **)TCOD_list_end(engine->actors);
-         iter++)
-    {
+         iter++) {
         struct actor *actor = *iter;
 
         if ((actor != engine->player) &&
@@ -207,8 +197,7 @@ void engine_render(struct engine *engine)
  * Free all memory directly or indirectly allocated by the
  * engine.
  */
-void free_engine(struct engine *engine)
-{
+void free_engine(struct engine *engine) {
     // Clean up
     terminal_set("U+E100: none; U+E200: none; U+E300: none; zodiac font: none");
     terminal_composition(TK_OFF);

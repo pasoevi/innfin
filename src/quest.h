@@ -38,7 +38,6 @@ struct quest {
     int end_y;
     struct actor *target_actor;
     enum operation_type operation_type;
-
 };
 
 #endif

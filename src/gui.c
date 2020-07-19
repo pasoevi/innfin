@@ -19,14 +19,14 @@
 */
 
 #include "gui.h"
-#include <stdlib.h>
+
 #include <stdarg.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 
 static void mkmessage(struct message **message, const char *text,
-                         TCOD_color_t col)
-{
+                      TCOD_color_t col) {
     struct message *tmp = malloc(sizeof *tmp);
 
     if (tmp) {
@@ -39,8 +39,7 @@ static void mkmessage(struct message **message, const char *text,
     }
 }
 
-void free_message(struct message *message)
-{
+void free_message(struct message *message) {
     if (message != NULL) {
         free(message->text);
         free(message);
@@ -48,8 +47,7 @@ void free_message(struct message *message)
 }
 
 static void message(struct engine *engine, const TCOD_color_t col,
-                    const char *text, ...)
-{
+                    const char *text, ...) {
     TCOD_list_t log = engine->gui->log;
     /* Build the text */
     va_list ap;
@@ -65,7 +63,7 @@ static void message(struct engine *engine, const TCOD_color_t col,
         /* make room for the new message */
         if (TCOD_list_size(log) == MSG_HEIGHT) {
             struct message *to_remove =
-                    TCOD_list_get(log, 0);
+                TCOD_list_get(log, 0);
             TCOD_list_remove(log, to_remove);
             free(to_remove);
         }
@@ -84,13 +82,12 @@ static void message(struct engine *engine, const TCOD_color_t col,
 
 static void render_bar(struct engine *engine, int x, int y, int w,
                        const char *name, double value, const double max_value,
-                       TCOD_color_t bar_col, TCOD_color_t back_col)
-{
+                       TCOD_color_t bar_col, TCOD_color_t back_col) {
     /*TCOD_console_set_default_background(engine->gui->con, back_col);
     TCOD_console_rect(engine->gui->con, x, y, w, 1, false,
     TCOD_BKGND_SET);*/
 
-    int bar_w = (int) (value / max_value * w);
+    int bar_w = (int)(value / max_value * w);
     if (bar_w > 0) {
         /* Draw the bar */
         /* TCOD_console_set_default_background(engine->gui->con, bar_col); */
@@ -107,22 +104,19 @@ static void render_bar(struct engine *engine, int x, int y, int w,
 }
 
 static void render_fixed_text(TCOD_console_t con, int x, int y,
-                              TCOD_color_t col, const char *text)
-{
+                              TCOD_color_t col, const char *text) {
     /* TCOD_console_set_default_foreground(con, col); */
     /* TCOD_console_print_ex(con, x, y, TCOD_BKGND_NONE, TCOD_LEFT, "%s", text); */
 }
 
 static void render_status(TCOD_console_t con, int x, int y,
-                          struct actor *actor)
-{
+                          struct actor *actor) {
     struct message status = get_hunger_status(actor);
     if (strlen(status.text) > 0)
         render_fixed_text(con, x, y, status.col, status.text);
 }
 
-static void render_log(struct engine *engine, int start_x, int start_y)
-{
+static void render_log(struct engine *engine, int start_x, int start_y) {
     /* draw the message log */
     double color_coef = 0.4f;
     int y = start_y;
@@ -130,8 +124,8 @@ static void render_log(struct engine *engine, int start_x, int start_y)
     TCOD_list_t log = engine->gui->log;
 
     struct message **iter;
-    for (iter = (struct message **) TCOD_list_begin(log);
-         iter != (struct message **) TCOD_list_end(log);
+    for (iter = (struct message **)TCOD_list_begin(log);
+         iter != (struct message **)TCOD_list_end(log);
          iter++) {
         struct message *message = *iter;
         // TCOD_color_t col = TCOD_color_multiply_scalar(message->col, color_coef);
@@ -144,8 +138,7 @@ static void render_log(struct engine *engine, int start_x, int start_y)
     }
 }
 
-static void render_mouse_look(struct engine *engine)
-{
+static void render_mouse_look(struct engine *engine) {
     if (!is_in_fov(engine->map, engine->mouse.cx, engine->mouse.cy))
         /* if mouse is out of fov, nothing to render */
         return;
@@ -154,13 +147,12 @@ static void render_mouse_look(struct engine *engine)
     bool first = true;
 
     struct actor **iterator;
-    for (iterator = (struct actor **) TCOD_list_begin(engine->actors);
-         iterator != (struct actor **) TCOD_list_end(engine->actors);
+    for (iterator = (struct actor **)TCOD_list_begin(engine->actors);
+         iterator != (struct actor **)TCOD_list_end(engine->actors);
          iterator++) {
         struct actor *actor = *iterator;
         /* Find actors under the mouse cursor */
-        if (actor->x == engine->mouse.cx
-            && actor->y == engine->mouse.cy) {
+        if (actor->x == engine->mouse.cx && actor->y == engine->mouse.cy) {
             if (!first)
                 strcat(buf, ", ");
             else
@@ -175,8 +167,7 @@ static void render_mouse_look(struct engine *engine)
     /* TCOD_console_print(engine->gui->con, 1, 0, buf); */
 }
 
-static void gui_render(struct engine *engine)
-{
+static void gui_render(struct engine *engine) {
     /* Clear the gui console */
     TCOD_console_set_default_background(engine->gui->con, TCOD_darkest_gray);
     TCOD_console_clear(engine->gui->con);
@@ -194,7 +185,6 @@ static void gui_render(struct engine *engine)
     engine->gui->render_bar(engine, 1, 2, BAR_W, xp_txt, engine->player->ai->xp,
                             next_level_xp, TCOD_white, TCOD_lighter_gray);
 
-
     render_status(engine->gui->con, 1, 4, engine->player);
 
     engine->gui->render_log(engine, MSG_X, 1);
@@ -205,11 +195,10 @@ static void gui_render(struct engine *engine)
                       1.f, 1.f);*/
 }
 
-void free_log(TCOD_list_t log)
-{
+void free_log(TCOD_list_t log) {
     struct message **iter;
-    for (iter = (struct message **) TCOD_list_begin(log);
-         iter != (struct message **) TCOD_list_end(log);
+    for (iter = (struct message **)TCOD_list_begin(log);
+         iter != (struct message **)TCOD_list_end(log);
          iter++) {
         struct message *message = *iter;
         free_message(message);
@@ -218,19 +207,17 @@ void free_log(TCOD_list_t log)
     TCOD_list_delete(log);
 }
 
-void free_gui(struct gui *gui)
-{
+void free_gui(struct gui *gui) {
     free_log(gui->log);
     free(gui);
 }
 
-struct gui *create_gui(int w, int h)
-{
+struct gui *create_gui(int w, int h) {
     struct gui *gui = malloc(sizeof *gui);
     if (gui) {
         gui->con = TCOD_console_new(w, h);
         gui->inventory_con =
-                   TCOD_console_new(INVENTORY_WIDTH, INVENTORY_HEIGHT);
+            TCOD_console_new(INVENTORY_WIDTH, INVENTORY_HEIGHT);
         gui->render_bar = render_bar;
         gui->render_log = render_log;
         gui->render_mouse_look = render_mouse_look;

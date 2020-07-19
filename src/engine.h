@@ -21,10 +21,10 @@
 #ifndef ENGINE_H
 #define ENGINE_H
 
-#include "libtcod/libtcod.h"
 #include "actor.h"
-#include "map.h"
 #include "gui.h"
+#include "libtcod/libtcod.h"
+#include "map.h"
 
 enum {
     /* Configuration options */

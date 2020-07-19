@@ -22,8 +22,9 @@
 #define ACTOR_H
 
 #include <stdbool.h>
-#include "libtcod/libtcod.h"
+
 #include "engine.h"
+#include "libtcod/libtcod.h"
 #include "quest.h"
 
 enum {
@@ -43,7 +44,6 @@ struct actor;
 #define SKILL_FIGHTING 5
 #define SKILL_DODGING 6
 #define MAX_SKILS 11
-
 
 struct skill {
     char *name;
@@ -96,7 +96,7 @@ struct attacker {
     struct actor *current_target;
 
     double (*calc_hit_power)(struct engine *engine, struct actor *dealer,
-                            struct actor *target);
+                             struct actor *target);
 
     void (*attack)(struct engine *engine, struct actor *dealer,
                    struct actor *target);
@@ -122,12 +122,11 @@ struct life {
 
     /* the actor's name once dead/destroyed */
     double (*take_damage)(struct engine *engine, struct actor *dealer,
-                         struct actor *target, double damage);
+                          struct actor *target, double damage);
 
     double (*regen)(struct engine *engine, struct actor *actor);
 
-    void
-    (*die)(struct engine *engine, struct actor *actor, struct actor *killer);
+    void (*die)(struct engine *engine, struct actor *actor, struct actor *killer);
 };
 
 /*
@@ -141,7 +140,7 @@ struct pickable {
 
     /* range at which the target can be selected */
     double (*calc_food_cost)(struct actor *actor,
-                            struct actor *item);
+                             struct actor *item);
 
     /*
      * The amount by which hunger increases. *DO NOT* access this directly,
@@ -159,12 +158,10 @@ struct pickable {
      * "wear" (in case of clothes, jewelry, etc), or "wield" them (in case of
      * weapons, etc). Use this function to "stop using" such items.
      */
-    bool
-    (*unuse)(struct engine *engine, struct actor *actor, struct actor *item);
+    bool (*unuse)(struct engine *engine, struct actor *actor, struct actor *item);
 
-    bool
-    (*blow)(struct engine *engine, struct actor *actor, struct actor *weapon,
-            struct actor *target);
+    bool (*blow)(struct engine *engine, struct actor *actor, struct actor *weapon,
+                 struct actor *target);
 };
 
 /*
@@ -174,7 +171,7 @@ struct pickable {
 struct container {
     int capacity;
     /* The maximum number of items (actors) in it. */
-    TCOD_list_t items;    /* */
+    TCOD_list_t items; /* */
 };
 
 struct actor {
@@ -209,48 +206,48 @@ struct actor {
    wrapper functions e.g. make_orc, make_player, etc.
 */
 struct actor *create_actor(int w, int h, int ch, char *name,
-                         TCOD_color_t col);
+                           TCOD_color_t col);
 
 void free_actor(struct actor *actor);
 
 void free_actors(TCOD_list_t actors);
 
 struct ai *create_ai(void (*update)(struct engine *engine, struct actor *actor),
-                   bool(*move_or_attack)(struct engine *engine,
-                                         struct actor *actor, int target_x,
-                                         int target_y));
+                     bool (*move_or_attack)(struct engine *engine,
+                                            struct actor *actor, int target_x,
+                                            int target_y));
 
 void free_ai(struct ai *ai);
 
 struct life *create_life(double max_hp, double hp, double defence,
-                       char *corpse_name,
-                       double (*take_damage)(struct engine *engine,
-                                            struct actor *dealer,
-                                            struct actor *target, double damage),
-                       void (*die)(struct engine *engine, struct actor *actor,
-                                   struct actor *killer));
+                         char *corpse_name,
+                         double (*take_damage)(struct engine *engine,
+                                               struct actor *dealer,
+                                               struct actor *target, double damage),
+                         void (*die)(struct engine *engine, struct actor *actor,
+                                     struct actor *killer));
 
 void free_life(struct life *life);
 
 struct attacker *create_attacker(double power,
-                               void (*attack)(struct engine *engine,
-                                              struct actor *dealer,
-                                              struct actor *target));
+                                 void (*attack)(struct engine *engine,
+                                                struct actor *dealer,
+                                                struct actor *target));
 
 void free_attacker(struct attacker *attacker);
 
 struct container *create_container(int capacity);
 
 struct pickable *init_pickable(double power, double range,
-                               bool(*use)(struct engine *engine,
-                                          struct actor *actor,
-                                          struct actor *item));
+                               bool (*use)(struct engine *engine,
+                                           struct actor *actor,
+                                           struct actor *item));
 
 struct actor *make_item(int x, int y, double power, double range,
                         const int ch, char *name, TCOD_color_t col,
-                        bool(*use)(struct engine *engine,
-                                   struct actor *actor,
-                                   struct actor *item));
+                        bool (*use)(struct engine *engine,
+                                    struct actor *actor,
+                                    struct actor *item));
 
 /* Food */
 struct actor *make_food(int x, int y);
@@ -325,13 +322,13 @@ struct message get_hunger_status(struct actor *actor);
  * Calculate the actual damage dealt to the target.
  */
 double calc_hit_power(struct engine *engine, struct actor *dealer,
-                     struct actor *target);
+                      struct actor *target);
 
 /*
  * Calculate the experience points earned by killing a monster.
  **/
 double calc_kill_reward(struct engine *engine, struct actor *actor,
-                       struct actor *target);
+                        struct actor *target);
 
 double calc_next_level_xp(struct engine *engine, struct actor *actor);
 
@@ -416,7 +413,7 @@ bool eat(struct engine *engine, struct actor *actor, struct actor *food);
 bool make_hungry(struct actor *actor, double amount);
 
 double reward_kill(struct engine *engine, struct actor *actor,
-                  struct actor *target);
+                   struct actor *target);
 
 bool level_up(struct engine *engine, struct actor *actor);
 
@@ -427,7 +424,7 @@ void attack(struct engine *engine, struct actor *dealer,
             struct actor *target);
 
 double take_damage(struct engine *engine, struct actor *dealer,
-                  struct actor *target, double damage);
+                   struct actor *target, double damage);
 
 double heal(struct actor *actor, double amount);
 

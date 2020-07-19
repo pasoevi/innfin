@@ -21,8 +21,8 @@
 #ifndef UTIL_H
 #define UTIL_H
 
-#include "libtcod/libtcod.h"
 #include "actor.h"
+#include "libtcod/libtcod.h"
 
 const char *generate_name(const char *filename);
 

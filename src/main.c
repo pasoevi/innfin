@@ -18,43 +18,55 @@
 
 */
 
-#include "engine.h"
-#include "libtcod/libtcod.h"
 #include <BearLibTerminal.h>
 #include <stdlib.h>
+
+#include "engine.h"
+#include "libtcod/libtcod.h"
 
 #define PROGRAM_NAME "Innfin"
 
 struct engine *engine;
 
-void cleanup()
-{
+void cleanup() {
     free_engine(engine);
     exit(EXIT_SUCCESS);
 }
 
-void start_game()
-{
-    engine = create_engine(WINDOW_W, WINDOW_H, PROGRAM_NAME);
+void show_welcome_screen() {
+    int old_color = terminal_state(TK_COLOR);
+    int old_bg_color = terminal_state(TK_BKCOLOR);
+    terminal_bkcolor(color_from_name("yellow"));
+    terminal_color(color_from_name("light green"));
+    terminal_print(19, 10, "Hello");
+    terminal_color(old_color);
+    terminal_bkcolor(old_bg_color);
 }
 
-void restart_game(struct engine *engine)
-{
+void start_game() {
+    engine = create_engine(WINDOW_W, WINDOW_H, PROGRAM_NAME);
+    terminal_clear();
+    terminal_refresh();
+}
+
+void restart_game(struct engine *engine) {
     free_engine(engine);
     start_game();
 }
 
-int main()
-{
+int main() {
     start_game();
-    do
-    {
-        if (engine->key == TK_0)
-        {
+    do {
+        printf("%d: Here\n", engine->key);
+        if (engine->key == TK_0) {
             restart_game(engine);
         }
-        engine->update(engine);
+        /*
+            terminal_read() is a blocking operation. Render
+           the current state first before waiting for input
+        */
         engine->render(engine);
+        engine->update(engine);
     } while (engine->key != TK_CLOSE && engine->key != TK_ESCAPE);
 
     cleanup();

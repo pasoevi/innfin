@@ -19,14 +19,14 @@
 */
 
 #include "stairs.h"
+
 #include "actor.h"
 
-struct actor *create_stairs(int x, int y, int ch)
-{
+struct actor *create_stairs(int x, int y, int ch) {
     struct actor *actor = create_actor(x, y, ch, "stairs", TCOD_red);
     if (actor) {
-      actor->blocking = false;
-      actor->fov_only = false;
+        actor->blocking = false;
+        actor->fov_only = false;
     }
     return actor;
 }

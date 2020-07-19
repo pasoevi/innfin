@@ -18,18 +18,19 @@
 
 */
 
-#include "libtcod/libtcod.h"
 #include "monsters.h"
-#include "tiles.h"
+
 #include <math.h>
+
+#include "libtcod/libtcod.h"
+#include "tiles.h"
 
 /** Factory functions **/
 struct actor *mkmonster(int x, int y, const int ch, char *name,
-                           TCOD_color_t col, double power, double max_hp,
-                           double hp, double defence, char *corpse_name,
-                           void (*update)(struct engine *engine,
-                                          struct actor *actor))
-{
+                        TCOD_color_t col, double power, double max_hp,
+                        double hp, double defence, char *corpse_name,
+                        void (*update)(struct engine *engine,
+                                       struct actor *actor)) {
     struct actor *monster = create_actor(x, y, ch, name, col);
     monster->blocking = true;
 
@@ -47,47 +48,43 @@ struct actor *mkmonster(int x, int y, const int ch, char *name,
 
     /* Init life */
     monster->life = create_life(max_hp, hp, defence, corpse_name, take_damage,
-                              monster_die);
+                                monster_die);
 
     return monster;
 }
 
-struct actor *mkorc(int x, int y)
-{
+struct actor *mkorc(int x, int y) {
     struct actor *orc = mkmonster(x, y, ORC_TILE, "an orc",
-                                     TCOD_green, 11,
-                                     15, 15, 4, "a dead orc", monster_update);
+                                  TCOD_green, 11,
+                                  15, 15, 4, "a dead orc", monster_update);
     orc->ai->xp_level = 2;
     orc->ai->skills[SKILL_STRENGTH].val = 8;
     orc->ai->skills[SKILL_FIGHTING].val = 13;
     return orc;
 }
 
-struct actor *mkgoblin(int x, int y)
-{
+struct actor *mkgoblin(int x, int y) {
     struct actor *goblin = mkmonster(x, y, ORC_TILE, "a goblin", TCOD_gray, 10,
-                                        14, 14, 2, "a dead goblin",
-                                        monster_update);
+                                     14, 14, 2, "a dead goblin",
+                                     monster_update);
     goblin->ai->xp_level = 1;
     goblin->ai->skills[SKILL_STRENGTH].val = 5;
     goblin->ai->skills[SKILL_FIGHTING].val = 20;
     return goblin;
 }
 
-struct actor *mktroll(int x, int y)
-{
+struct actor *mktroll(int x, int y) {
     struct actor *troll = mkmonster(x, y, TROLL_TILE, "a troll", TCOD_lighter_green,
-                                       12, 20, 20, 3, "a troll carcass",
-                                       monster_update);
+                                    12, 20, 20, 3, "a troll carcass",
+                                    monster_update);
     troll->ai->xp_level = 2;
     troll->ai->skills[SKILL_STRENGTH].val = 20;
     troll->ai->skills[SKILL_FIGHTING].val = 7;
     return troll;
 }
 
-struct actor *mkdragon(int x, int y)
-{
-    struct actor *dragon = mkmonster(x, y, 0xE100+2, "a dragon", TCOD_dark_green,
+struct actor *mkdragon(int x, int y) {
+    struct actor *dragon = mkmonster(x, y, 0xE100 + 2, "a dragon", TCOD_dark_green,
                                      16, 25, 25, 10,
                                      "dragon scales and flesh",
                                      dragon_update);
@@ -100,8 +97,7 @@ struct actor *mkdragon(int x, int y)
 }
 
 bool monster_move_or_attack(struct engine *engine, struct actor *actor,
-                            int target_x, int target_y)
-{
+                            int target_x, int target_y) {
     int dx = target_x - actor->x;
     int dy = target_y - actor->y;
     int step_dx = (dx > 0 ? 1 : -1);
@@ -109,8 +105,8 @@ bool monster_move_or_attack(struct engine *engine, struct actor *actor,
     double distance = sqrt(dx * dx + dy * dy);
 
     if (distance >= 2) {
-        dx = (int) (round(dx / distance));
-        dy = (int) (round(dy / distance));
+        dx = (int)(round(dx / distance));
+        dy = (int)(round(dy / distance));
 
         if (can_walk(engine, actor->x + dx, actor->y + dy)) {
             actor->x += dx;
@@ -131,8 +127,7 @@ bool monster_move_or_attack(struct engine *engine, struct actor *actor,
     return true;
 }
 
-void monster_update(struct engine *engine, struct actor *actor)
-{
+void monster_update(struct engine *engine, struct actor *actor) {
     if (actor->life && is_dead(actor)) {
         return;
     }
@@ -156,11 +151,9 @@ void monster_update(struct engine *engine, struct actor *actor)
         actor->ai->move_or_attack(engine, actor, target->x, target->y);
 }
 
-void dragon_update(struct engine *engine, struct actor *actor)
-{
+void dragon_update(struct engine *engine, struct actor *actor) {
     if (actor->life && is_dead(actor))
         return;
-
 
     if (!is_in_fov(engine->map, actor->x, actor->y))
         return;
@@ -178,9 +171,7 @@ void dragon_update(struct engine *engine, struct actor *actor)
 /*
  * Transform a monster into an edible corpse.
  */
-void
-monster_die(struct engine *engine, struct actor *actor, struct actor *killer)
-{
+void monster_die(struct engine *engine, struct actor *actor, struct actor *killer) {
     /* Transform this dead body into an edible corpse */
     actor->pickable = init_pickable(0, 0, eat);
 

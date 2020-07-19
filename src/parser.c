@@ -18,10 +18,12 @@
 
 */
 
-#include <stdio.h>
-#include <string.h>
-#include <stdlib.h>
 #include "parser.h"
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
 #include "monsters.h"
 
 #define MAX_LINE_LEN 80
@@ -35,8 +37,7 @@
  * realm.
  * @param used to return the lucky actor parsed from the file.
  */
-int parse_jar(char *filename, int realm_id, struct actor **actor)
-{
+int parse_jar(char *filename, int realm_id, struct actor **actor) {
     FILE *file = fopen(filename, "r");
     int len = 0;
     char line[MAX_LINE_LEN];
@@ -46,42 +47,42 @@ int parse_jar(char *filename, int realm_id, struct actor **actor)
     struct actor *debug_actor = *actor;
 
     while (fgets(line, MAX_LINE_LEN, file)) {
-	char key[MAX_LINE_LEN];
-	char val[MAX_LINE_LEN];
-	char colon;
+        char key[MAX_LINE_LEN];
+        char val[MAX_LINE_LEN];
+        char colon;
 
-	/* % separates separate items, monsters, spells, etc. */
-	if (starts_with_c(line, '%')) {
-	    *actor = tmp_actor;
-	    debug_actor = *actor;
-	}
+        /* % separates separate items, monsters, spells, etc. */
+        if (starts_with_c(line, '%')) {
+            *actor = tmp_actor;
+            debug_actor = *actor;
+        }
 
-	if (!starts_with_c(line, '#') && !starts_with_c(line, '%')) {
-	    int nread = sscanf(line, "%[^:] %c %s", key, &colon, val);
-	    if (nread != 3) {
-		    return 1;
-	    }
+        if (!starts_with_c(line, '#') && !starts_with_c(line, '%')) {
+            int nread = sscanf(line, "%[^:] %c %s", key, &colon, val);
+            if (nread != 3) {
+                return 1;
+            }
 
-	    if (!strcmp(key, "name")) {
-		    char *tmp = malloc(80);
-		    if (!tmp) {
-		        return -1;
-		    }
-		    if (strlen(tmp_actor->name) < strlen(val))
-		        tmp_actor->name = realloc(tmp_actor->name, sizeof(val) + 1);
-		    strcpy(tmp, val);
-	        } else if (!strcmp(key, "ch")) {
-		    tmp_actor->ch = val[0];
-	        } else if (!strcmp(key, "strength")) {
-		    tmp_actor->ai->skills[SKILL_STRENGTH].val = atof(val);
-	        } else if (!strcmp(key, "intelligence")) {
-		    tmp_actor->ai->skills[SKILL_INTELL].val = atof(val);
-	        } else if (!strcmp(key, "dexterity")) {
-		    tmp_actor->ai->skills[SKILL_AGILITY].val = atof(val);
-	        } else if (!strcmp(key, "power")) {
-		    tmp_actor->attacker->power = atof(val);
-	        }
-	    }
+            if (!strcmp(key, "name")) {
+                char *tmp = malloc(80);
+                if (!tmp) {
+                    return -1;
+                }
+                if (strlen(tmp_actor->name) < strlen(val))
+                    tmp_actor->name = realloc(tmp_actor->name, sizeof(val) + 1);
+                strcpy(tmp, val);
+            } else if (!strcmp(key, "ch")) {
+                tmp_actor->ch = val[0];
+            } else if (!strcmp(key, "strength")) {
+                tmp_actor->ai->skills[SKILL_STRENGTH].val = atof(val);
+            } else if (!strcmp(key, "intelligence")) {
+                tmp_actor->ai->skills[SKILL_INTELL].val = atof(val);
+            } else if (!strcmp(key, "dexterity")) {
+                tmp_actor->ai->skills[SKILL_AGILITY].val = atof(val);
+            } else if (!strcmp(key, "power")) {
+                tmp_actor->attacker->power = atof(val);
+            }
+        }
     }
 
     printf("Created %s\n", debug_actor->name);
@@ -89,14 +90,12 @@ int parse_jar(char *filename, int realm_id, struct actor **actor)
     return 0;
 }
 
-
 /*
  * Find a blank space in s starting from start up to and including n
  * characters. The n parameter can be negative to indicate search
  * backwards.
  */
-int find_blnk(char s[], int start, int n)
-{
+int find_blnk(char s[], int start, int n) {
     int pos = -1;
 
     /* if searching backwards, move cursor to the last character before
@@ -135,8 +134,7 @@ int find_blnk(char s[], int start, int n)
  * find the last non-blank character in s. return -1 if no
  * non-whitespace characters found
  */
-int find_last_nonblnk(char s[])
-{
+int find_last_nonblnk(char s[]) {
     int pos = -1; /* position of the last non-blank character */
     // int len = strlen(s); /* length of s */
     int len = 10;
@@ -155,15 +153,13 @@ int find_last_nonblnk(char s[])
     return pos;
 }
 
-int starts_with_c(char s[], int ch)
-{
+int starts_with_c(char s[], int ch) {
     if (strlen(s) < 0)
         return 0;
 
     return s[0] == ch;
 }
 
-int read_key_val(char *str, char *key, char *val)
-{
+int read_key_val(char *str, char *key, char *val) {
     return 0;
 }

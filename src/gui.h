@@ -21,8 +21,8 @@
 #ifndef GUI_H
 #define GUI_H
 
-#include "libtcod/libtcod.h"
 #include "engine.h"
+#include "libtcod/libtcod.h"
 
 enum {
     PANEL_H = 7,
