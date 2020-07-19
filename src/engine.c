@@ -60,7 +60,7 @@ create_engine(int w, int h, const char *title)
     terminal_open();
 
     terminal_clear();
-    terminal_set("window: size=35x25, cellsize=32x32, title='Innfin';"
+    terminal_set("window: size=40x27, cellsize=32x32;"
                  "font: default;"
                  "input: filter={keyboard,mouse}");
     // terminal_color(4);
@@ -74,6 +74,7 @@ create_engine(int w, int h, const char *title)
     terminal_composition(TK_ON);
 
     terminal_clear();
+
     terminal_refresh();
 
     struct engine *engine = malloc(sizeof *engine);
