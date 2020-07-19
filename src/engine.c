@@ -57,12 +57,8 @@ void send_to_back(struct engine *engine, struct actor *actor)
 struct engine *
 create_engine(int w, int h, const char *title)
 {
-
-    // BearLibTerminal
     terminal_open();
 
-    // Printing text
-    //   terminal_print(1, 1, "Hello, world!");
     terminal_clear();
     terminal_set("window: size=35x25, cellsize=32x32, title='Innfin';"
                  "font: default;"
@@ -78,12 +74,6 @@ create_engine(int w, int h, const char *title)
     terminal_composition(TK_ON);
 
     terminal_clear();
-    /* terminal_print(2 + 3, */
-    /*                4, */
-    /*                "Fire rune ([color=red][U+E102][/color]), " */
-    /*                "water rune ([color=lighter blue][U+E103][/color]), " */
-    /*                "earth rune ([color=darker green][U+E104][/color])"); */
-
     terminal_refresh();
 
     struct engine *engine = malloc(sizeof *engine);
@@ -157,7 +147,8 @@ void engine_update(struct engine *engine)
 {
     struct actor *player = engine->player;
 
-    if (engine->game_status == STARTUP) {
+    if (engine->game_status == STARTUP)
+    {
         compute_fov(engine);
     }
 
@@ -208,7 +199,7 @@ void engine_render(struct engine *engine)
 
     engine->player->render(engine->player);
     printf("Player x: %d, y: %d\n", engine->player->x, engine->player->y);
-        terminal_refresh();
+    terminal_refresh();
 }
 
 /*
@@ -220,16 +211,10 @@ void free_engine(struct engine *engine)
     // Clean up
     terminal_set("U+E100: none; U+E200: none; U+E300: none; zodiac font: none");
     terminal_composition(TK_OFF);
-
-    // Wait until user close the window
-    //   while (terminal_read() != TK_CLOSE)
-    //     ;
-
-    //   terminal_refresh();
     terminal_close();
     free_gui(engine->gui);
     free_map(engine->map);
     free_actors(engine->actors);
-    /* free(engine->player); */
+    free(engine->player);
     free(engine);
 }

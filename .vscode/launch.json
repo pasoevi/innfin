@@ -5,6 +5,18 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "(Windows) Launch",
+            "type": "cppvsdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/build/innfin.exe",
+            "args": [],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}/build",
+            "environment": [],
+            "preLaunchTask": "scons",
+            "externalConsole": false
+        }/* ,
+        {
             "name": "(gdb) Launch",
             "type": "cppdbg",
             "request": "launch",
@@ -27,6 +39,6 @@
             ],
             "preLaunchTask": "scons",
             "miDebuggerPath": "/usr/bin/gdb"
-        }
+        } */
     ]
 }

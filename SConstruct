@@ -64,6 +64,9 @@ env.Install("build/media", [
    "data/media/Zodiac-S.ttf",
    "data/media/fontawesome-codepage.txt"
    ])
+env.Install("build", [
+   "data/cfg/innfin.ini"
+   ])
 Command("build/terminal.png", "data/fonts/terminal.png", Copy("build/${SOURCE.file}", "$SOURCE"))
 Command("build/TiledFont.png", "data/fonts/TiledFont.png", Copy("build/${SOURCE.file}", "$SOURCE"))
 Command("build/monsters.txt", "data/monsters.txt", Copy("build/${SOURCE.file}", "$SOURCE"))

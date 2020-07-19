@@ -30,6 +30,10 @@ const int MAX_LEVEL = 2;
 static const int MAX_ROOM_MONSTERS = 3;
 static const int MAX_ROOM_ITEMS = 2;
 
+static int last_x;
+static int last_y;
+static int room_num;
+
 void dig(struct map *map, int x1, int y1, int x2, int y2)
 {
     if (x2 < x1)
@@ -56,7 +60,7 @@ void dig(struct map *map, int x1, int y1, int x2, int y2)
     }
 }
 
-void mkroom(struct engine *engine, bool first, int x1, int y1, int x2, int y2)
+void create_room(struct engine *engine, bool first, int x1, int y1, int x2, int y2)
 {
     dig(engine->map, x1, y1, x2, y2);
     if (first)
@@ -120,10 +124,6 @@ bool visit_node(TCOD_bsp_t *node, void *user_data)
     struct engine *engine = (struct engine *)user_data;
 
     /* struct BSPTraverse trv = engine->map->bsp_traverse; */
-    static int last_x;
-    static int last_y;
-    static int room_num;
-
     if (TCOD_bsp_is_leaf(node))
     {
         int x, y, w, h;
@@ -133,7 +133,7 @@ bool visit_node(TCOD_bsp_t *node, void *user_data)
         h = TCOD_random_get_int(rng, ROOM_MIN_SIZE, node->h - 2);
         x = TCOD_random_get_int(rng, node->x + 1, node->x + node->w - w - 1);
         y = TCOD_random_get_int(rng, node->y + 1, node->y + node->h - h - 1);
-        mkroom(engine, room_num == 0, x, y, x + w - 1, y + h - 1);
+        create_room(engine, room_num == 0, x, y, x + w - 1, y + h - 1);
 
         if (room_num != 0)
         {
@@ -170,12 +170,15 @@ void create_map(struct engine *engine, int w, int h)
     engine->map->bsp_traverse.lasty = 0;
     engine->map->bsp_traverse.room_num = 0;
     TCOD_bsp_split_recursive(
-        engine->map->bsp, NULL, 8, ROOM_MAX_SIZE, ROOM_MAX_SIZE, 1.5f, 1.5f);
+        engine->map->bsp, NULL, 8, ROOM_MAX_SIZE, ROOM_MAX_SIZE, 1.9f, 1.9f);
     TCOD_bsp_traverse_inverted_level_order(engine->map->bsp, visit_node, engine);
 }
 
 void free_map(struct map *map)
 {
+    last_x = 0;
+    last_y = 0;
+    room_num = 0;
     TCOD_bsp_delete(map->bsp);
     free(map);
 }

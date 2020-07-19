@@ -33,16 +33,28 @@ void cleanup()
     exit(EXIT_SUCCESS);
 }
 
-int main()
+void start_game()
 {
     engine = create_engine(WINDOW_W, WINDOW_H, PROGRAM_NAME);
+}
 
+void restart_game(struct engine *engine)
+{
+    free_engine(engine);
+    start_game();
+}
+
+int main()
+{
+    start_game();
     do
     {
-        printf("\nInteresting\n");
+        if (engine->key == TK_0)
+        {
+            restart_game(engine);
+        }
         engine->update(engine);
         engine->render(engine);
-        // terminal_refresh();
     } while (engine->key != TK_CLOSE && engine->key != TK_ESCAPE);
 
     cleanup();
