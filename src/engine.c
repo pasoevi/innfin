@@ -189,7 +189,6 @@ void engine_render(struct engine *engine) {
     }
 
     engine->player->render(engine->player);
-    printf("Player x: %d, y: %d\n", engine->player->x, engine->player->y);
     terminal_refresh();
 }
 

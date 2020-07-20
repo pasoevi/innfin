@@ -57,7 +57,6 @@ void restart_game(struct engine *engine) {
 int main() {
     start_game();
     do {
-        printf("%d: Here\n", engine->key);
         if (engine->key == TK_0) {
             restart_game(engine);
         }
