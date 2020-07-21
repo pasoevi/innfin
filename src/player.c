@@ -225,18 +225,31 @@ struct actor *choose_from_inventory(struct engine *engine,
                                     const char *window_title,
                                     bool (*predicate)(struct actor *actor)) {
     /* Display the items frame */
-    TCOD_console_t con = engine->gui->inventory_con;
+    /* TCOD_console_t con = engine->gui->inventory_con;
     TCOD_color_t color = (TCOD_color_t){200, 180, 50};
     TCOD_console_set_default_foreground(con, color);
+
+
     TCOD_console_print_frame(con, 0, 0, INVENTORY_WIDTH,
                              INVENTORY_HEIGHT, true,
                              TCOD_BKGND_DEFAULT, window_title);
-
+ */
     /*
      * Count the items that specify the predicate and display the
      * items with their respective shortcuts.
      */
-    TCOD_console_set_default_foreground(NULL, TCOD_white);
+    //TCOD_console_set_default_foreground(NULL, TCOD_white);
+    terminal_layer(2);
+    printf("Display inventory\n");
+    /* Blit the items console to the root console. */
+    terminal_clear_area(
+        engine->window_w / 2 - INVENTORY_WIDTH / 2,
+        engine->window_h / 2 - INVENTORY_HEIGHT / 2,
+        INVENTORY_WIDTH, INVENTORY_HEIGHT);
+    terminal_crop(
+        engine->window_w / 2 - INVENTORY_WIDTH / 2,
+        engine->window_h / 2 - INVENTORY_HEIGHT / 2,
+        INVENTORY_WIDTH, INVENTORY_HEIGHT);
     int nitems = 0;
     int shortcut = 'a';
     int y = 1;
@@ -246,25 +259,20 @@ struct actor *choose_from_inventory(struct engine *engine,
          iter++) {
         struct actor *item = *iter;
         if (predicate(item)) {
-            TCOD_console_print(con, 2, y, "(%c) %s", shortcut, item->name);
+            char label[70];
+            sprintf(label, "(%c) %s", shortcut, item->name);
+            terminal_print(2, y, label);
             y++;
             nitems++;
         }
         shortcut++;
     }
-
-    /* Blit the items console to the root console. */
-    TCOD_console_blit(con, 0, 0, INVENTORY_WIDTH, INVENTORY_HEIGHT,
-                      NULL, engine->window_w / 2 - INVENTORY_WIDTH / 2,
-                      engine->window_h / 2 - INVENTORY_HEIGHT / 2, 0.1f,
-                      0.6f);
-    TCOD_console_flush();
+    terminal_refresh();
 
     /* wait for a key press */
-    TCOD_key_t key;
-    TCOD_sys_wait_for_event(TCOD_EVENT_KEY_PRESS, &key, NULL, true);
-    if (key.vk == TCODK_CHAR) {
-        int actor_index = key.c - 'a';
+    int key = engine->key;
+    if (key >= TK_A && key <= TK_Z) {
+        int actor_index = key - TK_A;
         if (actor_index >= 0 && actor_index <
                                     TCOD_list_size(actor->inventory->items)) {
             struct actor *tmp =
@@ -308,62 +316,6 @@ void invoke_command(struct engine *engine,
             item->pickable->use(engine, engine->player, item);
 
         engine->game_status = NEW_TURN;
-    }
-}
-
-void handle_key(struct engine *engine, struct actor *actor) {
-    switch (engine->key) {
-    case TK_COMMA:
-    case TK_G:
-        try_pick(engine);
-        break;
-    case TK_PERIOD:
-    case '.':
-        descend(engine, engine->player, engine->stairs);
-        break;
-    case TK_ALIGN_LEFT:
-        engine->gui->message(engine, TCOD_gray,
-                             "You can't climb up here. Try on stairs.");
-        break;
-    case TK_A:
-        engine->gui->message(engine, TCOD_gray,
-                             "You have no special abilities.");
-        break;
-    case TK_D: /* Drop item */
-        invoke_command(engine, drop, is_usable, "drop");
-        break;
-    case TK_L: /* Drop the last item */
-        drop_last(engine, actor);
-        break;
-    case TK_E: /* Eat */
-        invoke_command(engine, NULL, is_edible, "eat");
-        break;
-    case TK_I: /* display items */
-        invoke_command(engine, NULL, is_usable, "items");
-        break;
-    case TK_Q: /* Quaff */
-        if (engine->key == TK_CONTROL) {
-            exit(0);
-        } else {
-            invoke_command(engine, NULL, is_drinkable, "quaff");
-        }
-        break;
-
-    case TK_W: /* Wield */
-        invoke_command(engine, NULL, is_wieldable, "wield");
-        break;
-    case TK_U: /* Unield */
-        if (engine->key == TK_SHIFT) {
-            unwield_current_weapon(engine, actor);
-        }
-        break;
-    case TK_S: /* Display stats */
-        show_stats(engine, engine->player);
-        break;
-    default:
-        engine->gui->message(engine, TCOD_grey, "Unknown command: %c.\n",
-                             engine->key);
-        break;
     }
 }
 
@@ -425,14 +377,60 @@ void player_update(struct engine *engine, struct actor *actor) {
         case TK_5:
             engine->game_status = NEW_TURN;
             break;
-        case TK_CHAR:
-            handle_key(engine, actor);
-            break;
         case TK_ENTER:
             if (key == TK_ALT)
                 TCOD_console_set_fullscreen(!TCOD_console_is_fullscreen());
             break;
+
+        case TK_COMMA:
+        case TK_G:
+            try_pick(engine);
+            break;
+        case TK_PERIOD:
+        case '.':
+            descend(engine, engine->player, engine->stairs);
+            break;
+        case TK_ALIGN_LEFT:
+            engine->gui->message(engine, TCOD_gray,
+                                 "You can't climb up here. Try on stairs.");
+            break;
+        case TK_A:
+            engine->gui->message(engine, TCOD_gray,
+                                 "You have no special abilities.");
+            break;
+        case TK_D: /* Drop item */
+            invoke_command(engine, drop, is_usable, "drop");
+            break;
+        case TK_L: /* Drop the last item */
+            drop_last(engine, actor);
+            break;
+        case TK_E: /* Eat */
+            invoke_command(engine, NULL, is_edible, "eat");
+            break;
+        case TK_I: /* display items */
+            invoke_command(engine, NULL, is_usable, "items");
+            break;
+        case TK_Q: /* Quaff */
+            if (terminal_check(TK_CONTROL)) {
+                exit(0);
+            } else {
+                invoke_command(engine, NULL, is_drinkable, "quaff");
+            }
+            break;
+        case TK_W: /* Wield */
+            invoke_command(engine, NULL, is_wieldable, "wield");
+            break;
+        case TK_U: /* Unield */
+            if (engine->key == TK_SHIFT) {
+                unwield_current_weapon(engine, actor);
+            }
+            break;
+        case TK_S: /* Display stats */
+            show_stats(engine, engine->player);
+            break;
         default:
+            engine->gui->message(engine, TCOD_grey, "Unknown command: %c.\n",
+                                 engine->key);
             break;
         }
     }
