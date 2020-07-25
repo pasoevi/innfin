@@ -61,7 +61,7 @@ create_engine(int w, int h, const char *title) {
 
     // terminal_clear();
     /* terminal_set(
-        "window: size=40x27, cellsize=32x32;"
+        "window: size=32x27, cellsize=32x32;"
         "font: default;"
         "input: filter={keyboard,mouse}"); */
     //   terminal_refresh();

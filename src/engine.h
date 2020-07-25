@@ -28,8 +28,8 @@
 
 enum {
     /* Configuration options */
-    WINDOW_W = 39,
-    WINDOW_H = 27,
+    WINDOW_W = 32,
+    WINDOW_H = 25,
 
     /* Levels, dungeons, portals, places */
     LVL_DUNGEON_1,
