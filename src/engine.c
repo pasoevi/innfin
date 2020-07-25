@@ -70,7 +70,7 @@ create_engine(int w, int h, const char *title) {
    terminal_composition(TK_ON);
   */
     // Load tilesets
-    terminal_set("U+E100: media/Tiles.png, size=32x32, align=top-left");
+    terminal_set("U+E100: media/ProjectUtumno_full.png, size=32x32, align=top-left");
     terminal_composition(TK_ON);
 
     // terminal_clear();
@@ -79,8 +79,9 @@ create_engine(int w, int h, const char *title) {
 
     struct engine *engine = malloc(sizeof *engine);
 
-    if (engine == NULL)
+    if (engine == NULL) {
         return engine;
+	}
 
     engine->level = 1;
 
@@ -113,8 +114,9 @@ create_engine(int w, int h, const char *title) {
 }
 
 int load_level(struct engine *engine, int level_id) {
-    if (level_id < 0)
+    if (level_id < 0) {
         return level_id;
+	}
 
     engine->level = level_id;
 
@@ -161,8 +163,9 @@ void engine_update(struct engine *engine) {
              iterator != (struct actor **)TCOD_list_end(engine->actors);
              iterator++) {
             struct actor *actor = *iterator;
-            if (actor != player)
+            if (actor != player) {
                 actor->update(engine, actor);
+			}
         }
     }
 }
@@ -184,8 +187,9 @@ void engine_render(struct engine *engine) {
         if ((actor != engine->player) &&
             /* will be rendered later as the last item */
             ((!actor->fov_only && is_explored(engine->map, actor->x, actor->y)) ||
-             is_in_fov(engine->map, actor->x, actor->y)))
+             is_in_fov(engine->map, actor->x, actor->y))) {
             actor->render(actor);
+		}
     }
 
     engine->player->render(engine->player);

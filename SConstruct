@@ -58,6 +58,7 @@ src_files = Glob('build/*.c')
 #Command("build/graphics", "assets/graphics", Copy("build/${SOURCE.file}", "$SOURCE"))
 #Command("build/media", "data/media", Install("build/${SOURCE.file}", "$SOURCE"))
 env.Install("build/media", [
+   "data/media/ProjectUtumno_full.png",
    "data/media/Tiles.png",
    "data/media/Runic.png",
    "data/media/fontawesome-webfont.ttf",
