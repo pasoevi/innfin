@@ -60,10 +60,6 @@ src_files = Glob('build/*.c')
 env.Install("build/media", [
    "data/media/ProjectUtumno_full.png",
    "data/media/Tiles.png",
-   "data/media/Runic.png",
-   "data/media/fontawesome-webfont.ttf",
-   "data/media/Zodiac-S.ttf",
-   "data/media/fontawesome-codepage.txt"
    ])
 env.Install("build", [
    "data/cfg/innfin.ini"
